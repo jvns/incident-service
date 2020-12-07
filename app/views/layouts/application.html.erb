@@ -1,14 +1,96 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>IncidentService</title>
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js" prefix="og: http://ogp.me/ns#" xmlns:og="http://ogp.me/ns#"><!--<![endif]-->
 
-    <%= stylesheet_link_tag    'application', media: 'all' %>
-  </head>
+    <head>
+        <title> wizard debugging school &lt;3 </title>
 
-  <body>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="author" content="">
+  
+    
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@b0rk">
+        <meta name="twitter:creator" content="@b0rk">
+        <meta name="twitter:title" content='wizard zines!'>
+        <meta name="twitter:image" content="https://wizardzines.com/images/wizardzines.png">
+	
+        <meta property="og:site_name" content="wizard debugging school">
+        <meta property="og:title" content="wizard debugging school">
+        <meta property="og:url" content="https://debugging-school.jvns.ca">
+        <meta property="og:description" content="">
+        <meta property="og:type" content="website" />
+    
+
+        <link rel="canonical" href="https://debugging-school.jvns.ca" />
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="https://wizardzines.com/index.xml">
+        
+        <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:400,300|Montserrat:700" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+
+<style type="text/css">
+{
+    padding-bottom: 15px;
+}
+</style>
+
+<div class="flex justify-center container mx-auto lg:w-3/5 text-orange-600 leading-none text-xs font-bold pt-4">
+    <pre>
+                                                       |\   
+                            ;       '       _           \\  
+                            \\/\/\ \\ /\\  < \, ,./-_  / \\ 
+                            || | | ||  /   /-||  ||   || || 
+                            || | | || /\\ (( ||  ||   || || 
+                            \\/\\/ \\  ||  \/\\  \\,   \\/  
+                                       /                    
+                                      (,                    
+ |\         ,,                                                    ,,                ,, 
+  \\        ||            _     _    '         _                  ||                || 
+ / \\  _-_  ||/|, \\ \\  / \\  / \\ \\ \\/\\  / \\      _-_,  _-_ ||/\\  /'\\  /'\\ || 
+|| || || \\ || || || || || || || || || || || || ||     ||_.  ||   || || || || || || || 
+|| || ||/   || |' || || || || || || || || || || ||      ~ || ||   || || || || || || || 
+ \\/  \\,/  \\/   \\/\\ \\_-| \\_-| \\ \\ \\ \\_-|     ,-_-  \\,/ \\ |/ \\,/  \\,/  \\ 
+                         /  \  /  \           /  \                  _/                 
+                        '----`'----`         '----`            
+    </pre>
+
+</div>
+
+<div class="flex justify-center mx-auto lg:w-3/5 text-orange-500">
+    <nav class="flex items-center justify-between flex-wrap lg-w:3-5 p-2">
+        <div class="w-full block flex-grow md:flex md:items-center md:w-auto">
+            <div class="text-md md:flex-grow">
+                <a href="/puzzles" class="block mt-4 md:inline-block md:mt-0 text-orange-600 hover:text-orange-400 mr-4">
+                    <code>Puzzles</code>
+                </a>
+                <a href="/login" class="block mt-4 md:inline-block md:mt-0 text-orange-600 hover:text-orange-400 mr-4">
+                    <code>Login</code>
+                </a>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<div class="container mx-auto px-8 lg:w-3/5">
     <%= yield %>
-  </body>
+</div>
+
+<!--
+<div class="container mx-auto lg:w-3/5 px-4 pt-8 mb-4">
+
+&copy; Julia Evans 2018 | All rights reserved
+
+</div>
+-->
+
+</body>
 </html>

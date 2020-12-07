@@ -1,0 +1,10 @@
+hi there i'm a virtual machine
+<ul>
+<% @client.droplets.all.each do |droplet| %>
+  <li class="text-purple-800 pl-8 mt-8">
+  <%= droplet.name %>
+
+  <%= droplet.id %>
+  </li>
+<% end %>
+</ul>
