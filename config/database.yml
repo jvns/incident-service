@@ -24,6 +24,8 @@ default: &default
 development:
   <<: *default
   database: incident_service_development
+  username: bork
+  password: <%= ENV['BORK_PASSWD'] %>
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -80,6 +82,4 @@ test:
 #
 production:
   <<: *default
-  database: incident_service_production
-  username: incident_service
-  password: <%= ENV['INCIDENT_SERVICE_DATABASE_PASSWORD'] %>
+  url: <%= ENV['DATABASE_URL'] %>
