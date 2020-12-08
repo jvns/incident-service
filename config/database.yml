@@ -85,3 +85,4 @@ production:
   #url: <%= ENV['DATABASE_URL'] %>
   username: rails
   password: <%= ENV['DATABASE_PASSOWORD'] %>
+  database: incident_service_production
