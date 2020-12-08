@@ -1,8 +1,7 @@
 Rails.application.routes.draw do
-  devise_for :users
+  devise_for :users, :controllers => { :omniauth_callbacks => "callbacks" }
   get 'homepage/index'
   root 'homepage#index'
-  devise_for :users, :controllers => { :omniauth_callbacks => "callbacks" }
 
   resources :virtual_machine, only: [:index]
 end
