@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eux
+set -eu
 
 GIT_DIR="/home/wizard-debugging-school"
 TARGET="/home/wizard-debugging-school-deployed"
