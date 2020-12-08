@@ -4,9 +4,8 @@ set -eux
 GIT_DIR="/home/wizard-debugging-school"
 TARGET="/home/wizard-debugging-school-deployed"
 
-deploy() {
+while read oldrev newrev ref; do
   # We gonna do stuff.
-  su rails
   BRANCH=$(git rev-parse --symbolic --abbrev-ref $ref)
 
   if [[ $BRANCH == "main" ]]; then
@@ -22,11 +21,7 @@ deploy() {
     return 0
   fi
 
-  bash scripts/restart.sh
+  service rails restart
   echo "Done"
-}
-
-while read oldrev newrev ref; do
-    deploy
 done
 
