@@ -84,8 +84,6 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   # Use SSL in Devise URLs
-  config.to_prepare { Devise::SessionsController.force_ssl }
-  config.to_prepare { Devise::RegistrationsController.force_ssl }
 
   # Inserts middleware to perform automatic connection switching.
   # The `database_selector` hash is used to pass options to the DatabaseSelector
