@@ -1,34 +1,34 @@
 package main
 
 import (
-    "encoding/json"
+	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
-    "io/ioutil"
+	"io/ioutil"
 	"log"
 	"math/rand"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
-    "os"
+	"os"
 	"time"
 )
 
 var PORT = 9000
 
 func readMapping() map[string]int {
-    var mappingFile = "../mapping.json"
-    jsonFile, err := os.Open(mappingFile)
-    if err != nil {
-        log.Fatal(err)
-    }
-    byteValue, err := ioutil.ReadAll(jsonFile)
-    if err != nil {
-        log.Fatal(err)
-    }
-    var mapping map[string]int
-    json.Unmarshal(byteValue, &mapping)
-    return mapping
+	var mappingFile = "../mapping.json"
+	jsonFile, err := os.Open(mappingFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	byteValue, err := ioutil.ReadAll(jsonFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	var mapping map[string]int
+	json.Unmarshal(byteValue, &mapping)
+	return mapping
 }
 
 func main() {
@@ -39,13 +39,13 @@ func main() {
 		vars := mux.Vars(r)
 		gotty_id := vars["gotty_id"]
 		rest := vars["rest"]
-        mapping := readMapping()
-        gottyPort, ok := mapping[gotty_id]
-        if !ok {
+		mapping := readMapping()
+		gottyPort, ok := mapping[gotty_id]
+		if !ok {
 			w.WriteHeader(500)
 			w.Write([]byte("no instance"))
-            return
-        }
+			return
+		}
 		path, err := url.Parse(fmt.Sprintf("http://127.0.0.1:%d/%s", gottyPort, rest))
 		if err != nil {
 			log.Fatal(err)
@@ -59,8 +59,8 @@ func main() {
 
 	log.Println("Listening...")
 
-    err := http.ListenAndServe(":8080", rtr)
-    if (err != nil) {
-        log.Fatal(err)
-    }
+	err := http.ListenAndServe(":8080", rtr)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
