@@ -28,3 +28,7 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 vendor
+go_proxy/server
+mapping.json
+connect.rb
+wizard.key*
