@@ -16,7 +16,7 @@ while read oldrev newrev ref; do
 
     # "Deploy" the branch we just pushed to a specific directory.
     git --work-tree=$TARGET --git-dir=$GIT_DIR checkout -f $BRANCH
-    chown -R rails:rails wizard-debugging-school-deployed/
+    chown -R rails:rails /home/wizard-debugging-school-deployed/
   else
     echo "Not main branch. Skipping."
     return 0
