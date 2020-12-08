@@ -10,6 +10,7 @@ deploy() {
 
   if [[ $BRANCH == "main" ]]; then
     # Send a nice message to the machine pushing to this remote repository.
+    mkdir -p $TARGET
     cd $TARGET
     echo "Push received! Deploying branch: ${BRANCH}..."
 
