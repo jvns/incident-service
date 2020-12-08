@@ -10,6 +10,7 @@ deploy() {
 
   if [[ $BRANCH == "main" ]]; then
     # Send a nice message to the machine pushing to this remote repository.
+    cd $TARGET
     echo "Push received! Deploying branch: ${BRANCH}..."
 
     # "Deploy" the branch we just pushed to a specific directory.
@@ -19,7 +20,6 @@ deploy() {
     return 0
   fi
 
-  cd $TARGET
   bash scripts/restart.sh
   echo "Done"
 }
