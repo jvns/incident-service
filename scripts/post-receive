@@ -1,0 +1,30 @@
+#!/bin/bash
+set -eu
+
+GIT_DIR="/home/wizard-debugging-school"
+TARGET="/home/wizard-debugging-school-deployed"
+
+deploy() {
+  # We gonna do stuff.
+  BRANCH=$(git rev-parse --symbolic --abbrev-ref $ref)
+
+  if [[ $BRANCH == "master" ]]; then
+    # Send a nice message to the machine pushing to this remote repository.
+    echo "Push received! Deploying branch: ${BRANCH}..."
+
+    # "Deploy" the branch we just pushed to a specific directory.
+    git --work-tree=$TARGET --git-dir=$GIT_DIR checkout -f $BRANCH
+  else
+    echo "Not master branch. Skipping."
+    return 0
+  fi
+
+  cd $TARGET
+  bash scripts/restart.sh
+  echo "Done"
+}
+
+while read oldrev newrev ref; do
+    deploy
+done
+
