@@ -25,6 +25,7 @@ while read oldrev newrev ref; do
   service rails restart
   service go_proxy restart
   systemctl status rails
+  systemctl status go_proxy
   echo "Done"
 done
 
