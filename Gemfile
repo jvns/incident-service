@@ -7,6 +7,7 @@ gem 'droplet_kit'
 gem 'devise'
 gem 'omniauth'
 gem 'omniauth-github'
+gem 'omniauth-oauth2'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 6.0.3', '>= 6.0.3.4'

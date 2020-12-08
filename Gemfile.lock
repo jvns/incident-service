@@ -247,6 +247,7 @@ DEPENDENCIES
   listen (~> 3.2)
   omniauth
   omniauth-github
+  omniauth-oauth2
   pg (>= 0.18, < 2.0)
   puma (~> 4.1)
   rails (~> 6.0.3, >= 6.0.3.4)
