@@ -15,26 +15,10 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <meta name="author" content="">
-  
-    
-        <meta name="twitter:card" content="summary">
-        <meta name="twitter:site" content="@b0rk">
-        <meta name="twitter:creator" content="@b0rk">
-        <meta name="twitter:title" content='wizard zines!'>
-        <meta name="twitter:image" content="https://wizardzines.com/images/wizardzines.png">
-	
-        <meta property="og:site_name" content="wizard debugging school">
-        <meta property="og:title" content="wizard debugging school">
-        <meta property="og:url" content="https://debugging-school.jvns.ca">
-        <meta property="og:description" content="">
-        <meta property="og:type" content="website" />
-    
-
+ <%= csrf_meta_tags %> 
         <link rel="canonical" href="https://debugging-school.jvns.ca" />
-        <link rel="alternate" type="application/rss+xml" title="RSS" href="https://wizardzines.com/index.xml">
         
         <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:400,300|Montserrat:700" rel="stylesheet" type="text/css">
-        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
         <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
 
 <style type="text/css">
@@ -43,6 +27,7 @@
 }
 </style>
 
+<div> <%= link_to "Sign Out", destroy_user_session_path, method: :delete %></div>
 <div class="flex justify-center container mx-auto lg:w-3/5 text-orange-600 leading-none text-xs font-bold pt-4">
     <pre>
                                                        |\   
