@@ -8,14 +8,14 @@ deploy() {
   # We gonna do stuff.
   BRANCH=$(git rev-parse --symbolic --abbrev-ref $ref)
 
-  if [[ $BRANCH == "master" ]]; then
+  if [[ $BRANCH == "main" ]]; then
     # Send a nice message to the machine pushing to this remote repository.
     echo "Push received! Deploying branch: ${BRANCH}..."
 
     # "Deploy" the branch we just pushed to a specific directory.
     git --work-tree=$TARGET --git-dir=$GIT_DIR checkout -f $BRANCH
   else
-    echo "Not master branch. Skipping."
+    echo "Not main branch. Skipping."
     return 0
   fi
 
