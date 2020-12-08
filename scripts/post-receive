@@ -6,6 +6,7 @@ TARGET="/home/wizard-debugging-school-deployed"
 
 deploy() {
   # We gonna do stuff.
+  su rails
   BRANCH=$(git rev-parse --symbolic --abbrev-ref $ref)
 
   if [[ $BRANCH == "main" ]]; then
