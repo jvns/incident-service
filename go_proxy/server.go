@@ -16,7 +16,7 @@ import (
 
 var PORT = 9000
 
-func readMapping() map[string]string {
+func readMapping() map[string]int {
     var mappingFile = "../mapping.json"
     jsonFile, err := os.Open(mappingFile)
     if err != nil {
@@ -26,7 +26,7 @@ func readMapping() map[string]string {
     if err != nil {
         log.Fatal(err)
     }
-    var mapping map[string]string
+    var mapping map[string]int
     json.Unmarshal(byteValue, &mapping)
     return mapping
 }
