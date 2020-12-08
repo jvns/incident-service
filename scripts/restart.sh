@@ -4,3 +4,6 @@ if ! [ -e gotty ]; then
     wget -O gotty.tar.gz https://github.com/yudai/gotty/releases/download/v1.0.1/gotty_linux_amd64.tar.gz
     tar -xzf gotty.tar.gz
 fi
+
+cd go_proxy
+go build server.go

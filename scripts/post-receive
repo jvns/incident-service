@@ -23,6 +23,7 @@ while read oldrev newrev ref; do
   fi
 
   service rails restart
+  systemctl status rails
   echo "Done"
 done
 
