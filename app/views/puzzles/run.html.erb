@@ -1,4 +1,8 @@
 <%= @droplet.name %>
 <br><br>
 
-<a class="underline" href="/proxy/<%=@identifier%>/">Open shell</a>
+<div class="w-full" style="height: 500px">
+  <iframe src="/proxy/<%=@identifier%>/" title="description" height="100%" width="100%"> </iframe>
+</div>
+<a class="underline" href="/proxy/<%=@identifier%>/">Open full screen</a>
+
