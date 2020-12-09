@@ -1,4 +1,5 @@
 require 'droplet_kit'
+require 'open3'
 
 class PuzzlesController < ApplicationController
   before_action :set_puzzle, only: [:show, :edit, :update, :destroy]
@@ -47,6 +48,7 @@ class PuzzlesController < ApplicationController
       )
       client.droplets.create(@droplet)
     end
+    start_gotty(@droplet)
   end
 
   # POST /puzzles
@@ -98,5 +100,24 @@ class PuzzlesController < ApplicationController
     # Only allow a list of trusted parameters through.
     def puzzle_params
       params.require(:puzzle).permit(:title, :cloud_init)
+    end
+
+    def ip_address(droplet)
+      droplet.networks.v4.find{|x| x.type == 'public'}.ip_address
+    end
+    def gotty_running?(droplet)
+      ip = ip_address(droplet)
+      gotty_process = `ps aux`.split("\n").find do |x| 
+        x.include?('gotty') and x.include?(ip)
+      end
+      !gotty_process.nil?
+    end
+
+    def start_gotty(droplet)
+      if gotty_running?(droplet)
+        puts "gotty is already running, not starting another one"
+      else
+        _, _, _, thread = Open3.popen3("./gotty", "-w", "-ws-origin", "https://debugging-school-test2.jvns.ca", "-p", "9000", "ssh", "-i", "wizard.key", "wizard@#{ip_address(droplet)}")
+      end
     end
 end
