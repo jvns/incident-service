@@ -32,3 +32,4 @@ go_proxy/server
 mapping.json
 connect.rb
 wizard.key*
+gotty
