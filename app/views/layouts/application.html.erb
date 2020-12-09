@@ -19,53 +19,24 @@
         <link rel="canonical" href="https://debugging-school.jvns.ca" />
         
         <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:400,300|Montserrat:700" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&amp;display=swap" rel="stylesheet">
         <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
 
 <style type="text/css">
-{
-    padding-bottom: 15px;
+body {
+  font-family: Inter;
 }
 </style>
 
-<div> <%= link_to "Sign Out", destroy_user_session_path, method: :delete %></div>
-<div class="flex justify-center container mx-auto lg:w-3/5 text-orange-600 leading-none text-xs font-bold pt-4">
-    <pre>
-                                                       |\   
-                            ;       '       _           \\  
-                            \\/\/\ \\ /\\  < \, ,./-_  / \\ 
-                            || | | ||  /   /-||  ||   || || 
-                            || | | || /\\ (( ||  ||   || || 
-                            \\/\\/ \\  ||  \/\\  \\,   \\/  
-                                       /                    
-                                      (,                    
- |\         ,,                                                    ,,                ,, 
-  \\        ||            _     _    '         _                  ||                || 
- / \\  _-_  ||/|, \\ \\  / \\  / \\ \\ \\/\\  / \\      _-_,  _-_ ||/\\  /'\\  /'\\ || 
-|| || || \\ || || || || || || || || || || || || ||     ||_.  ||   || || || || || || || 
-|| || ||/   || |' || || || || || || || || || || ||      ~ || ||   || || || || || || || 
- \\/  \\,/  \\/   \\/\\ \\_-| \\_-| \\ \\ \\ \\_-|     ,-_-  \\,/ \\ |/ \\,/  \\,/  \\ 
-                         /  \  /  \           /  \                  _/                 
-                        '----`'----`         '----`            
-    </pre>
-
+<div class="flex w-full text-orange-600 leading-none py-4 bg-green-100 border-b-2 border-black">
+  <span class="text-3xl px-8">exploding computer puzzles</span>
+  <% if user_signed_in? %>
+    <span class="flex-grow text-right px-8 leading-2" > signed in as <%= current_user.email %> (<%= link_to "sign out", destroy_user_session_path, method: :get, class: "underline" %>)</span>
+  <% else %>
+  <% end %>
 </div>
 
-<div class="flex justify-center mx-auto lg:w-3/5 text-orange-500">
-    <nav class="flex items-center justify-between flex-wrap lg-w:3-5 p-2">
-        <div class="w-full block flex-grow md:flex md:items-center md:w-auto">
-            <div class="text-md md:flex-grow">
-                <a href="/puzzles" class="block mt-4 md:inline-block md:mt-0 text-orange-600 hover:text-orange-400 mr-4">
-                    <code>Puzzles</code>
-                </a>
-                <a href="/login" class="block mt-4 md:inline-block md:mt-0 text-orange-600 hover:text-orange-400 mr-4">
-                    <code>Login</code>
-                </a>
-            </div>
-        </div>
-    </nav>
-</div>
-
-<div class="container mx-auto px-8 lg:w-3/5">
+<div class="container mx-auto px-8 py-8 lg:w-3/5">
     <%= yield %>
 </div>
 
