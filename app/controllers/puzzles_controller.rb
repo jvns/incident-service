@@ -48,7 +48,10 @@ class PuzzlesController < ApplicationController
       )
       client.droplets.create(@droplet)
     end
+    @droplet = client.droplets.all.find {|d| d.name == name}
+    raise "no droplet" unless @droplet
     start_gotty(@droplet)
+    @identifier = identifier(@droplet)
   end
 
   # POST /puzzles
@@ -116,8 +119,24 @@ class PuzzlesController < ApplicationController
     def start_gotty(droplet)
       if gotty_running?(droplet)
         puts "gotty is already running, not starting another one"
+        return
       else
-        _, _, _, thread = Open3.popen3("./gotty", "-w", "-ws-origin", "https://debugging-school-test2.jvns.ca", "-p", "9000", "ssh", "-i", "wizard.key", "wizard@#{ip_address(droplet)}")
+        port = SecureRandom.rand(2000..5000)
+        _, _, _, thread = Open3.popen3("./gotty", "-w", "-ws-origin", "https://debugging-school-test2.jvns.ca", "-p", port.to_s, "ssh", "-i", "wizard.key", "wizard@#{ip_address(droplet)}")
+        save_port_mapping(droplet, port)
+      end
+    end
+    def identifier(droplet)
+      droplet.tags.find {|x| x.include?('id:')}.split(':')[1]
+    end
+
+    def save_port_mapping(droplet, port)
+      File.open("mapping.json","w+") do |f|
+        # todo: read the file first, or store the data in a db, or something.
+        # this is no good.
+        mapping = {}
+        mapping[identifier(droplet)] = port
+        f.write(mapping.to_json)
       end
     end
 end
