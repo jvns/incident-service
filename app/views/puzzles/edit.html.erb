@@ -1,0 +1,11 @@
+<h1>Editing Puzzle</h1>
+<%= form_for @puzzle, url: {action: "update"} do |f| %>
+    <div class="py-2">
+      <%= f.text_field(:title, value: @puzzle.title, placeholder: "Title", class: "border-solid border-gray-400 border-2 p-3 md:text-xl w-full") %>
+    </div>
+
+    <div class="py-2">
+      <%= f.text_area(:cloud_init, value: @puzzle.cloud_init, placeholder: "cloud-init.yaml contents", size: "24x6", class: "border-solid border-gray-400 border-2 p-3 md:text-xl w-full") %>
+    </div>
+    <%= submit_tag("Save", class: "border border-gray-700 text-gray-700 rounded-md px-4 py-2 m-2 transition duration-500 ease select-none hover:text-white hover:bg-gray-800 focus:outline-none focus:shadow-outline") %>
+<% end %>
