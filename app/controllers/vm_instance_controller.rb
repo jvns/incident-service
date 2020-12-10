@@ -18,7 +18,7 @@ class VmInstanceController < ApplicationController
   def show_all
     raise 'only local allowed' unless request.local?
     instances = VmInstance.where(status: :running)
-    result = instances.map { |instance| [instance.proxy_id, instance.gotty_port] }.to_a
+    result = instances.map { |instance| [instance.proxy_id, instance.gotty_port] }.to_h
     render :json => result 
   end
 
