@@ -1,10 +1,13 @@
+require 'open3'
 class VmInstanceController < ApplicationController
+  prepend_before_filter :require_no_authentication, only: [ :show_all ]
   def show
     puzzle = Puzzle.find(params[:puzzle_id])
-    instance = VmInstance.find_by(puzzle_id: puzzle.id, status: :running)
-    if instance.nil?
-      instance = create_instance(puzzle)
+    @instance = VmInstance.find_by(puzzle_id: puzzle.id, status: :running)
+    if @instance.nil?
+      @instance = create_instance(puzzle)
     end
+    start_gotty(@instance)
   end
 
   def create
@@ -16,7 +19,7 @@ class VmInstanceController < ApplicationController
     return unless request.local? 
 
     instances = VmInstance.where(status: :running)
-    result = instances.map { |instance| [instance.proxy_id, instance.port] }.to_a
+    result = instances.map { |instance| [instance.proxy_id, instance.gotty_port] }.to_a
     render :json => result
   end
 
@@ -73,12 +76,13 @@ class VmInstanceController < ApplicationController
     !gotty_process.nil?
   end
 
-  def start_gotty(droplet, port)
+  def start_gotty(instance)
+    droplet = do_client.droplets.find(id: instance.digitalocean_id)
     if gotty_running?(droplet)
       puts "gotty is already running, not starting another one"
       return
     else
-      _, _, _, thread = Open3.popen3("./gotty", "-w", "-ws-origin", "https://debugging-school-test2.jvns.ca", "-p", port.to_s, "ssh", "-i", "wizard.key", "wizard@#{ip_address(droplet)}")
+      _, _, _, thread = Open3.popen3("./gotty", "-w", "-ws-origin", "https://debugging-school-test2.jvns.ca", "-p", instance.gotty_port.to_s, "ssh", "-i", "wizard.key", "wizard@#{ip_address(droplet)}")
     end
   end
 end

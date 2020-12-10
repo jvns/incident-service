@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   get '/puzzles/:puzzle_id/run', to: 'vm_instance#show'
+  get '/running_instances', to: 'vm_instance#show_all'
   resources :puzzles do
     get 'run', on: :member
   end
