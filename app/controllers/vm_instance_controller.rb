@@ -1,10 +1,14 @@
 require 'open3'
 class VmInstanceController < ApplicationController
-  skip_before_action :authenticate_user!, only: :show_all
+  skip_before_action :authenticate_user!, only: :show_all_json
   def show
     puzzle = Puzzle.find(params[:puzzle_id])
     @instance = VmInstance.find_by(puzzle_id: puzzle.id, status: :running)
     if @instance.nil?
+      @instance = create_instance(puzzle)
+    elsif get_droplet(@instance).nil?
+      # guess it died, mark the instance terminated
+      @instance.terminated!
       @instance = create_instance(puzzle)
     end
     start_gotty(@instance)
@@ -15,7 +19,7 @@ class VmInstanceController < ApplicationController
     create_instance(puzzle)
   end
 
-  def show_all
+  def show_all_json
     raise 'only local allowed' unless request.local?
     instances = VmInstance.where(status: :running)
     result = instances.map { |instance| [instance.proxy_id, instance.gotty_port] }.to_h
@@ -54,7 +58,7 @@ class VmInstanceController < ApplicationController
       puzzle_id: puzzle.id,
       status: :running,
     )
-    start_gotty(droplet, port)
+    start_gotty(instance)
     instance
   end
 
@@ -75,8 +79,17 @@ class VmInstanceController < ApplicationController
     !gotty_process.nil?
   end
 
+  def get_droplet(instance)
+    begin
+      do_client.droplets.find(id: instance.digitalocean_id)
+    rescue
+      # let's assume it was a 404 exception and the instance just wasn't found
+      # todo: should do something better
+    end
+  end
+
   def start_gotty(instance)
-    droplet = do_client.droplets.find(id: instance.digitalocean_id)
+    droplet = get_droplet(instance)
     if gotty_running?(droplet)
       puts "gotty is already running, not starting another one"
       return
