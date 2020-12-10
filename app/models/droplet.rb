@@ -63,7 +63,7 @@ class Droplet
       proxy_id: proxy_id,
       gotty_port: port,
       puzzle_id: @puzzle.id,
-      status: :running,
+      status: :pending,
     )
   end
 

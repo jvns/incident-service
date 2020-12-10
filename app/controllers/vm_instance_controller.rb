@@ -14,6 +14,11 @@ class VmInstanceController < ApplicationController
     redirect_to "/puzzles/#{puzzle.id}/play"
   end
 
+  def status
+    instance = VmInstance.find_by(digitalocean_id: params[:digitalocean_id])
+    render :json => {status: instance.status} 
+  end
+
   def destroy
     instance = VmInstance.find_by(digitalocean_id: params[:digitalocean_id])
     puzzle = Puzzle.find(instance.puzzle_id)

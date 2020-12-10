@@ -31,8 +31,19 @@ class VmInstanceControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to puzzle_url(@puzzle)
   end
 
+  test "status is pending right after instance started" do
+    get '/puzzles/1/start'
+    get '/instances/220816290/status'
+    assert_response :success
+    assert_equal({"status" => "pending"}, response.parsed_body)
+  end
+
+
+
   test "can show a puzzle after starting it" do
     get '/puzzles/1/start'
+    instance = VmInstance.find_by(status: :pending)
+    instance.running! # force instance to running, TODO: add an actual mechanism for this to happen
     get '/puzzles/1/play'
     assert_response :success
   end
