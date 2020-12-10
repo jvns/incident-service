@@ -2,14 +2,16 @@
 
 one:
   digitalocean_id: MyString
-  user_email: MyString
+  user_id: 1
   proxy_id: MyString
-  start_time: 1
   puzzle_id: 1
+  status: :terminated
+  gotty_port: 2000
 
 two:
   digitalocean_id: MyString
-  user_email: MyString
+  user_id: 2
   proxy_id: MyString
-  start_time: 1
   puzzle_id: 1
+  status: :terminated
+  gotty_port: 3000

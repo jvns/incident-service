@@ -1,8 +1,14 @@
 require 'test_helper'
 
 class PuzzlesControllerTest < ActionDispatch::IntegrationTest
+  include Warden::Test::Helpers
+
   setup do
     @puzzle = puzzles(:one)
+    @user = users(:rishi)
+    # https://github.com/plataformatec/devise/wiki/How-To:-Test-with-Capybara
+    @user.save
+    login_as(@user, :scope => :user)
   end
 
   test "should get index" do
