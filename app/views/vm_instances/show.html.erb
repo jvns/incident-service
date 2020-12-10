@@ -1,0 +1,10 @@
+<%= @instance.proxy_id %>
+<div class="w-full" style="height: 500px">
+  <iframe src="/proxy/<%=@instance.proxy_id%>/" title="description" height="100%" width="100%"> </iframe>
+</div>
+<a class="underline" href="/proxy/<%=@instance.proxy_id%>/">Open full screen</a>
+
+  <script>
+window.addEventListener('beforeunload', function(event) {event.preventDefault()});
+  </script>
+

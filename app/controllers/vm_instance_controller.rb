@@ -1,17 +1,33 @@
 class VmInstanceController < ApplicationController
   def show
-    puzzle = Puzzle.find(params[:id])
+    puzzle = Puzzle.find(params[:puzzle_id])
+    instance = VmInstance.find_by(puzzle_id: puzzle.id, status: :running)
+    if instance.nil?
+      instance = create_instance(puzzle)
+    end
+  end
+
+  def create
+    puzzle = Puzzle.find(params[:puzzle_id])
+    create_instance(puzzle)
   end
 
   def show_all
+    return unless request.local? 
+
+    instances = VmInstance.where(status: :running)
+    result = instances.map { |instance| [instance.proxy_id, instance.port] }.to_a
+    render :json => result
   end
 
-  def create(puzzle)
+  private
+
+  def create_instance(puzzle)
     my_ssh_keys = do_client.ssh_keys.all.collect {|key| key.fingerprint}
-    name = puzzle.title.gsub(' ', '-').downcase
-    @droplet = client.droplets.all.find {|d| d.name == name}
+    name = puzzle.title.gsub(' ', '-').downcase + '-' + SecureRandom.base36(10)
     proxy_id = SecureRandom.base36(30)
-    @droplet = DropletKit::Droplet.new(
+    port = SecureRandom.rand(2000..5000) # TODO; this won't scale
+    droplet = DropletKit::Droplet.new(
       name: name,
       region: 'nyc3',
       size: "s-1vcpu-1gb",
@@ -19,7 +35,7 @@ class VmInstanceController < ApplicationController
       image: "ubuntu-20-04-x64",
       backups: false,
       ipv6: true,
-      user_data: @puzzle.cloud_init,
+      user_data: puzzle.cloud_init,
       tags: [
         "debugging-school",
         "proxy_id:#{proxy_id}",
@@ -27,19 +43,19 @@ class VmInstanceController < ApplicationController
         "port:#{port}",
       ]
     )
-    port = SecureRandom.rand(2000..5000)
-    VmInstance.create(
-      digitalocean_id: @droplet.id,
-      user_email: current_user.email,
+    do_client.droplets.create(droplet)
+    instance = VmInstance.create(
+      digitalocean_id: droplet.id,
+      user_id: current_user.id,
       proxy_id: proxy_id,
       gotty_port: port,
       puzzle_id: puzzle.id,
-      status: :pending,
+      status: :running,
     )
-    start_gotty(@droplet)
+    start_gotty(droplet, port)
+    instance
   end
 
-  private
 
   def do_client
     @client ||= DropletKit::Client.new(access_token: ENV['DO_TOKEN'], user_agent: 'custom')
@@ -57,28 +73,12 @@ class VmInstanceController < ApplicationController
     !gotty_process.nil?
   end
 
-  def start_gotty(droplet)
+  def start_gotty(droplet, port)
     if gotty_running?(droplet)
       puts "gotty is already running, not starting another one"
       return
     else
       _, _, _, thread = Open3.popen3("./gotty", "-w", "-ws-origin", "https://debugging-school-test2.jvns.ca", "-p", port.to_s, "ssh", "-i", "wizard.key", "wizard@#{ip_address(droplet)}")
-      save_port_mapping(droplet, port)
     end
   end
-  def identifier(droplet)
-    droplet.tags.find {|x| x.include?('id:')}.split(':')[1]
-  end
-
-  def save_port_mapping(droplet, port)
-    File.open("mapping.json","w+") do |f|
-      # todo: read the file first, or store the data in a db, or something.
-      # this is no good.
-      mapping = {}
-      mapping[identifier(droplet)] = port
-      f.write(mapping.to_json)
-    end
-  end
-
-
 end
