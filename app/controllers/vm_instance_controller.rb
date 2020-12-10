@@ -1,6 +1,6 @@
 require 'open3'
 class VmInstanceController < ApplicationController
-  prepend_before_filter :require_no_authentication, only: [ :show_all ]
+  skip_before_action :authenticate_user!, only: :show_all
   def show
     puzzle = Puzzle.find(params[:puzzle_id])
     @instance = VmInstance.find_by(puzzle_id: puzzle.id, status: :running)
@@ -16,11 +16,9 @@ class VmInstanceController < ApplicationController
   end
 
   def show_all
-    return unless request.local? 
-
     instances = VmInstance.where(status: :running)
     result = instances.map { |instance| [instance.proxy_id, instance.gotty_port] }.to_a
-    render :json => result
+    render :json => result 
   end
 
   private
