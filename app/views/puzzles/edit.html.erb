@@ -1,4 +1,9 @@
 <h1>Editing Puzzle</h1>
+<style>
+textarea {
+  font-family: 'Inconsolata', monospace;
+}
+</style>
 <%= form_for @puzzle, url: {action: "update"} do |f| %>
     <div class="py-2">
       <%= f.text_field(:title, value: @puzzle.title, placeholder: "Title", class: "border-solid border-gray-400 border-2 p-3 md:text-xl w-full") %>

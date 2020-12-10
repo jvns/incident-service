@@ -1,5 +1,10 @@
 <h1 class="text-2xl">Create a puzzle</h1>
 
+<style>
+textarea {
+  font-family: 'Inconsolata', monospace;
+}
+</style>
 <%= form_for @puzzle, url: {action: "create"} do |f| %>
     <div class="py-2">
       <%= f.text_field(:title,  placeholder: "Title", class: "border-solid border-gray-400 border-2 p-3 md:text-xl w-full") %>
