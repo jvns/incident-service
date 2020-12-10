@@ -30,6 +30,7 @@ class VmInstanceController < ApplicationController
       digitalocean_id: @droplet.id,
       user_email: current_user.email,
       proxy_id: proxy_id,
+      puzzle_id: puzzle.id,
     )
     start_gotty(@droplet)
     @identifier = identifier(@droplet)

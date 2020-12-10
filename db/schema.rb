@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_10_012959) do
+ActiveRecord::Schema.define(version: 2020_12_10_014636) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -42,13 +42,14 @@ ActiveRecord::Schema.define(version: 2020_12_10_012959) do
   end
 
   create_table "vm_instances", force: :cascade do |t|
-    t.string "digitalocean_id"
-    t.string "user_email"
-    t.string "proxy_id"
-    t.integer "start_time"
-    t.integer "puzzle_id"
+    t.string "digitalocean_id", null: false
+    t.string "user_email", null: false
+    t.string "proxy_id", null: false
+    t.integer "puzzle_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  add_foreign_key "vm_instances", "puzzles"
+  add_foreign_key "vm_instances", "users", column: "user_email", primary_key: "email"
 end
