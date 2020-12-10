@@ -1,0 +1,2 @@
+class VmInstance < ApplicationRecord
+end

@@ -1,0 +1,2 @@
+module VmInstanceHelper
+end

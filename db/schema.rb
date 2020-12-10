@@ -10,10 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_08_185012) do
+ActiveRecord::Schema.define(version: 2020_12_10_012959) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "puzzles", force: :cascade do |t|
+    t.string "title"
+    t.text "cloud_init"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -32,6 +39,16 @@ ActiveRecord::Schema.define(version: 2020_12_08_185012) do
     t.inet "last_sign_in_ip"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  end
+
+  create_table "vm_instances", force: :cascade do |t|
+    t.string "digitalocean_id"
+    t.string "user_email"
+    t.string "proxy_id"
+    t.integer "start_time"
+    t.integer "puzzle_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
 end

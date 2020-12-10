@@ -1,0 +1,2 @@
+class VmInstanceController < ApplicationController
+end
