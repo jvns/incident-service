@@ -4,6 +4,7 @@ class Droplet
     @instance = instance
     @user = user
   end
+  attr_accessor :instance
 
   def self.from_puzzle(puzzle, user)
     instance = VmInstance.find_by(puzzle_id: puzzle.id, status: :running, user_id: user.id)

@@ -4,6 +4,7 @@ class VmInstanceControllerTest < ActionDispatch::IntegrationTest
   include Warden::Test::Helpers
   setup do
     @instance = vm_instances(:one)
+    @puzzle = puzzles(:one)
     WebMock.disable_net_connect!
     @user = users(:rishi)
     @user.save
@@ -24,5 +25,14 @@ class VmInstanceControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "can't show a puzzle before starting it" do
+    get '/puzzles/1/play'
+    assert_redirected_to puzzle_url(@puzzle)
+  end
 
+  test "can show a puzzle after starting it" do
+    get '/puzzles/1/start'
+    get '/puzzles/1/play'
+    assert_response :success
+  end
 end

@@ -3,7 +3,7 @@ class VmInstanceController < ApplicationController
   skip_before_action :authenticate_user!, only: :show_all_json
   def show
     puzzle = Puzzle.find(params[:puzzle_id])
-    @instance = VMInstance.running_instance(puzzle)
+    @instance = Droplet.from_puzzle(puzzle, current_user).instance
     redirect_to puzzle if @instance.nil?
   end
 
