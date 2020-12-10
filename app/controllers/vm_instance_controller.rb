@@ -22,18 +22,21 @@ class VmInstanceController < ApplicationController
       user_data: @puzzle.cloud_init,
       tags: [
         "debugging-school",
-        "proxy_id:#{proxy_id}"
-
+        "proxy_id:#{proxy_id}",
+        "user:#{current_user.email}",
+        "port:#{port}",
       ]
     )
+    port = SecureRandom.rand(2000..5000)
     VmInstance.create(
       digitalocean_id: @droplet.id,
       user_email: current_user.email,
       proxy_id: proxy_id,
+      gotty_port: port,
       puzzle_id: puzzle.id,
+      status: :pending,
     )
     start_gotty(@droplet)
-    @identifier = identifier(@droplet)
   end
 
   private
@@ -59,7 +62,6 @@ class VmInstanceController < ApplicationController
       puts "gotty is already running, not starting another one"
       return
     else
-      port = SecureRandom.rand(2000..5000)
       _, _, _, thread = Open3.popen3("./gotty", "-w", "-ws-origin", "https://debugging-school-test2.jvns.ca", "-p", port.to_s, "ssh", "-i", "wizard.key", "wizard@#{ip_address(droplet)}")
       save_port_mapping(droplet, port)
     end

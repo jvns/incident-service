@@ -1,3 +1,3 @@
 class VmInstance < ApplicationRecord
-  enum status: [:terminated, :running, :starting]
+  enum status: [:terminated, :running, :pending]
 end
