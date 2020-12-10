@@ -24,12 +24,14 @@ class Droplet
     rescue 
       # let's assume it was a 404 exception and the instance just wasn't found
       # todo: should do something better, what if it's not a 404?
+      instance.terminated!
     end
     @droplet
   end
 
   def destroy!
-    do_client.droplets.delete(droplet.id)
+    do_client.droplets.delete(id: droplet.id.to_i)
+
   end
 
   def launch
@@ -70,8 +72,12 @@ class Droplet
       puts "gotty is already running, not starting another one"
       return
     else
-      _, _, _, thread = Open3.popen3("./gotty", "-w", "-ws-origin", "https://debugging-school-test2.jvns.ca", "-p", instance.gotty_port.to_s, "ssh", "-i", "wizard.key", "wizard@#{ip_address(droplet)}")
+      _, _, _, thread = Open3.popen3("./gotty", "-w", "-ws-origin", "https://debugging-school-test2.jvns.ca", "-p", instance.gotty_port.to_s, "ssh", "-i", "wizard.key", "wizard@#{ip_address}")
     end
+  end
+
+  def ip_address
+    droplet.networks.v4.find{|x| x.type == 'public'}.ip_address
   end
 
   private
@@ -81,10 +87,6 @@ class Droplet
       x.include?('gotty') and x.include?(ip_address)
     end
     !gotty_process.nil?
-  end
-
-  def ip_address
-    droplet.networks.v4.find{|x| x.type == 'public'}.ip_address
   end
 
   def do_client

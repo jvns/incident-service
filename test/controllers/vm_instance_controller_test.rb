@@ -23,6 +23,7 @@ class VmInstanceControllerTest < ActionDispatch::IntegrationTest
     assert_difference('VmInstance.count') do
       get '/puzzles/1/start'
     end
+    assert_redirected_to '/puzzles/1/play'
   end
 
   test "can't show a puzzle before starting it" do

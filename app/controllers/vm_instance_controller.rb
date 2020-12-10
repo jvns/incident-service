@@ -11,13 +11,16 @@ class VmInstanceController < ApplicationController
     puzzle = Puzzle.find(params[:puzzle_id])
     droplet = Droplet.from_puzzle(puzzle, current_user)
     droplet.launch
-    redirect_to '/'
+    redirect_to "/puzzles/#{puzzle.id}/play"
   end
 
   def destroy
-    instance = VmInstance.find(params[:digitalocean_id])
+    instance = VmInstance.find_by(digitalocean_id: params[:digitalocean_id])
+    puzzle = Puzzle.find(instance.puzzle_id)
     droplet = Droplet.from_instance(instance)
     droplet.destroy!
+    instance.terminated!
+    redirect_to puzzle
   end
 
   def show_all_json

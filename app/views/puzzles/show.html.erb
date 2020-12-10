@@ -1,4 +1,14 @@
 <p id="notice"><%= notice %></p>
 
 
-<%= link_to 'Run', '/', class: "border border-gray-700 text-gray-700 rounded-md px-4 py-2 m-2 transition duration-500 ease select-none hover:text-white hover:bg-gray-800 focus:outline-none focus:shadow-outline" %> 
+
+<% if @droplet.instance %>
+
+  <p>
+  Running instance: <%= @droplet.ip_address %>
+  <%= link_to 'Shut down', "/instances/#{@droplet.instance.digitalocean_id}/shutdown", class: "border border-gray-700 text-gray-700 rounded-md px-4 py-2 m-2 transition duration-500 ease select-none hover:text-white hover:bg-gray-800 focus:outline-none focus:shadow-outline" %> 
+  </p>
+
+<% else %>
+  <%= link_to 'Start', "/puzzles/#{@puzzle.id}/start", class: "border border-gray-700 text-gray-700 rounded-md px-4 py-2 m-2 transition duration-500 ease select-none hover:text-white hover:bg-gray-800 focus:outline-none focus:shadow-outline" %> 
+<% end %>
