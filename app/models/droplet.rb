@@ -1,16 +1,19 @@
 class Droplet
-  def initialize(puzzle, instance=nil)
+  def initialize(puzzle, instance, user)
     @puzzle = puzzle
     @instance = instance
+    @user = user
+  end
+
+  def self.from_puzzle(puzzle, user)
+    instance = VmInstance.find_by(puzzle_id: puzzle.id, status: :running, user_id: user.id)
+    Droplet.new(puzzle, instance, user)
   end
 
   def self.from_instance(instance)
     puzzle = Puzzle.find(instance.puzzle_id)
-    Droplet.new(puzzle, instance)
-  end
-
-  def instance
-    @instance ||= find_by(puzzle_id: @puzzle.id, status: :running, user_id: current_user)
+    user = User.find(instance.user_id)
+    Droplet.new(puzzle, instance, user)
   end
 
   def droplet
@@ -45,14 +48,15 @@ class Droplet
       tags: [
         "debugging-school",
         "proxy_id:#{proxy_id}",
-        "user:#{current_user.email}",
+        "user:#{@user.email}",
         "port:#{port}",
       ]
     )
-    do_client.droplets.create(droplet)
+    # reset droplet to be the version from the API
+    @droplet = do_client.droplets.create(droplet)
     VmInstance.create(
-      digitalocean_id: droplet.id,
-      user_id: current_user.id,
+      digitalocean_id: @droplet.id,
+      user_id: @user.id,
       proxy_id: proxy_id,
       gotty_port: port,
       puzzle_id: @puzzle.id,

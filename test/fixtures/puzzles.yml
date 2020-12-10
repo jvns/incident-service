@@ -3,7 +3,9 @@
 one:
   title: MyString
   cloud_init: MyText
+  id: 1
 
 two:
   title: MyString
   cloud_init: MyText
+  id: 2

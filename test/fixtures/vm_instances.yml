@@ -4,7 +4,7 @@ one:
   digitalocean_id: MyString
   user_id: 1
   proxy_id: MyString
-  puzzle_id: 1
+  puzzle_id: 3
   status: :terminated
   gotty_port: 2000
 
@@ -12,6 +12,6 @@ two:
   digitalocean_id: MyString
   user_id: 2
   proxy_id: MyString
-  puzzle_id: 1
+  puzzle_id: 4
   status: :terminated
   gotty_port: 3000

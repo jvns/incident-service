@@ -9,7 +9,9 @@ class VmInstanceController < ApplicationController
 
   def create
     puzzle = Puzzle.find(params[:puzzle_id])
-    droplet = Droplet.launch(puzzle)
+    droplet = Droplet.from_puzzle(puzzle, current_user)
+    droplet.launch
+    redirect_to '/'
   end
 
   def destroy
