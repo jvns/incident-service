@@ -10,24 +10,21 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
-	"os"
 	"time"
 )
 
-var PORT = 9000
-
 func readMapping() map[string]int {
-	var mappingFile = "../mapping.json"
-	jsonFile, err := os.Open(mappingFile)
-	if err != nil {
-		log.Fatal(err)
-	}
-	byteValue, err := ioutil.ReadAll(jsonFile)
+    resp, err := http.Get("http://localhost:3000/running_instances")
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer resp.Body.Close()
+    body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
 	var mapping map[string]int
-	json.Unmarshal(byteValue, &mapping)
+	json.Unmarshal(body, &mapping)
 	return mapping
 }
 
