@@ -3,20 +3,18 @@ class VmInstanceController < ApplicationController
   skip_before_action :authenticate_user!, only: :show_all_json
   def show
     puzzle = Puzzle.find(params[:puzzle_id])
-    @instance = VmInstance.find_by(puzzle_id: puzzle.id, status: :running)
-    if @instance.nil?
-      @instance = create_instance(puzzle)
-    elsif get_droplet(@instance).nil?
-      # guess it died, mark the instance terminated
-      @instance.terminated!
-      @instance = create_instance(puzzle)
-    end
-    start_gotty(@instance)
+    @instance = VMInstance.running_instance(puzzle)
+    redirect_to puzzle if @instance.nil?
   end
 
   def create
     puzzle = Puzzle.find(params[:puzzle_id])
-    create_instance(puzzle)
+    instance = VmInstance.launch(puzzle)
+    start_gotty(instance)
+  end
+
+  def destroy
+    instance = VmInstance.find(params[:digitalocean_id])
   end
 
   def show_all_json
@@ -27,41 +25,6 @@ class VmInstanceController < ApplicationController
   end
 
   private
-
-  def create_instance(puzzle)
-    my_ssh_keys = do_client.ssh_keys.all.collect {|key| key.fingerprint}
-    name = puzzle.title.gsub(' ', '-').downcase + '-' + SecureRandom.base36(10)
-    proxy_id = SecureRandom.base36(30)
-    port = SecureRandom.rand(2000..5000) # TODO; this won't scale
-    droplet = DropletKit::Droplet.new(
-      name: name,
-      region: 'nyc3',
-      size: "s-1vcpu-1gb",
-      ssh_keys: my_ssh_keys,
-      image: "ubuntu-20-04-x64",
-      backups: false,
-      ipv6: true,
-      user_data: puzzle.cloud_init,
-      tags: [
-        "debugging-school",
-        "proxy_id:#{proxy_id}",
-        "user:#{current_user.email}",
-        "port:#{port}",
-      ]
-    )
-    do_client.droplets.create(droplet)
-    instance = VmInstance.create(
-      digitalocean_id: droplet.id,
-      user_id: current_user.id,
-      proxy_id: proxy_id,
-      gotty_port: port,
-      puzzle_id: puzzle.id,
-      status: :running,
-    )
-    start_gotty(instance)
-    instance
-  end
-
 
   def do_client
     @client ||= DropletKit::Client.new(access_token: ENV['DO_TOKEN'], user_agent: 'custom')
