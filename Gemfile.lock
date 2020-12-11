@@ -96,6 +96,7 @@ GEM
       kartograph (~> 0.2.3)
       resource_kit (~> 0.1.5)
       virtus (~> 1.0.3)
+    ed25519 (1.2.4)
     equalizer (0.0.11)
     erubi (1.10.0)
     faraday (1.1.0)
@@ -254,6 +255,7 @@ DEPENDENCIES
   capybara (>= 2.15)
   devise
   droplet_kit
+  ed25519
   jbuilder (~> 2.7)
   listen (~> 3.2)
   net-ssh
