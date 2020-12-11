@@ -17,6 +17,22 @@ class Droplet
     Droplet.new(puzzle, instance, user)
   end
 
+  def status
+    if ip_address.nil?
+      instance.terminated!
+    else
+      begin
+        sess = Net::SSH.start(ip_address, 'wizard', :keys => [ "wizard.key" ], timeout: 0.2)
+        sess.exec!('ls')
+        instance.running!
+      rescue Net::SSH::ConnectionTimeout
+        # probably the instance just didn't start yet, let's say it's pending
+        instance.pending!
+      end
+    end
+    instance.status
+  end
+
   def droplet
     return unless instance
     begin
