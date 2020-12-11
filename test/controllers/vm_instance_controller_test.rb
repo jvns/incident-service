@@ -48,15 +48,32 @@ class VmInstanceControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  def mock_timeout_ssh_connection
+    ssh_conn = Minitest::Mock.new
+    raises_exception = ->(a,b,c) { raise Net::SSH::ConnectionTimeout }
+    Net::SSH.stub :start, raises_exception do
+      yield
+    end
+  end
+
   test "status is pending right after instance started" do
-    
     get '/puzzles/1/start'
-    mock_successful_ssh_connection do
+    mock_timeout_ssh_connection do
       get '/instances/220816290/status'
     end
     assert_response :success
     assert_equal({"status" => "pending"}, response.parsed_body)
   end
+
+  test "status is successful after a successful ssh connection" do
+    get '/puzzles/1/start'
+    mock_successful_ssh_connection do
+      get '/instances/220816290/status'
+    end
+    assert_response :success
+    assert_equal({"status" => "running"}, response.parsed_body)
+  end
+
 
 
 

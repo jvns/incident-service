@@ -17,12 +17,17 @@ class VmInstanceController < ApplicationController
   def status
     instance = VmInstance.find_by(digitalocean_id: params[:digitalocean_id])
     droplet = Droplet.from_instance(instance)
-
-    begin
-      sess = Net::SSH.start(droplet.ip_address, 'wizard', :keys => [ "wizard.key" ], timeout: 0.2)
-      sess.exec!('ls')
-    rescue Net::SSH::ConnectionTimeout
+    if droplet.ip_address.nil?
       instance.terminated!
+    else
+      begin
+        sess = Net::SSH.start(droplet.ip_address, 'wizard', :keys => [ "wizard.key" ], timeout: 0.2)
+        sess.exec!('ls')
+        instance.running!
+      rescue Net::SSH::ConnectionTimeout
+        # probably the instance just didn't start yet, let's say it's pending
+        instance.pending!
+      end
     end
     render :json => {status: instance.status} 
   end
