@@ -77,7 +77,12 @@ class Droplet
   end
 
   def ip_address
-    droplet.networks.v4.find{|x| x.type == 'public'}.ip_address
+    begin
+      droplet.networks.v4.find{|x| x.type == 'public'}.ip_address
+    rescue
+      # todo: maybe improve error handling here?
+    end
+    
   end
 
   private

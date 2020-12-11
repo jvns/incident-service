@@ -16,6 +16,14 @@ class VmInstanceController < ApplicationController
 
   def status
     instance = VmInstance.find_by(digitalocean_id: params[:digitalocean_id])
+    droplet = Droplet.from_instance(instance)
+
+    begin
+      sess = Net::SSH.start(droplet.ip_address, 'wizard', :keys => [ "wizard.key" ], timeout: 0.2)
+      sess.exec!('ls')
+    rescue Net::SSH::ConnectionTimeout
+      instance.terminated!
+    end
     render :json => {status: instance.status} 
   end
 

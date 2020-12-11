@@ -1,7 +1,9 @@
 require 'test_helper'
+require 'net/ssh/test'
 
 class VmInstanceControllerTest < ActionDispatch::IntegrationTest
   include Warden::Test::Helpers
+  include Net::SSH::Test
   setup do
     @instance = vm_instances(:one)
     @puzzle = puzzles(:one)
@@ -37,9 +39,21 @@ class VmInstanceControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to puzzle_url(@puzzle)
   end
 
+  def mock_successful_ssh_connection
+    ssh_conn = Minitest::Mock.new
+    # this String thing works here because String === 'ls', what the heck! interesting!
+    ssh_conn.expect(:exec!, "some command output", args=[String])
+    Net::SSH.stub :start, ssh_conn do
+      yield
+    end
+  end
+
   test "status is pending right after instance started" do
+    
     get '/puzzles/1/start'
-    get '/instances/220816290/status'
+    mock_successful_ssh_connection do
+      get '/instances/220816290/status'
+    end
     assert_response :success
     assert_equal({"status" => "pending"}, response.parsed_body)
   end
