@@ -74,14 +74,28 @@ class VmInstanceControllerTest < ActionDispatch::IntegrationTest
     assert_equal({"status" => "running"}, response.parsed_body)
   end
 
-
-
-
   test "can show a puzzle after starting it" do
     get '/puzzles/1/start'
     instance = VmInstance.find_by(status: :pending)
     instance.running! # force instance to running, TODO: add an actual mechanism for this to happen
     get '/puzzles/1/play'
     assert_response :success
+  end
+
+  test "instance list is empty right after puzzle starts" do
+    get '/puzzles/1/start'
+    get '/instances'
+    assert_response :success
+    assert_equal({}, response.parsed_body)
+  end
+
+  test "listing instances works" do
+
+    get '/puzzles/1/start'
+    mock_successful_ssh_connection do
+      get '/instances/220816290/status'
+    end
+    get '/instances'
+    assert_equal(1, response.parsed_body.size)
   end
 end

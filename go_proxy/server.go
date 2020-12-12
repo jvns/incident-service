@@ -14,7 +14,7 @@ import (
 )
 
 func readMapping() map[string]int {
-    resp, err := http.Get("http://localhost:3000/running_instances")
+    resp, err := http.Get("http://localhost:3000/instances")
     if err != nil {
         log.Fatal(err)
     }

@@ -1,6 +1,14 @@
 require 'open3'
 class VmInstanceController < ApplicationController
-  skip_before_action :authenticate_user!, only: :show_all_json
+  skip_before_action :authenticate_user!, only: :index
+
+  def index
+    raise 'only local allowed' unless request.local?
+    instances = VmInstance.where(status: :running)
+    result = instances.map { |instance| [instance.proxy_id, instance.gotty_port] }.to_h
+    render :json => result 
+  end
+
   def show
     puzzle = Puzzle.find(params[:puzzle_id])
     @instance = Droplet.from_puzzle(puzzle, current_user).instance
@@ -15,13 +23,13 @@ class VmInstanceController < ApplicationController
   end
 
   def status
-    instance = VmInstance.find_by(digitalocean_id: params[:digitalocean_id])
+    instance = instance_scope.find_by(digitalocean_id: params[:digitalocean_id])
     droplet = Droplet.from_instance(instance)
     render :json => {status: droplet.status} 
   end
 
   def destroy
-    instance = VmInstance.find_by(digitalocean_id: params[:digitalocean_id])
+    instance = instance_scope.find_by(digitalocean_id: params[:digitalocean_id])
     puzzle = Puzzle.find(instance.puzzle_id)
     droplet = Droplet.from_instance(instance)
     droplet.destroy!
@@ -29,10 +37,10 @@ class VmInstanceController < ApplicationController
     redirect_to puzzle
   end
 
-  def show_all_json
-    raise 'only local allowed' unless request.local?
-    instances = VmInstance.where(status: :running)
-    result = instances.map { |instance| [instance.proxy_id, instance.gotty_port] }.to_h
-    render :json => result 
+  private
+
+  def instance_scope
+    VmInstance.where(user_id: current_user.id)
   end
+  
 end
