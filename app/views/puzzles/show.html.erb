@@ -1,7 +1,27 @@
 <p id="notice"><%= notice %></p>
 
-<h1 class="text-4xl mb-8"><%=@puzzle.title %></h1>
+<script>
+const application = Stimulus.Application.start();
 
+class HelloController extends Stimulus.Controller {
+  static get targets() {
+    return ["output"];
+  }
+  
+  connect(){
+    console.log('hi stimulus');
+    fetch("/instances/<%=@droplet.instance.digitalocean_id%>/status")
+      .then(response => response.json())
+      .then(data => this.outputTarget.innerText = data['status']);
+  }
+};
+
+application.register("hello", HelloController);
+</script>
+<h1 class="text-4xl mb-8"><%=@puzzle.title %></h1>
+ <div data-controller="hello">
+   <div data-target="hello.output"></div>
+ </div>
 
 <% if @droplet.instance %>
 
