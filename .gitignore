@@ -33,3 +33,4 @@ mapping.json
 connect.rb
 wizard.key*
 gotty
+public/tailwind.css

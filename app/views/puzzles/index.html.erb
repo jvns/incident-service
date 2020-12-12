@@ -1,24 +1,14 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Puzzles</h1>
+<h1 class="text-4xl mb-8">Puzzles</h1>
 
 <table>
-  <thead>
-    <tr>
-      <th>Title</th>
-      <th>Cloud init</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
   <tbody>
     <% @puzzles.each do |puzzle| %>
       <tr>
-        <td><%= puzzle.title %></td>
-        <td><%= puzzle.cloud_init %></td>
-        <td><%= link_to 'Show', puzzle %></td>
-        <td><%= link_to 'Edit', edit_puzzle_path(puzzle) %></td>
-        <td><%= link_to 'Destroy', puzzle, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td class="pr-4"><%= link_to puzzle.title, puzzle  %></td>
+        <td><%= link_to 'Edit', edit_puzzle_path(puzzle), class: 'btn bg-purple-600' %></td>
+        <td><%= link_to 'Delete', puzzle, class: 'btn bg-red-600', method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
@@ -26,4 +16,6 @@
 
 <br>
 
-<%= link_to 'New Puzzle', new_puzzle_path %>
+<div class="mt-16">
+<%= link_to 'New Puzzle', new_puzzle_path, class: 'btn' %>
+</div>
