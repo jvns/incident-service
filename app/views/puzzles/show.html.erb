@@ -19,17 +19,19 @@ class HelloController extends Stimulus.Controller {
 application.register("hello", HelloController);
 </script>
 <h1 class="text-4xl mb-8"><%=@puzzle.title %></h1>
- <div data-controller="hello">
-   <div data-target="hello.output"></div>
- </div>
 
-<% if @droplet.instance %>
+<% if @droplet.instance and @droplet.instance.status == 'running' %>
 
   <p>
   Running instance: <%= @droplet.ip_address %>
   <%= link_to 'Shut down', "/instances/#{@droplet.instance.digitalocean_id}/shutdown", class: "border border-gray-700 text-gray-700 rounded-md px-4 py-2 m-2 transition duration-500 ease select-none hover:text-white hover:bg-gray-800 focus:outline-none focus:shadow-outline" %> 
   </p>
 
+<% elsif @droplet.instance&.status == 'running' %>
+ <div data-controller="hello">
+   <svg width="40px" data-hello-target="pending" version="1.1" id="L9" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve"> <path fill="#000" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50"> <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="360 50 50" repeatCount="indefinite" /> </path> </svg>
+   <div data-hello-target="output"></div>
+ </div>
 <% else %>
   <%= link_to 'Start', "/puzzles/#{@puzzle.id}/start", class: "border border-gray-700 text-gray-700 rounded-md px-4 py-2 m-2 transition duration-500 ease select-none hover:text-white hover:bg-gray-800 focus:outline-none focus:shadow-outline" %> 
 <% end %>
