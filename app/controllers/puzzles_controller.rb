@@ -16,6 +16,9 @@ class PuzzlesController < ApplicationController
     @puzzle = Puzzle.find(params[:id])
     @droplet = Droplet.from_puzzle(@puzzle, current_user)
     @instance = @droplet.instance
+    if @instance.running?
+      @droplet.start_gotty
+    end
   end
 
   # GET /puzzles/new
