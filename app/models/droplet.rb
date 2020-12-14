@@ -30,6 +30,9 @@ class Droplet
         instance.pending!
       end
     end
+    if instance.running
+      start_gotty
+    end
     instance.status
   end
 
