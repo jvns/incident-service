@@ -1,6 +1,9 @@
 
+<h2 class="text-2xl py-8"> instances </h2>
+<% if @instances.size == 0 %>
+  No instances!
+<% end %>
 <table>
-  <tr> <td> puzzle id </td> <td></td> <tr>
 <% @instances.each do |instance| %>
   <tr>
     <td><%= instance.puzzle_id %> </td>
@@ -9,3 +12,18 @@
   </tr>
 <% end %>
 </table>
+
+<h2 class="text-2xl py-8"> puzzles </h2>
+
+<table>
+  <tbody>
+    <% @puzzles.each do |puzzle| %>
+      <tr>
+        <td class="pr-4"><%= link_to puzzle.title, puzzle  %></td>
+        <td><%= link_to 'Edit', edit_puzzle_path(puzzle), class: 'btn' %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+

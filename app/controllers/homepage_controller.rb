@@ -5,5 +5,6 @@ class HomepageController < ApplicationController
 
   def admin
     @instances = VmInstance.where.not(status: :terminated).all
+    @puzzles = Puzzle.all
   end
 end
