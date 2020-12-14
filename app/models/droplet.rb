@@ -7,7 +7,7 @@ class Droplet
   attr_accessor :instance
 
   def self.from_puzzle(puzzle, user)
-    instance = VmInstance.find_by(puzzle_id: puzzle.id, status: :running, user_id: user.id)
+    instance = VmInstance.where(puzzle_id: puzzle.id, user_id: user.id).where.not( status: :terminated).first
     Droplet.new(puzzle, instance, user)
   end
 
