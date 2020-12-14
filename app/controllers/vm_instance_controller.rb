@@ -9,12 +9,6 @@ class VmInstanceController < ApplicationController
     render :json => result 
   end
 
-  def show
-    puzzle = Puzzle.find(params[:puzzle_id])
-    @instance = Droplet.from_puzzle(puzzle, current_user).instance
-    redirect_to puzzle if @instance.nil?
-  end
-
   def create
     puzzle = Puzzle.find(params[:puzzle_id])
     droplet = Droplet.from_puzzle(puzzle, current_user)

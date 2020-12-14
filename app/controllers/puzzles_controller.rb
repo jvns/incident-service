@@ -15,6 +15,7 @@ class PuzzlesController < ApplicationController
   def show
     @puzzle = Puzzle.find(params[:id])
     @droplet = Droplet.from_puzzle(@puzzle, current_user)
+    @instance = @droplet.instance
   end
 
   # GET /puzzles/new

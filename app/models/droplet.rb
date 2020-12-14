@@ -20,14 +20,15 @@ class Droplet
   def status
     if ip_address.nil?
       instance.terminated!
-    else
+    elsif instance.pending?
       begin
         sess = Net::SSH.start(ip_address, 'wizard', :keys => [ "wizard.key" ], timeout: 0.2)
         sess.exec!('ls')
+        instance.waiting_for_start_script!
+        sess.exec!('bash files/run.sh')
         instance.running!
       rescue Net::SSH::ConnectionTimeout
-        # probably the instance just didn't start yet, let's say it's pending
-        instance.pending!
+        # probably the instance just didn't start yet, let's continue to say it's pending
       end
     end
     if instance.running?
