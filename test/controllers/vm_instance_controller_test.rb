@@ -31,18 +31,14 @@ class VmInstanceControllerTest < ActionDispatch::IntegrationTest
     assert_difference('VmInstance.count') do
       get '/puzzles/1/start'
     end
-    assert_redirected_to '/puzzles/1/play'
-  end
-
-  test "can't show a puzzle before starting it" do
-    get '/puzzles/1/play'
-    assert_redirected_to puzzle_url(@puzzle)
+    assert_redirected_to '/puzzles/1/'
   end
 
   def mock_successful_ssh_connection
     ssh_conn = Minitest::Mock.new
     # this String thing works here because String === 'ls', what the heck! interesting!
-    ssh_conn.expect(:exec!, "some command output", args=[String])
+    ssh_conn.expect(:exec!, "some command output", args=['ls'])
+    ssh_conn.expect(:exec!, "some command output", args=['bash files/run.sh'])
     Net::SSH.stub :start, ssh_conn do
       yield
     end
@@ -74,14 +70,6 @@ class VmInstanceControllerTest < ActionDispatch::IntegrationTest
     assert_equal({"status" => "running"}, response.parsed_body)
   end
 
-  test "can show a puzzle after starting it" do
-    get '/puzzles/1/start'
-    instance = VmInstance.find_by(status: :pending)
-    instance.running! # force instance to running, TODO: add an actual mechanism for this to happen
-    get '/puzzles/1/play'
-    assert_response :success
-  end
-
   test "instance list is empty right after puzzle starts" do
     get '/puzzles/1/start'
     get '/instances'
@@ -98,4 +86,11 @@ class VmInstanceControllerTest < ActionDispatch::IntegrationTest
     get '/instances'
     assert_equal(1, response.parsed_body.size)
   end
+
+  test "admin page works" do
+    get '/admin'
+    assert_response :success
+  end
+
+
 end
