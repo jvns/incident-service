@@ -106,7 +106,7 @@ class Droplet
 
   private
 
-  def gotty_running
+  def gotty_running?
     gotty_process = `ps aux`.split("\n").find do |x| 
       x.include?('gotty') and x.include?(ip_address)
     end
