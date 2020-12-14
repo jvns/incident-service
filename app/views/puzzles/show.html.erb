@@ -4,15 +4,35 @@
 const application = Stimulus.Application.start();
 
 class HelloController extends Stimulus.Controller {
+  static classes = [ "invisible" ]
+  static digitalocean_id = <%= @droplet.instance&.digitalocean_id  || 0 %>;
+
   static get targets() {
-    return ["output"];
+    return ["output", "loading"];
   }
   
+  // going to try to keep erb-templated-js to a minimum but this seems ok I think?
+  check_if_running() {
+    console.log('hi')
+    fetch(`/instances/${digitalocean_id}/status`)
+      .then(response => response.json())
+      .then(data => {
+        let state = data['status'];
+        if (state == 'running') {
+          this.loadingTarget.classList.add("hidden");
+          this.outputTarget.innerText = state;
+        } else {
+          // try again in 200ms
+          setTimeout(this.check_if_running, 500)
+        }
+      })
+  }
+
   connect(){
     console.log('hi stimulus');
-    fetch("/instances/<%=@droplet.instance.digitalocean_id%>/status")
-      .then(response => response.json())
-      .then(data => this.outputTarget.innerText = data['status']);
+    if (digitalocean_id != 0) {
+      this.check_if_running();
+    }
   }
 };
 
