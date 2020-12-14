@@ -27,8 +27,7 @@ class VmInstanceController < ApplicationController
     puzzle = Puzzle.find(instance.puzzle_id)
     droplet = Droplet.from_instance(instance)
     droplet.destroy!
-    instance.terminated!
-    redirect_to puzzle
+    redirect_to '/admin'
   end
 
   private

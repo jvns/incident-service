@@ -31,7 +31,7 @@ body {
 </style>
 
 <div class="flex w-full text-orange-600 leading-none py-4 bg-green-100 border-b-2 border-black">
-  <span class="text-3xl px-8">exploding computer puzzles</span>
+  <a href='/'><span class="text-3xl px-8">exploding computer puzzles</span></a>
   <% if user_signed_in? %>
     <span class="flex-grow text-right px-8 leading-2" > signed in as <%= current_user.email %> (<%= link_to "sign out", destroy_user_session_path, method: :get, class: "underline" %>)</span>
   <% else %>

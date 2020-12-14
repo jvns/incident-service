@@ -51,7 +51,7 @@ class Droplet
 
   def destroy!
     do_client.droplets.delete(id: droplet.id.to_i)
-
+    instance.terminated!
   end
 
   def launch
