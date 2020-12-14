@@ -19,7 +19,7 @@ class VmInstanceController < ApplicationController
     puzzle = Puzzle.find(params[:puzzle_id])
     droplet = Droplet.from_puzzle(puzzle, current_user)
     droplet.launch
-    redirect_to "/puzzles/#{puzzle.id}/play"
+    redirect_to "/puzzles/#{puzzle.id}/"
   end
 
   def status
