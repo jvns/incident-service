@@ -1,0 +1,11 @@
+
+<table>
+  <tr> <td> puzzle id </td> <td></td> <tr>
+<% @instances.each do |instance| %>
+  <tr>
+    <td><%= instance.puzzle_id %> </td>
+    <td class="p-4"> <%= link_to 'Shut down', "/instances/#{instance.digitalocean_id}/shutdown", class: "border border-gray-700 text-gray-700 rounded-md px-4 py-2 m-2 transition duration-500 ease select-none hover:text-white hover:bg-gray-800 focus:outline-none focus:shadow-outline" %>  
+    </td>
+  </tr>
+<% end %>
+</table>
