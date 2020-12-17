@@ -46,7 +46,7 @@ class HelloController extends Stimulus.Controller {
     this.permissionGottenTarget.classList.remove('hidden');
   }
   request_permission() {
-    Notification.requestPermission().then(function(permission) { 
+    Notification.requestPermission().then((permission) => { 
       console.log('got permission')
       this.permission_gotten();
     });
