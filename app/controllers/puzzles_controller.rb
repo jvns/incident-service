@@ -2,7 +2,7 @@ require 'droplet_kit'
 require 'open3'
 
 class PuzzlesController < ApplicationController
-  before_action :set_puzzle, only: [:show, :edit, :update, :destroy]
+  before_action :set_puzzle, only: [:show, :edit, :update, :destroy, :finished]
 
   # GET /puzzles
   # GET /puzzles.json
@@ -44,6 +44,12 @@ class PuzzlesController < ApplicationController
         format.json { render json: @puzzle.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def finished
+    @puzzle
+    PuzzleStatus.create(user_id: current_user.id, puzzle_id:@puzzle.id, finished: true)
+    redirect_to '/'
   end
 
   # PATCH/PUT /puzzles/1

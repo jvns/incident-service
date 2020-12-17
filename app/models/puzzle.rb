@@ -2,5 +2,5 @@ class Puzzle < ApplicationRecord
   def to_param
     "#{id}-#{title.parameterize}"
   end
-  has_many :puzzle_statuses
+  has_many :puzzle_statuses, dependent: :destroy 
 end

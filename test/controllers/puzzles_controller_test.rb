@@ -34,6 +34,12 @@ class PuzzlesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "can finish puzzle" do
+    get '/puzzles/1/finished'
+    assert_redirected_to '/'
+  end
+
+
   test "should get edit" do
     get edit_puzzle_url(@puzzle)
     assert_response :success

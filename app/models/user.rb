@@ -11,5 +11,5 @@ class User < ActiveRecord::Base
         user.password = Devise.friendly_token[0,20]
       end
   end
-  has_many :puzzle_statuses
+  has_many :puzzle_statuses, dependent: :destroy 
 end
