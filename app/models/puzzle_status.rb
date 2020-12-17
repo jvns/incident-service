@@ -1,0 +1,2 @@
+class PuzzleStatus < ApplicationRecord
+end

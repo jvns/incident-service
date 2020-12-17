@@ -65,6 +65,10 @@ application.register("hello", HelloController);
 <h1 class="text-4xl mb-8"><%=@puzzle.title %></h1>
 
 <% if @instance&.status == 'running' %>
+  <div class="py-8">
+  <%= link_to '← Back to puzzles', '/', class: 'btn block' %>
+  <%= link_to "I'm finished!", "/puzzles/#{@puzzle.id}/finished", class: 'btn block' %>
+  </div>
     <div class="w-full" style="height: 500px">
       <iframe src="/proxy/<%=@instance.proxy_id%>/" title="description" height="100%" width="100%"> </iframe>
     </div>
