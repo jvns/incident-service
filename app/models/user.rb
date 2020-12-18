@@ -11,5 +11,9 @@ class User < ActiveRecord::Base
         user.password = Devise.friendly_token[0,20]
       end
   end
+
+  def admin?
+    self.email == 'julia@jvns.ca'
+  end
   has_many :puzzle_statuses, dependent: :destroy 
 end
