@@ -18,6 +18,7 @@ class Droplet
   end
 
   def status
+    return nil unless instance
     if ip_address.nil?
       instance.terminated!
     elsif instance.pending?
