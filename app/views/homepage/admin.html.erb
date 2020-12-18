@@ -21,6 +21,11 @@
     <% @puzzles.each do |puzzle| %>
         <div class="col-start-1 my-4"><%= link_to puzzle.title, puzzle  %></div>
         <div class="col-start-2 my-4"><%= link_to 'Edit', edit_puzzle_path(puzzle), class: 'btn' %></div>
+        <% if puzzle.published? %>
+          <div class="col-start-2 my-4"><%= link_to 'Publish', "/puzzles/#{puzzle.id}/unpublish", class: 'btn' %></div>
+        <% else %>
+          <div class="col-start-2 my-4"><%= link_to 'Publish', "/puzzles/#{puzzle.id}/publish", class: 'btn' %></div>
+        <% end %>
     <% end %>
       </div>
   </tbody>

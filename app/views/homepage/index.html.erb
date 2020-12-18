@@ -3,6 +3,7 @@
 
 <div class="grid auto-cols-max">
     <% @puzzles.each do |puzzle| %>
+      <% if puzzle.published? %>
         <span class="p-2 mb-4 mr-4 underline col-start-1">
           <%= link_to puzzle.title, puzzle  %>
         </span>
@@ -17,6 +18,7 @@
             <%= link_to 'Start', "/puzzles/#{puzzle.id}/start", class: "m-auto rounded-full px-4 mr-2 border-2 border-black text-black p-2 rounded  leading-none flex text-center items-center" %> 
           <% end %>
         </div>
+      <% end %>
     <% end %>
 
 </div>

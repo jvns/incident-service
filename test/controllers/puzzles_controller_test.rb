@@ -39,6 +39,13 @@ class PuzzlesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to '/'
   end
 
+  test "can publish puzzle" do
+    get '/puzzles/1/publish'
+    assert_redirected_to '/admin'
+    assert Puzzle.find(1).published
+  end
+
+
 
   test "should get edit" do
     get edit_puzzle_url(@puzzle)

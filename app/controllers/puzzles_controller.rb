@@ -2,7 +2,7 @@ require 'droplet_kit'
 require 'open3'
 
 class PuzzlesController < ApplicationController
-  before_action :set_puzzle, only: [:show, :edit, :update, :destroy, :finished]
+  before_action :set_puzzle, only: [:show, :edit, :update, :destroy, :finished, :publish, :unpublish]
 
   # GET /puzzles
   # GET /puzzles.json
@@ -47,9 +47,20 @@ class PuzzlesController < ApplicationController
   end
 
   def finished
-    @puzzle
     PuzzleStatus.create(user_id: current_user.id, puzzle_id:@puzzle.id, finished: true)
     redirect_to '/'
+  end
+
+  def publish
+    @puzzle.published = true
+    @puzzle.save
+    redirect_to '/admin'
+  end
+
+  def unpublish
+    @puzzle.published = false
+    @puzzle.save
+    redirect_to '/admin'
   end
 
   # PATCH/PUT /puzzles/1
