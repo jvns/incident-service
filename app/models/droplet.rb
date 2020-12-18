@@ -58,7 +58,7 @@ class Droplet
 
   def launch
     my_ssh_keys = do_client.ssh_keys.all.collect {|key| key.fingerprint}
-    name = @puzzle.title.downcase.gsub(/[^a-z]/, '-') + SecureRandom.base36(10)
+    name = @puzzle.title.downcase.gsub(/[^a-z0-9]/, '-') + SecureRandom.base36(10)
     proxy_id = SecureRandom.base36(30)
     port = SecureRandom.rand(2000..5000) # TODO; this won't scale
     droplet = DropletKit::Droplet.new(
