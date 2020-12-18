@@ -26,7 +26,8 @@ class Droplet
         sess = Net::SSH.start(ip_address, 'wizard', :keys => [ "wizard.key" ], timeout: 0.2)
         sess.exec!('ls')
         instance.waiting_for_start_script!
-        sess.exec!('bash files/run.sh')
+        sess.exec!('sudo bash files/run.sh')
+        sess.exec!('sudo rm files/run.sh')
         instance.running!
       rescue Net::SSH::ConnectionTimeout
         # probably the instance just didn't start yet, let's continue to say it's pending

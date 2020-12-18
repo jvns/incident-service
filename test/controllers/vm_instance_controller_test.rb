@@ -36,9 +36,9 @@ class VmInstanceControllerTest < ActionDispatch::IntegrationTest
 
   def mock_successful_ssh_connection
     ssh_conn = Minitest::Mock.new
-    # this String thing works here because String === 'ls', what the heck! interesting!
     ssh_conn.expect(:exec!, "some command output", args=['ls'])
-    ssh_conn.expect(:exec!, "some command output", args=['bash files/run.sh'])
+    ssh_conn.expect(:exec!, "some command output", args=['sudo bash files/run.sh'])
+    ssh_conn.expect(:exec!, "some command output", args=['sudo rm files/run.sh'])
     Net::SSH.stub :start, ssh_conn do
       yield
     end
