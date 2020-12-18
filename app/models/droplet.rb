@@ -29,6 +29,8 @@ class Droplet
         sess.exec!('sudo bash files/run.sh')
         sess.exec!('sudo rm files/run.sh')
         instance.running!
+      rescue Errno::ECONNREFUSED 
+        # probably the instance just didn't start yet, let's continue to say it's pending
       rescue Net::SSH::ConnectionTimeout
         # probably the instance just didn't start yet, let's continue to say it's pending
       end
@@ -94,7 +96,7 @@ class Droplet
       puts "gotty is already running, not starting another one"
       return
     else
-      _, _, _, thread = Open3.popen3("./gotty", "-w", "-ws-origin", "https://debugging-school-test2.jvns.ca", "-p", instance.gotty_port.to_s, "ssh", "-i", "wizard.key", "wizard@#{ip_address}")
+      _, _, _, thread = Open3.popen3("./gotty", "-w", "-ws-origin", "https://exploding-computers.jvns.ca", "-p", instance.gotty_port.to_s, "ssh", "-i", "wizard.key", "wizard@#{ip_address}")
     end
   end
 
