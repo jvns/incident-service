@@ -1,11 +1,14 @@
 <p class="py-8">Hello! Here are some puzzles: </p>
 
+
+<div class="grid auto-cols-max">
     <% @puzzles.each do |puzzle| %>
-      <div class="mt-8">
-      <span class="p-4 border border-black">
-        <%= link_to puzzle.title, puzzle  %>
-      </span>
+      <div class="flex flex-row mt-4">
+        <div class="w-4 flex pr-8"><% if puzzle.finished?(current_user) %> <div class="m-auto">✔️  </div><% end %> </div>
+        <span class="p-2 border border-black">
+          <%= link_to puzzle.title, puzzle  %>
+        </span>
       </div>
     <% end %>
 
-
+</div>
