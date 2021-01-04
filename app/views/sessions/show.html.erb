@@ -13,14 +13,7 @@ class HelloController extends Stimulus.Controller {
   // going to try to keep erb-templated-js to a minimum but this seems ok I think?
   check_if_running() {
     console.log('checking running...')
-    var digitalocean_id = <%= @session&.digitalocean_id  || 0 %>;
-    if (digitalocean_id == 0) {
-      if (this.checkTimer) {
-        clearInterval(this.checkTimer);
-      }
-      return;
-    }
-    fetch(`/sessions/${digitalocean_id}/status`)
+    fetch(`/sessions/<%= @session.id %>/`, {headers: {"Accept": "application/json"}} )
       .then(response => response.json())
       .then(data => {
         console.log("i'm here.. ")
@@ -64,7 +57,7 @@ application.register("hello", HelloController);
 </script>
 <h1 class="text-4xl mb-8"><%=@session.puzzle.title %></h1>
 
-<% if @session&.status == 'running' %>
+<% if @session.status == 'running' %>
   <div class="py-8">
   <%= link_to '← Back to puzzles', '/', class: 'btn' %>
   <%= link_to "I'm finished!", "/puzzles/#{@puzzle.id}/finished", class: 'btn' %>
@@ -78,7 +71,7 @@ application.register("hello", HelloController);
   <script>
   </script>
  </div>
-<% elsif @session&.status == 'pending' %>
+<% elsif @session.status == 'pending' %>
  <div data-controller="hello">
    <div data-hello-target="pending">
      <p class="text-2xl">Waiting for puzzle virtual machine to start... (takes about a minute)</p>
@@ -96,5 +89,4 @@ application.register("hello", HelloController);
    </div>
  </div>
 <% else %>
-  <%= link_to 'Start', "/puzzles/#{@puzzle.id}/start", class: "border border-gray-700 text-gray-700 rounded-md px-4 py-2 m-2 transition duration-500 ease select-none hover:text-white hover:bg-gray-800 focus:outline-none focus:shadow-outline" %> 
 <% end %>

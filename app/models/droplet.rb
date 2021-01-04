@@ -1,18 +1,13 @@
 require 'open3'
 class Droplet
-  def initialize(puzzle, session)
-    @puzzle = puzzle
+  def initialize(session)
     @session = session
   end
   attr_accessor :session
 
   def self.from_puzzle(puzzle, user)
     session = Session.where(puzzle_id: puzzle.id, user_id: user.id).where.not( status: :terminated).first
-    Droplet.new(puzzle, session)
-  end
-
-  def self.from_session(session)
-    Droplet.new(session.puzzle, session)
+    Droplet.new(session)
   end
 
   def status
@@ -52,12 +47,12 @@ class Droplet
   end
 
   def destroy!
-    do_client.droplets.delete(id: droplet.id.to_i)
+    do_client.droplets.delete(id: session.digitalocean_id)
   end
 
   def launch!
     my_ssh_keys = do_client.ssh_keys.all.collect {|key| key.fingerprint}
-    name = @puzzle.title.downcase.gsub(/[^a-z0-9]/, '-') + SecureRandom.base36(10)
+    name = session.puzzle.title.downcase.gsub(/[^a-z0-9]/, '-') + SecureRandom.base36(10)
     droplet = DropletKit::Droplet.new(
       name: name,
       region: 'nyc3',
@@ -66,7 +61,7 @@ class Droplet
       image: "ubuntu-20-04-x64",
       backups: false,
       ipv6: true,
-      user_data: @puzzle.cloud_init,
+      user_data: session.puzzle.cloud_init,
       tags: [
         "debugging-school" # TODO: maybe add more tags here
       ]

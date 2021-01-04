@@ -13,7 +13,7 @@ class SessionsController < ApplicationController
     load_session
     respond_to do |format|
       format.html # show.html.erb
-      format.json { render json: {status: Droplet.from_session(@session).status} }
+      format.json { render json: {status: @session.droplet.status} }
     end
   end
 
