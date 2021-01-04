@@ -14,7 +14,7 @@ import (
 )
 
 func readMapping() map[string]int {
-    resp, err := http.Get("http://localhost:3000/instances")
+    resp, err := http.Get("http://rails:3000/sessions")
     if err != nil {
         log.Fatal(err)
     }
@@ -43,7 +43,7 @@ func main() {
 			w.Write([]byte("no instance"))
 			return
 		}
-		path, err := url.Parse(fmt.Sprintf("http://127.0.0.1:%d/%s", gottyPort, rest))
+		path, err := url.Parse(fmt.Sprintf("http://rails:%d/%s", gottyPort, rest))
 		if err != nil {
 			log.Fatal(err)
 		}

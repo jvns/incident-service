@@ -75,7 +75,12 @@ class Droplet
       puts "gotty is already running, not starting another one"
       return
     else
-      _, _, _, thread = Open3.popen3("./gotty", "-w", "-ws-origin", "https://exploding-computers.jvns.ca", "-p", session.gotty_port.to_s, "ssh", "-i", "wizard.key", "wizard@#{ip_address}")
+      if ENV['RAILS_ENV'] == 'development'
+        url = "https://exploding-puzzles-test.ngrok.io"
+      else
+        url = "https://exploding-computers.jvns.ca"
+      end
+      _, _, _, thread = Open3.popen3("./gotty", "-w", "-ws-origin", url, "-p", session.gotty_port.to_s, "ssh", "-i", "wizard.key", "wizard@#{ip_address}")
     end
   end
 

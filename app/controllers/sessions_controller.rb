@@ -2,7 +2,7 @@ class SessionsController < ApplicationController
   skip_before_action :authenticate_user!, only: :index
 
   def index
-    raise 'only local allowed' unless request.local?
+    raise 'only local allowed' unless request.local? || request.remote_ip.start_with?('172')
     sessions = Session.where(status: :running)
 
     result = sessions.map { |session| [session.proxy_id, session.gotty_port] }.to_h
@@ -11,6 +11,7 @@ class SessionsController < ApplicationController
 
   def show
     load_session
+    @session.droplet.start_gotty!
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: {status: @session.droplet.status} }
