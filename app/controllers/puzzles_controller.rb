@@ -14,11 +14,6 @@ class PuzzlesController < ApplicationController
   # GET /puzzles/1.json
   def show
     @puzzle = Puzzle.find(params[:id])
-    @droplet = Droplet.from_puzzle(@puzzle, current_user)
-    @session = @droplet.session
-    if @session&.running?
-      @droplet.start_gotty
-    end
   end
 
   # GET /puzzles/new
