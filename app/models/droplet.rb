@@ -6,15 +6,13 @@ class Droplet
   attr_accessor :session
 
   def self.from_puzzle(puzzle, user)
-    session = Session.where(puzzle_id: puzzle.id, user_id: user.id).where.not( status: :terminated).first
+    session = Session.where(puzzle_id: puzzle.id, user_id: user.id).first
     Droplet.new(session)
   end
 
   def status
     return nil unless session
-    if ip_address.nil?
-      session.terminated!
-    elsif session.pending?
+    if session.pending?
       begin
         sess = Net::SSH.start(ip_address, 'wizard', :keys => [ "wizard.key" ], timeout: 0.2)
         sess.exec!('ls')
@@ -24,8 +22,10 @@ class Droplet
         session.running!
       rescue Errno::ECONNREFUSED 
         # probably the session just didn't start yet, let's continue to say it's pending
+        session.pending!
       rescue Net::SSH::ConnectionTimeout
         # probably the session just didn't start yet, let's continue to say it's pending
+        session.pending!
       end
     end
     if session.running?
@@ -41,7 +41,6 @@ class Droplet
     rescue 
       # let's assume it was a 404 exception and the session just wasn't found
       # todo: should do something better, what if it's not a 404?
-      session.terminated!
     end
     @droplet
   end
