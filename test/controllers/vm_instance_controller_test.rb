@@ -88,8 +88,16 @@ class VmInstanceControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "admin page works" do
+    @user = users(:julia)
+    @user.save
+    login_as(@user, :scope => :user)
     get '/admin'
     assert_response :success
+  end
+
+  test "admin page redirects for normal users" do
+    get '/admin'
+    assert_redirected_to '/'
   end
 
 
