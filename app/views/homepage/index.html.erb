@@ -15,7 +15,7 @@
           <% elsif  Droplet.from_puzzle(puzzle, current_user)&.status.to_s == 'pending' %>
             <span class="m-auto rounded-full px-4 mr-2 border-2 border-blue-600 text-blue-600 p-2 rounded  leading-none flex items-center">Starting </span>
           <% else %> 
-            <%= link_to 'Start', "/puzzles/#{puzzle.id}/start", class: "m-auto rounded-full px-4 mr-2 border-2 border-black text-black p-2 rounded  leading-none flex text-center items-center" %> 
+            <%= button_to 'Start', sessions_url(puzzle_id: puzzle.id), class: "m-auto rounded-full px-4 mr-2 border-2 border-black text-black p-2 rounded  leading-none flex text-center items-center" %> 
           <% end %>
         </div>
       <% end %>

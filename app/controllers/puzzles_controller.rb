@@ -64,6 +64,7 @@ class PuzzlesController < ApplicationController
   # PATCH/PUT /puzzles/1
   # PATCH/PUT /puzzles/1.json
   def update
+    load_puzzle
     respond_to do |format|
       if @puzzle.update(puzzle_params)
         format.html { redirect_to @puzzle, notice: 'Puzzle was successfully updated.' }

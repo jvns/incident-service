@@ -41,7 +41,7 @@ class SessionsController < ApplicationController
   def destroy
     load_session
     @session.destroy
-    redirect_to sessions_path
+    redirect_to '/admin'
   end
 
   private

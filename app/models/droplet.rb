@@ -22,10 +22,8 @@ class Droplet
         session.running!
       rescue Errno::ECONNREFUSED 
         # probably the session just didn't start yet, let's continue to say it's pending
-        session.pending!
       rescue Net::SSH::ConnectionTimeout
         # probably the session just didn't start yet, let's continue to say it's pending
-        session.pending!
       end
     end
     if session.running?
@@ -46,7 +44,11 @@ class Droplet
   end
 
   def destroy!
-    do_client.droplets.delete(id: session.digitalocean_id)
+    begin
+      do_client.droplets.delete(id: session.digitalocean_id)
+    rescue DropletKit::Error
+      # probably a 404 because that resource doesn't exist, ignore
+    end
   end
 
   def launch!
