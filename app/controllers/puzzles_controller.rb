@@ -2,8 +2,6 @@ require 'droplet_kit'
 require 'open3'
 
 class PuzzlesController < ApplicationController
-  before_action :set_puzzle, only: [:show, :edit, :update, :destroy, :finished, :publish, :unpublish]
-
   # GET /puzzles
   # GET /puzzles.json
   def index
@@ -13,6 +11,7 @@ class PuzzlesController < ApplicationController
   # GET /puzzles/1
   # GET /puzzles/1.json
   def show
+    load_puzzle
     @puzzle = Puzzle.find(params[:id])
   end
 
@@ -23,6 +22,7 @@ class PuzzlesController < ApplicationController
 
   # GET /puzzles/1/edit
   def edit
+    load_puzzle
   end
 
   # POST /puzzles
@@ -42,17 +42,20 @@ class PuzzlesController < ApplicationController
   end
 
   def finished
+    load_puzzle
     PuzzleStatus.create(user_id: current_user.id, puzzle_id:@puzzle.id, finished: true)
     redirect_to '/'
   end
 
   def publish
+    load_puzzle
     @puzzle.published = true
     @puzzle.save
     redirect_to '/admin'
   end
 
   def unpublish
+    load_puzzle
     @puzzle.published = false
     @puzzle.save
     redirect_to '/admin'
@@ -75,6 +78,7 @@ class PuzzlesController < ApplicationController
   # DELETE /puzzles/1
   # DELETE /puzzles/1.json
   def destroy
+    load_puzzle
     @puzzle.destroy
     respond_to do |format|
       format.html { redirect_to puzzles_url, notice: 'Puzzle was successfully destroyed.' }
@@ -84,7 +88,7 @@ class PuzzlesController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_puzzle
+    def load_puzzle
       @puzzle = Puzzle.find(params[:id])
     end
 
