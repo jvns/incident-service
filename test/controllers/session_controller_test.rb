@@ -98,6 +98,4 @@ class SessionControllerTest < ActionDispatch::IntegrationTest
     get '/admin'
     assert_redirected_to '/'
   end
-
-
 end
