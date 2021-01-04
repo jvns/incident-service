@@ -1,68 +1,63 @@
+require 'open3'
 class Droplet
-  def initialize(puzzle, instance, user)
+  def initialize(puzzle, session)
     @puzzle = puzzle
-    @instance = instance
-    @user = user
+    @session = session
   end
-  attr_accessor :instance
+  attr_accessor :session
 
   def self.from_puzzle(puzzle, user)
-    instance = VmInstance.where(puzzle_id: puzzle.id, user_id: user.id).where.not( status: :terminated).first
-    Droplet.new(puzzle, instance, user)
+    session = Session.where(puzzle_id: puzzle.id, user_id: user.id).where.not( status: :terminated).first
+    Droplet.new(puzzle, session)
   end
 
-  def self.from_instance(instance)
-    puzzle = Puzzle.find(instance.puzzle_id)
-    user = User.find(instance.user_id)
-    Droplet.new(puzzle, instance, user)
+  def self.from_session(session)
+    Droplet.new(session.puzzle, session)
   end
 
   def status
-    return nil unless instance
+    return nil unless session
     if ip_address.nil?
-      instance.terminated!
-    elsif instance.pending?
+      session.terminated!
+    elsif session.pending?
       begin
         sess = Net::SSH.start(ip_address, 'wizard', :keys => [ "wizard.key" ], timeout: 0.2)
         sess.exec!('ls')
-        instance.waiting_for_start_script!
+        session.waiting_for_start_script!
         sess.exec!('sudo bash files/run.sh')
         sess.exec!('sudo rm files/run.sh')
-        instance.running!
+        session.running!
       rescue Errno::ECONNREFUSED 
-        # probably the instance just didn't start yet, let's continue to say it's pending
+        # probably the session just didn't start yet, let's continue to say it's pending
       rescue Net::SSH::ConnectionTimeout
-        # probably the instance just didn't start yet, let's continue to say it's pending
+        # probably the session just didn't start yet, let's continue to say it's pending
       end
     end
-    if instance.running?
-      start_gotty
+    if session.running?
+      start_gotty!
     end
-    instance.status
+    session.status
   end
 
   def droplet
-    return unless instance
+    return unless session
     begin
-      @droplet ||= do_client.droplets.find(id: instance.digitalocean_id)
+      @droplet ||= do_client.droplets.find(id: session.digitalocean_id)
     rescue 
-      # let's assume it was a 404 exception and the instance just wasn't found
+      # let's assume it was a 404 exception and the session just wasn't found
       # todo: should do something better, what if it's not a 404?
-      instance.terminated!
+      session.terminated!
     end
     @droplet
   end
 
   def destroy!
     do_client.droplets.delete(id: droplet.id.to_i)
-    instance.terminated!
   end
 
-  def launch
+  def launch!
     my_ssh_keys = do_client.ssh_keys.all.collect {|key| key.fingerprint}
     name = @puzzle.title.downcase.gsub(/[^a-z0-9]/, '-') + SecureRandom.base36(10)
-    proxy_id = SecureRandom.base36(30)
-    port = SecureRandom.rand(2000..5000) # TODO; this won't scale
     droplet = DropletKit::Droplet.new(
       name: name,
       region: 'nyc3',
@@ -73,30 +68,20 @@ class Droplet
       ipv6: true,
       user_data: @puzzle.cloud_init,
       tags: [
-        "debugging-school",
-        "proxy_id:#{proxy_id}",
-        "user:#{@user.email}",
-        "port:#{port}",
+        "debugging-school" # TODO: maybe add more tags here
       ]
     )
     # reset droplet to be the version from the API
-    @droplet = do_client.droplets.create(droplet)
-    VmInstance.create(
-      digitalocean_id: @droplet.id,
-      user_id: @user.id,
-      proxy_id: proxy_id,
-      gotty_port: port,
-      puzzle_id: @puzzle.id,
-      status: :pending,
-    )
+    droplet = do_client.droplets.create(droplet)
+    droplet.id
   end
 
-  def start_gotty
+  def start_gotty!
     if gotty_running?
       puts "gotty is already running, not starting another one"
       return
     else
-      _, _, _, thread = Open3.popen3("./gotty", "-w", "-ws-origin", "https://exploding-computers.jvns.ca", "-p", instance.gotty_port.to_s, "ssh", "-i", "wizard.key", "wizard@#{ip_address}")
+      _, _, _, thread = Open3.popen3("./gotty", "-w", "-ws-origin", "https://exploding-computers.jvns.ca", "-p", session.gotty_port.to_s, "ssh", "-i", "wizard.key", "wizard@#{ip_address}")
     end
   end
 

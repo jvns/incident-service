@@ -5,7 +5,7 @@ class HomepageController < ApplicationController
 
   def admin
     redirect_to '/' unless current_user.admin?
-    @instances = VmInstance.where.not(status: :terminated).all
+    @instances = Session.where.not(status: :terminated).all
     @puzzles = Puzzle.all
   end
 end

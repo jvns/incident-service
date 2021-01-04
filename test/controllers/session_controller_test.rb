@@ -1,11 +1,11 @@
 require 'test_helper'
 require 'net/ssh/test'
 
-class VmInstanceControllerTest < ActionDispatch::IntegrationTest
+class SessionControllerTest < ActionDispatch::IntegrationTest
   include Warden::Test::Helpers
   include Net::SSH::Test
   setup do
-    @instance = vm_instances(:one)
+    @instance = sessions(:one)
     @puzzle = puzzles(:one)
     WebMock.disable_net_connect!
     @user = users(:rishi)
@@ -28,10 +28,10 @@ class VmInstanceControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "starting puzzle should create a vm instance" do
-    assert_difference('VmInstance.count') do
-      get '/puzzles/1/start'
+    assert_difference('Session.count') do
+      post sessions_url, params: { puzzle_id: 1 }
     end
-    assert_redirected_to '/puzzles/1/'
+    assert_redirected_to session_url(Session.last) 
   end
 
   def mock_successful_ssh_connection
@@ -53,37 +53,36 @@ class VmInstanceControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "status is pending right after instance started" do
-    get '/puzzles/1/start'
+    post sessions_url, params: { puzzle_id: 1 }
     mock_timeout_ssh_connection do
-      get '/instances/220816290/status'
+      get session_url(Session.last), headers: {"Accept": "application/json"}
     end
     assert_response :success
     assert_equal({"status" => "pending"}, response.parsed_body)
   end
 
   test "status is successful after a successful ssh connection" do
-    get '/puzzles/1/start'
+    post sessions_url, params: { puzzle_id: 1 }
     mock_successful_ssh_connection do
-      get '/instances/220816290/status'
+      get session_url(Session.last), headers: {"Accept": "application/json"}
     end
     assert_response :success
     assert_equal({"status" => "running"}, response.parsed_body)
   end
 
   test "instance list is empty right after puzzle starts" do
-    get '/puzzles/1/start'
-    get '/instances'
+    post sessions_url, params: { puzzle_id: 1 }
+    get sessions_url
     assert_response :success
     assert_equal({}, response.parsed_body)
   end
 
   test "listing instances works" do
-
-    get '/puzzles/1/start'
+    post sessions_url, params: { puzzle_id: 1 }
     mock_successful_ssh_connection do
-      get '/instances/220816290/status'
+      get session_url(Session.last), headers: {"Accept": "application/json"}
     end
-    get '/instances'
+    get sessions_url
     assert_equal(1, response.parsed_body.size)
   end
 
