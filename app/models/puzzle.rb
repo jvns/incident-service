@@ -52,7 +52,7 @@ class Puzzle < ActiveHash::Base
       slug: "run-me",
       group: "fun-with-files",
       title: "The Case of the Program that Won't Run",
-      published: false,
+      published: true,
     }
   ]
 end
