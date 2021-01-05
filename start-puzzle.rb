@@ -14,4 +14,4 @@ user = User.find(1)
 session = Session.find_or_create_by(user_id: user.id, puzzle_id: puzzle.id)
 droplet = session.droplet
 wait_until_started(droplet)
-puts "ssh -i wizard.key wizard@#{droplet.ip_address}"
+`ssh -i wizard.key wizard@#{droplet.ip_address}`
