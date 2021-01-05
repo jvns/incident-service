@@ -34,5 +34,5 @@ connect.rb
 wizard.key*
 gotty
 public/tailwind.css
-secrets.sh
+secrets*.sh
 .vagrant

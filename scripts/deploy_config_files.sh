@@ -3,3 +3,4 @@
 #scp scripts/post-receive root@rails-box:/home/wizard-debugging-school/hooks/
 #scp wizard.key root@rails-box:/home/wizard-debugging-school-deployed/
 scp scripts/post-receive root@dockerbox:/git/incident-service.git/hooks/post-receive
+scp secrets_prod.sh root@dockerbox:/app/secrets.sh
