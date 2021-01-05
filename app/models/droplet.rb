@@ -10,6 +10,14 @@ class Droplet
     Droplet.new(session)
   end
 
+  def wait_until_started
+    start = Time.now
+    while status != "running"
+      puts (Time.now - start).round
+      sleep 2
+    end
+  end
+
   def status
     return nil unless session
     if session.pending?

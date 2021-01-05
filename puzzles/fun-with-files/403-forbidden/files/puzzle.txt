@@ -1,0 +1,12 @@
+                   ~~~~~~~~~~
+                   greetings!
+                   ~~~~~~~~~~
+Running:
+
+$ curl localhost/a/b/c/
+
+gives you a 403 Forbidden error. Why? Fix it.
+
+You have root access. You can't break anything important, so have fun!
+Good luck! Here's a terminal.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

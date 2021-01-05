@@ -8,7 +8,7 @@ class Puzzle < ActiveHash::Base
   end
 
   def cloud_init
-    File.open("puzzles/#{group}/#{slug}/cloud-init.yaml")
+    File.read("puzzles/#{group}/#{slug}/cloud-init.yaml")
   end
 
   self.data = [
@@ -45,7 +45,7 @@ class Puzzle < ActiveHash::Base
       slug: "403-forbidden",
       group: "fun-with-files",
       title: "The Case of the 403 Forbidden",
-      published: false,
+      published: true,
     },
     {
       id: 6,
