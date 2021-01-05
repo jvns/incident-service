@@ -6,7 +6,7 @@ class SessionControllerTest < ActionDispatch::IntegrationTest
   include Net::SSH::Test
   setup do
     @instance = sessions(:one)
-    @puzzle = puzzles(:one)
+    @puzzle = Puzzle.find(1)
     WebMock.disable_net_connect!
     @user = users(:rishi)
     @user.save

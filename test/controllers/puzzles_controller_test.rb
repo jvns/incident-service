@@ -4,7 +4,7 @@ class PuzzlesControllerTest < ActionDispatch::IntegrationTest
   include Warden::Test::Helpers
 
   setup do
-    @puzzle = puzzles(:one)
+    @puzzle = Puzzle.find(1)
     @user = users(:rishi)
     # https://github.com/plataformatec/devise/wiki/How-To:-Test-with-Capybara
     @user.save

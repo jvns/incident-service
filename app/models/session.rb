@@ -8,6 +8,10 @@ class Session < ApplicationRecord
     Droplet.new(self)
   end
 
+  def puzzle
+    Puzzle.find(self.puzzle_id)
+  end
+
   private
 
   def launch_droplet
@@ -24,6 +28,5 @@ class Session < ApplicationRecord
     droplet.destroy!
   end
 
-  belongs_to :puzzle
   belongs_to :user
 end

@@ -7,6 +7,10 @@ class Puzzle < ActiveHash::Base
     PuzzleStatus.where(user_id: user.id).where(puzzle_id: self.id).first&.finished || false
   end
 
+  def cloud_init
+    File.open("puzzles/#{group}/#{slug}/cloud-init.yaml")
+  end
+
   self.data = [
     {
       id: 1,
