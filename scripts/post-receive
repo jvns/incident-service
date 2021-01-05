@@ -22,7 +22,7 @@ while read oldrev newrev ref; do
     return 0
   fi
 
-  docker-compose build && docker-compose up -d
+  docker-compose -f docker-compose-prod.yml build && docker-compose -f docker-compose-prod.yml up -d
   echo "Done"
 done
 
