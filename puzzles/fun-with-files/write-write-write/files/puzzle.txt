@@ -1,0 +1,25 @@
+                           ~~~~~~~~~~
+                           greetings!
+                           ~~~~~~~~~~
+
+you have a wild program that is writing way too much data to disk! You have 3
+tasks! Figure out:
+
+                                                 \|/
+                                                .-*-
+                                               / /|\
+1) what rate it's writing at                  _L_
+2) how much time you have left              ,"   ".
+   until your disk is full and          (\ /  O O  \ /)
+   your computer explodes                \|    _    |/
+3) which program is misbehaving and        \  (_)  /
+   how to kill it.                         _/.___,\_
+                                          (_/ alf \_)
+
+
+
+Feel free to install things or search Google (like you would in real life <3).
+You have root access. You can't break anything important, so have fun!
+
+Here's a terminal! Good luck!
+~~~~~~~~~~~~~~~~~~~~~~~~~~~

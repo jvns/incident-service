@@ -1,0 +1,137 @@
+#cloud-config
+runcmd:
+- rm -f /etc/update-motd.d/*
+users:
+- name: wizard
+  shell: /bin/bash
+  ssh_authorized_keys:
+  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC9wSyYtapHqZCe/HjTICp5fVXLcEZhrkQt3NJuahGdpBKi5ONzEHzSArPGQOnu6uJ0SkRZ/U6voVakjft3Ev+qGe+MCfRyTSYbksU4wg5JbaMmtjUxnv7IlhZIXmp6gGu9yXNmuBocycuVnaUGTtpXxy3g2fADv292gobk8dz1pSryjoyo0xW7RiCiyUsgktVLb4eMHIIfeU0/UbjJFfuqSWCGnZk9speQ6/HeLzqmVL1RPu2vaGvRWTJeEwQmvWBD/0OYUd/8fMrDQFEFfCl2fegD5k6hJV4iwX9/AQHcvjrs0mZyhE7X/hCxzlr7CMrI7nub2727zd8jyrcFwkjHtR8F/jxyfg7V/qO6JqZoUAcOBBAsbS+uh3gnz08GctXjQMNOgRf0J6rz8eHTx+rB0tNYGgXQ3k17MumUWoDTLz57cijegfS6zXROUvTeLefd/7Ta/aNmegO4KfyaJTLJr2YJ7qEiT60xgvt+yPngWU9wZhwzQt1wmnlmiyZUeP0= wizard@wizard
+  sudo: ALL=(ALL) NOPASSWD:ALL
+  uid: 02471
+write_files:
+- content: |
+    export TERM=xterm-256color
+    alias ls='ls --color'
+  path: /home/wizard/.bash_profile
+  permissions: 0644
+- content: |2
+                               ~~~~~~~~~~
+                               greetings!
+                               ~~~~~~~~~~
+
+    you have a wild program that is writing way too much data to disk! You have 3
+    tasks! Figure out:
+
+                                                     \|/
+                                                    .-*-
+                                                   / /|\
+    1) what rate it's writing at                  _L_
+    2) how much time you have left              ,"   ".
+       until your disk is full and          (\ /  O O  \ /)
+       your computer explodes                \|    _    |/
+    3) which program is misbehaving and        \  (_)  /
+       how to kill it.                         _/.___,\_
+                                              (_/ alf \_)
+
+
+
+    Feel free to install things or search Google (like you would in real life <3).
+    You have root access. You can't break anything important, so have fun!
+
+    Here's a terminal! Good luck!
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  owner: root
+  path: /etc/motd
+  permissions: 0644
+- content: |2
+                               ~~~~~~~~~~
+                               greetings!
+                               ~~~~~~~~~~
+
+    you have a wild program that is writing way too much data to disk! You have 3
+    tasks! Figure out:
+
+                                                     \|/
+                                                    .-*-
+                                                   / /|\
+    1) what rate it's writing at                  _L_
+    2) how much time you have left              ,"   ".
+       until your disk is full and          (\ /  O O  \ /)
+       your computer explodes                \|    _    |/
+    3) which program is misbehaving and        \  (_)  /
+       how to kill it.                         _/.___,\_
+                                              (_/ alf \_)
+
+
+
+    Feel free to install things or search Google (like you would in real life <3).
+    You have root access. You can't break anything important, so have fun!
+
+    Here's a terminal! Good luck!
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  owner: root
+  path: /home/wizard/puzzle.txt
+  permissions: 0644
+- content: |
+    python3 /home/wizard/files/in-ur-computer.py &
+    python3 /home/wizard/files/can-u-catch-me.py &
+    python3 /home/wizard/files/writing-ur-disks.py &
+    python3 /home/wizard/files/yes.py &
+    python3 /home/wizard/files/MEGABYTEZ.py &
+    python3 /home/wizard/files/bytes-bytes-bytes.py &
+    python3 /home/wizard/files/in-ur-computer.py &
+    sleep 2
+  owner: root
+  path: /home/wizard/files/run.sh
+  permissions: 0666
+- content: aW1wb3J0IHRpbWUKeCA9IDIKd2hpbGUgVHJ1ZToKICAgIGZvciBpIGluIHJhbmdlKDEwMCk6CiAgICAgICAgeCA9IHggKyB4CiAgICB0aW1lLnNsZWVwKDAuMDUpCg==
+  encoding: b64
+  owner: root
+  path: /home/wizard/files/can-u-catch-me.py
+  permissions: 0777
+- content: aW1wb3J0IHRpbWUKeCA9IDIKd2hpbGUgVHJ1ZToKICAgIGZvciBpIGluIHJhbmdlKDEwMCk6CiAgICAgICAgeCA9IHggKyB4CiAgICB0aW1lLnNsZWVwKDAuMDUpCg==
+  encoding: b64
+  owner: root
+  path: /home/wizard/files/writing-ur-disks.py
+  permissions: 0777
+- content: aW1wb3J0IHRpbWUKeCA9IDIKd2hpbGUgVHJ1ZToKICAgIGZvciBpIGluIHJhbmdlKDEwMCk6CiAgICAgICAgeCA9IHggKyB4CiAgICB0aW1lLnNsZWVwKDAuMDUpCg==
+  encoding: b64
+  owner: root
+  path: /home/wizard/files/in-ur-computer.py
+  permissions: 0777
+- content: aW1wb3J0IHRpbWUKeCA9IDIKd2hpbGUgVHJ1ZToKICAgIGZvciBpIGluIHJhbmdlKDEwMCk6CiAgICAgICAgeCA9IHggKyB4CiAgICB0aW1lLnNsZWVwKDAuMDUpCg==
+  encoding: b64
+  owner: root
+  path: /home/wizard/files/yes.py
+  permissions: 0777
+- content: aW1wb3J0IHRpbWUKeCA9IDIKd2hpbGUgVHJ1ZToKICAgIGZvciBpIGluIHJhbmdlKDEwMCk6CiAgICAgICAgeCA9IHggKyB4CiAgICB0aW1lLnNsZWVwKDAuMDUpCg==
+  encoding: b64
+  owner: root
+  path: /home/wizard/files/MEGABYTEZ.py
+  permissions: 0777
+- content: ZnJvbSB0aW1lIGltcG9ydCBzbGVlcAppbXBvcnQgb3MKCnggPSAieW91Z290bWUgXG4iICogNjAwMAp3aXRoIG9wZW4oJy90bXAvYmxhaC50eHQnLCAndycsIGJ1ZmZlcmluZz0xKSBhcyBmOgogICAgd2hpbGUgVHJ1ZToKICAgICAgICBmLndyaXRlKHgpCiAgICAgICAgb3MuZnN5bmMoZikKICAgICAgICBzbGVlcCgwLjAxKQo=
+  encoding: b64
+  owner: root
+  path: /home/wizard/files/bytes-bytes-bytes.py
+  permissions: 0777
+- content: |
+    import time
+    x = 2
+    while True:
+        for i in range(100):
+            x = x + x
+        time.sleep(0.05)
+  path: /home/wizard/files/sleep.py
+  permissions: 0644
+- content: |
+    from time import sleep
+    import os
+
+    x = "yougotme \n" * 6000
+    with open('/tmp/blah.txt', 'w', buffering=1) as f:
+        while True:
+            f.write(x)
+            os.fsync(f)
+            sleep(0.01)
+  path: /home/wizard/files/write-to-disk.py
+  permissions: 0644

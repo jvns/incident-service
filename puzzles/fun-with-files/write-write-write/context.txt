@@ -1,0 +1,13 @@
+One nice way to solve this without using specialized tools is:
+
+1. du / | sort -n | tail -n 40 > test1
+2. du / | sort -n | tail -n 40 > test2
+3. diff them and see that /tmp is being written to a lot
+4. find /tmp/blah.txt
+5. use lsof to find who's writing to blah.txt
+6. kill the process :death:
+
+
+`dstat` prints how  much is being written to disk per second, you can use
+
+`iotop` will tell you which programs are reading/writing the most from/to disk right now.
