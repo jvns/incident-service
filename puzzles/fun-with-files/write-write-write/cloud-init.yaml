@@ -1,6 +1,8 @@
 #cloud-config
 runcmd:
 - rm -f /etc/update-motd.d/*
+packages:
+- dstat
 users:
 - name: wizard
   shell: /bin/bash
