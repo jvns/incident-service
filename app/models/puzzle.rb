@@ -1,12 +1,10 @@
 class Puzzle < ActiveHash::Base
-  has_many :puzzle_statuses
-
   def to_param
     "#{id}-#{slug}"
   end
 
   def finished?(user)
-    puzzle_statuses.where(user_id: user.id).first&.finished || false
+    PuzzleStatus.where(user_id: user.id).where(puzzle_id: self.id).first&.finished || false
   end
 
   self.data = [
