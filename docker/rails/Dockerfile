@@ -4,5 +4,6 @@ WORKDIR /app
 COPY Gemfile /app/Gemfile
 COPY Gemfile.lock /app/Gemfile.lock
 RUN bundle install --with development test
+COPY ./irbrc /root/.irbrc
 # Start the main process.
 CMD ["rails", "server", "-b", "0.0.0.0"]

@@ -10,25 +10,14 @@ services:
     # todo: use a smaller image at some point, we don't really need ubuntu here
     image: ubuntu
     command: /app/go_proxy/server
-    ports:
-      - "8999:8080"
     volumes:
       - .:/app
-    depends_on:
-      - rails
   rails:
     build: docker/rails
     command: bash -c "rm -f tmp/pids/server.pid && source secrets.sh && bundle exec rails s -p 3000 -b '0.0.0.0'"
     volumes:
       - .:/app
-    ports:
-      - "3000:3000"
-    depends_on:
-      - db
   web:
     build: docker/nginx
     ports:
       - "8777:80"
-    depends_on:
-      - rails
-      - goproxy
