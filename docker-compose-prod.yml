@@ -3,7 +3,7 @@ services:
   db:
     image: postgres
     volumes:
-      - ./tmp/db:/var/lib/postgresql/data
+      - /postgres_data:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: password
   goproxy:
