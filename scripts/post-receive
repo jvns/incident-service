@@ -1,8 +1,8 @@
 #!/bin/bash
 set -eu
 
-GIT_DIR="/home/wizard-debugging-school"
-TARGET="/home/wizard-debugging-school-deployed"
+GIT_DIR="/git/incident-service.git"
+TARGET="/app"
 
 while read oldrev newrev ref; do
   # We gonna do stuff.
@@ -16,16 +16,13 @@ while read oldrev newrev ref; do
 
     # "Deploy" the branch we just pushed to a specific directory.
     git --work-tree=$TARGET --git-dir=$GIT_DIR checkout -f $BRANCH
-    chown -R rails:rails /home/wizard-debugging-school-deployed/
+    #chown -R rails:rails /home/wizard-debugging-school-deployed/
   else
     echo "Not main branch. Skipping."
     return 0
   fi
 
-  service rails restart
-  service go_proxy restart
-  systemctl status rails
-  systemctl status go_proxy
+  docker-compose build && docker-compose up -d
   echo "Done"
 done
 
