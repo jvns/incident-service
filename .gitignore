@@ -36,3 +36,4 @@ gotty
 public/tailwind.css
 secrets*.sh
 .vagrant
+scripts/master.key
