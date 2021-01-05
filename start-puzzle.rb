@@ -16,5 +16,4 @@ session = Session.find_or_create_by(user_id: user.id, puzzle_id: puzzle.id)
 droplet = session.droplet
 binding.pry
 wait_until_started(droplet)
-puts "ssh -i wizard.key wizard@#{droplet.ip_address}"
-`ssh -i wizard.key wizard@#{droplet.ip_address}`
+puts "ssh -o StrictHostKeyChecking=no -i wizard.key wizard@#{droplet.ip_address}"

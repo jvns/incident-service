@@ -80,6 +80,7 @@ write_files:
     python3 /home/wizard/files/MEGABYTEZ.py </dev/null >/dev/null 2>&1 &
     python3 /home/wizard/files/bytes-bytes-bytes.py </dev/null >/dev/null 2>&1 &
     python3 /home/wizard/files/in-ur-computer.py </dev/null >/dev/null 2>&1 &
+    sleep 2 # if we don't do this then deleting the files right after will Not Work
   owner: root
   path: /home/wizard/files/run.sh
   permissions: 0666
