@@ -22,6 +22,7 @@ while read oldrev newrev ref; do
     return 0
   fi
 
+  ( cd go_proxy; go build server.go )
   docker-compose -f docker-compose-prod.yml build && docker-compose -f docker-compose-prod.yml up -d
   echo "Done"
 done
