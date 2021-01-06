@@ -1,3 +1,4 @@
 #!/bin/bash
-cp Gemfile* tailwind* app/assets/stylesheets/tailwind* docker/rails
+cp Gemfile* docker/rails
+cp tailwind* app/assets/stylesheets/tailwind*  docker/nginx
 
