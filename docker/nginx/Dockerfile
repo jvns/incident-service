@@ -6,4 +6,4 @@ RUN NODE_ENV=production npx tailwindcss-cli@latest build app/assets/stylesheets/
 
 FROM nginx
 COPY ./docker/nginx/rails.conf /etc/nginx/conf.d/default.conf
-COPY --from=node /app/public/tailwind.css /app/public/tailwind.css
+COPY --from=node /app/public/tailwind.css /tailwind/tailwind.css
