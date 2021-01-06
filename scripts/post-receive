@@ -23,6 +23,7 @@ while read oldrev newrev ref; do
   fi
 
   ( cd go_proxy; go build server.go )
+  ./scripts/copy-files-to-docker-context
   docker-compose -f docker-compose-prod.yml build && docker-compose -f docker-compose-prod.yml up -d
   echo "Done"
 done
