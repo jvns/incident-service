@@ -99,7 +99,9 @@ class Droplet
 
   def gotty_running?
     gotty_process = `ps aux`.split("\n").find do |x| 
-      x.include?('gotty') and x.include?(ip_address)
+      # but why would x ever be nil though?? this was happening but it makes no
+      # sense!!!!!
+      !x.nil? and x.include?('gotty') and x.include?(ip_address)
     end
     !gotty_process.nil?
   end
