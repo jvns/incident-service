@@ -3,7 +3,7 @@ services:
   db:
     image: postgres
     volumes:
-      - /home/bork/work/.exploding_computers_db:/var/lib/postgresql/data
+      - ~/work/.exploding_computers_db:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: password
   goproxy:

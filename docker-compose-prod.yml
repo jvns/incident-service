@@ -13,12 +13,16 @@ services:
     volumes:
       - .:/app
   rails:
-    build: docker/rails
+    build: 
+        dockerfile: docker/rails/Dockerfile
+        context: .
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     env_file: secrets_prod.sh
     volumes:
       - .:/app
   web:
-    build: docker/nginx
+    build:
+        dockerfile: docker/nginx/Dockerfile
+        context: .
     ports:
       - "80:80"
