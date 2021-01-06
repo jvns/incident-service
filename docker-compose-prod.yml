@@ -24,5 +24,7 @@ services:
     build:
         dockerfile: docker/nginx/Dockerfile
         context: .
+    volumes:
+      - ./public:/app/public
     ports:
       - "80:80"
