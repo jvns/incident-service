@@ -4,11 +4,13 @@ packages:
 runcmd:
 - rm -f /etc/update-motd.d/*
 - rm -f /etc/legal
+- ln -s /home/wizard/puzzle.txt /etc/motd
 users:
 - name: wizard
   shell: /bin/bash
   ssh_authorized_keys:
-  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC9wSyYtapHqZCe/HjTICp5fVXLcEZhrkQt3NJuahGdpBKi5ONzEHzSArPGQOnu6uJ0SkRZ/U6voVakjft3Ev+qGe+MCfRyTSYbksU4wg5JbaMmtjUxnv7IlhZIXmp6gGu9yXNmuBocycuVnaUGTtpXxy3g2fADv292gobk8dz1pSryjoyo0xW7RiCiyUsgktVLb4eMHIIfeU0/UbjJFfuqSWCGnZk9speQ6/HeLzqmVL1RPu2vaGvRWTJeEwQmvWBD/0OYUd/8fMrDQFEFfCl2fegD5k6hJV4iwX9/AQHcvjrs0mZyhE7X/hCxzlr7CMrI7nub2727zd8jyrcFwkjHtR8F/jxyfg7V/qO6JqZoUAcOBBAsbS+uh3gnz08GctXjQMNOgRf0J6rz8eHTx+rB0tNYGgXQ3k17MumUWoDTLz57cijegfS6zXROUvTeLefd/7Ta/aNmegO4KfyaJTLJr2YJ7qEiT60xgvt+yPngWU9wZhwzQt1wmnlmiyZUeP0= wizard@wizard
+  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC9wSyYtapHqZCe/HjTICp5fVXLcEZhrkQt3NJuahGdpBKi5ONzEHzSArPGQOnu6uJ0SkRZ/U6voVakjft3Ev+qGe+MCfRyTSYbksU4wg5JbaMmtjUxnv7IlhZIXmp6gGu9yXNmuBocycuVnaUGTtpXxy3g2fADv292gobk8dz1pSryjoyo0xW7RiCiyUsgktVLb4eMHIIfeU0/UbjJFfuqSWCGnZk9speQ6/HeLzqmVL1RPu2vaGvRWTJeEwQmvWBD/0OYUd/8fMrDQFEFfCl2fegD5k6hJV4iwX9/AQHcvjrs0mZyhE7X/hCxzlr7CMrI7nub2727zd8jyrcFwkjHtR8F/jxyfg7V/qO6JqZoUAcOBBAsbS+uh3gnz08GctXjQMNOgRf0J6rz8eHTx+rB0tNYGgXQ3k17MumUWoDTLz57cijegfS6zXROUvTeLefd/7Ta/aNmegO4KfyaJTLJr2YJ7qEiT60xgvt+yPngWU9wZhwzQt1wmnlmiyZUeP0=
+    wizard@wizard
   sudo: ALL=(ALL) NOPASSWD:ALL
   uid: 02471
 write_files:
@@ -16,6 +18,9 @@ write_files:
     export TERM=xterm-256color
     alias ls='ls --color'
   path: /home/wizard/.bash_profile
+  permissions: 0644
+- content: ''
+  path: /etc/legal
   permissions: 0644
 - content: |
     #!/bin/bash
@@ -25,7 +30,7 @@ write_files:
         sleep 1
     done
   owner: root
-  path: /home/wizard/files/run.sh
+  path: /home/wizard/setup/run.sh
   permissions: 0755
 - content: |2
                        ~~~~~~~~~~
@@ -280,7 +285,4 @@ write_files:
   encoding: b64
   owner: wizard
   path: /home/wizard/run-me
-  permissions: 0644
-- content: ""
-  path: /etc/legal
   permissions: 0644

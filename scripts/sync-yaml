@@ -1,0 +1,107 @@
+#!/usr/bin/python3
+import yaml
+import os
+import magic
+import base64
+from pathlib import Path
+from contextlib import contextmanager
+
+@contextmanager
+def working_directory(path):
+    prev_cwd = os.getcwd()
+    os.chdir(path)
+    try:
+        yield
+    finally:
+        os.chdir(prev_cwd)
+
+def load_yaml(filename):
+    with open(filename) as f:
+        return yaml.safe_load(f)
+
+def sync(cloud_init_filename):
+    directory = Path(os.path.dirname(cloud_init_filename))
+    cloud_init_yaml = load_yaml(cloud_init_filename)
+    with working_directory(directory.joinpath('files')):
+        synced = sync_files(cloud_init_yaml['write_files'])
+        cloud_init_yaml['write_files'] = list(synced)
+    base_yaml = load_yaml('./puzzles/base.yaml')
+    cloud_init_yaml = combine(base_yaml, cloud_init_yaml)
+    with open(directory.joinpath('cloud-init.yaml'), 'w') as f:
+        f.write("#cloud-config\n")
+        yaml.dump(cloud_init_yaml, f)
+
+def combine(base_yaml, cloud_init_yaml):
+    for key in base_yaml:
+        cloud_init_yaml.setdefault(key, [])
+        cloud_init_yaml[key] = base_yaml[key] + cloud_init_yaml[key]
+    return cloud_init_yaml
+
+def matches(potential_match, rel_filename):
+    #if potential_match['path'] == '/etc/motd' and rel_filename == 'puzzle.txt':
+    #    return True
+    if potential_match['path'] == "/home/wizard/" + rel_filename:
+        return True
+    return False
+
+def sync_files(cloud_init_files):
+    sync_all_these = set(x for x in Path('.').rglob('*') if x.is_file())
+    all_available = set(sync_all_these)
+    wizard_path = Path('/home/wizard')
+    for f in cloud_init_files:
+        vm_path = Path(f['path'])
+        try:
+            local_filename = vm_path.relative_to('/home/wizard')
+        except ValueError:
+            local_filename = vm_path.name
+        sync_all_these.discard(local_filename)
+        if local_filename in all_available:
+            yield sync_file(f, local_filename)
+        else:
+            yield f
+    for local_filename in sorted(sync_all_these):
+        match = {
+            'permissions': 0o644,
+            'owner': 'wizard',
+            'path': str(wizard_path.joinpath(local_filename)),
+        }
+        yield sync_file(match, local_filename)
+
+
+def sync_file(match, local_filename):
+    mime_type = magic.from_file(str(local_filename))
+    if  'ASCII text' in mime_type:
+        contents = local_filename.read_text()
+        match['content'] = contents
+        try:
+            match.pop('encoding')
+        except:
+            pass
+    else:
+        contents = local_filename.read_bytes()
+        match['content'] = base64.b64encode(contents)
+        match['encoding'] = 'b64'
+    return match
+
+def int_presenter(dumper, data):
+    if data > 0 and data < 2000:
+        octal = "0{0:o}".format(data)
+        return dumper.represent_scalar(u'tag:yaml.org,2002:int', octal)
+    else:
+        return dumper.represent_scalar(u'tag:yaml.org,2002:int', str(data))
+    
+
+def str_presenter(dumper, data):
+    if "\n" in data:  # check for multiline string
+        return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='|')
+    return dumper.represent_scalar('tag:yaml.org,2002:str', data)
+
+def main():
+    yaml.add_representer(str, str_presenter)
+    yaml.add_representer(int, int_presenter)
+    filenames = Path('puzzles').glob('**/puzzle.yaml')
+    for cloud_init_filename in filenames:
+        sync(cloud_init_filename)
+
+
+main()

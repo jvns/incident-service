@@ -17,8 +17,8 @@ class Droplet
         sess = Net::SSH.start(ip_address, 'wizard', :keys => [ "wizard.key" ], timeout: 0.2)
         sess.exec!('ls')
         session.waiting_for_start_script!
-        sess.exec!('sudo bash files/run.sh')
-        sess.exec!('sudo rm -r files')
+        sess.exec!('sudo bash setup/run.sh')
+        sess.exec!('sudo rm -r setup')
         session.running!
       rescue Errno::ECONNREFUSED 
         # probably the session just didn't start yet, let's continue to say it's pending

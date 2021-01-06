@@ -1,0 +1,72 @@
+#cloud-config
+packages:
+- acl
+write_files:
+- content: |
+    #!/bin/bash
+    cd /home/wizard
+    while ! sudo setfacl -m "u:wizard:---" read-me.txt
+    do
+        sleep 1
+    done
+  owner: root
+  path: /home/wizard/setup/run.sh
+  permissions: 0755
+- content: |2
+                       ~~~~~~~~~~
+                       greetings!
+                       ~~~~~~~~~~
+
+    There's a file in your home directory called `run-me`. Run it.
+
+    Bonus: There's a file called `read-me.txt`. Fix its permissions so it can be read by the user `wizard` (your user). Rules:
+    1. You can fix the permissions as root, but you have to read the file as the wizard user.
+    2. You can't change the owner of the file
+
+    You have root access. You can't break anything important, so have fun!
+    Good luck! Here's a terminal.
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  owner: root
+  path: /etc/motd
+  permissions: 0644
+- content: |2
+                       ~~~~~~~~~~
+                       greetings!
+                       ~~~~~~~~~~
+
+    There's a file in your home directory called `run-me`. Run it.
+
+    Bonus: There's a file called `read-me.txt`. Fix its permissions so it can be read by the user `wizard` (your user). Rules:
+    1. You can fix the permissions as root, but you have to read the file as the wizard user.
+    2. You can't change the owner of the file
+
+    You have root access. You can't break anything important, so have fun!
+    Good luck! Here's a terminal.
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  owner: root
+  path: /home/wizard/puzzle.txt
+  permissions: 0644
+- content: |
+    you read me! yay!
+  owner: root
+  path: /home/wizard/read-me.txt
+  permissions: 0644
+- content: |
+    You need to set the executable bit for a program to be runnable.
+  owner: root
+  path: /home/wizard/hints/hint-run-me.txt
+  permissions: 0444
+- content: |
+    When you ls -l read-me.txt, there's a + sign. Why?
+  owner: root
+  path: /home/wizard/hints/hint-read-me1.txt
+  permissions: 0444
+- content: |
+    Use `getfacl` on read-me.txt
+  owner: root
+  path: /home/wizard/hints/hint-read-me2.txt
+  permissions: 0444
+- content: ''
+  owner: wizard
+  path: /home/wizard/run-me
+  permissions: 0644

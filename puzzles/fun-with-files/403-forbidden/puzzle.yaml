@@ -1,0 +1,25 @@
+#cloud-config
+packages:
+- apache2
+write_files:
+- content: |
+    #!/bin/bash
+    # idempotent
+    set -e
+    service apache2 start
+    mkdir -p /var/www/html/a/b/c
+    echo 'you got it! congratulations!' > /var/www/html/a/b/c/index.html
+    chmod 000 /var/www/html/a/
+  owner: root
+  path: /home/wizard/setup/run.sh
+  permissions: 0755
+- content: |
+    Apache by default serves files from /var/www/html.
+  owner: root
+  path: /home/wizard/hints/hint1.txt
+  permissions: 0444
+- content: |
+    403 Forbidden is probably related to the file permissions somehow
+  owner: root
+  path: /home/wizard/hints/hint2.txt
+  permissions: 0444
