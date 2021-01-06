@@ -1,0 +1,3 @@
+sudo find tmp/db -type d | xargs sudo chmod a+x
+sudo chmod -R a+rw tmp/db
+sudo chmod 777 tmp/db
