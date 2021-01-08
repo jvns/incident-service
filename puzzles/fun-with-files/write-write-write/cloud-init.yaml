@@ -23,17 +23,40 @@ write_files:
   path: /etc/legal
   permissions: 0644
 - content: |
-    python3 /home/wizard/setup/in-ur-computer.py </dev/null >/dev/null 2>&1 &
-    python3 /home/wizard/setup/can-u-catch-me.py </dev/null >/dev/null 2>&1 &
-    python3 /home/wizard/setup/writing-ur-disks.py </dev/null >/dev/null 2>&1 &
-    python3 /home/wizard/setup/yes.py </dev/null >/dev/null 2>&1 &
-    python3 /home/wizard/setup/MEGABYTEZ.py </dev/null >/dev/null 2>&1 &
-    python3 /home/wizard/setup/bytes-bytes-bytes.py </dev/null >/dev/null 2>&1 &
-    python3 /home/wizard/setup/in-ur-computer.py </dev/null >/dev/null 2>&1 &
+    for i in in-ur-computer can-u-catch-me writing-ur-disks yes MEGABYTEZ
+    do
+        ln /home/wizard/setup/sleep.py $i.py
+        python3 $i.py </dev/null >/dev/null 2>&1 &
+    done
+    ln /home/wizard/setup/write-to-disk.py bytes-bytes-bytes.py
+    python3 bytes-bytes-bytes.py </dev/null >/dev/null 2>&1 &
     sleep 2 # if we don't do this then deleting the files right after will Not Work
   owner: root
   path: /home/wizard/setup/run.sh
   permissions: 0666
+- content: |
+    import time
+    x = 2
+    while True:
+        for i in range(100):
+            x = x + x
+        time.sleep(0.05)
+  owner: wizard
+  path: /home/wizard/setup/sleep.py
+  permissions: 0644
+- content: |
+    from time import sleep
+    import os
+
+    x = "yougotme \n" * 6000
+    with open('/tmp/blah.txt', 'w', buffering=1) as f:
+        while True:
+            f.write(x)
+            os.fsync(f)
+            sleep(0.01)
+  owner: wizard
+  path: /home/wizard/setup/write-to-disk.py
+  permissions: 0644
 - content: |2
                                ~~~~~~~~~~
                                greetings!
@@ -62,87 +85,4 @@ write_files:
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
   owner: wizard
   path: /home/wizard/puzzle.txt
-  permissions: 0644
-- content: !!binary |
-    YVcxd2IzSjBJSFJwYldVS2VDQTlJRElLZDJocGJHVWdWSEoxWlRvS0lDQWdJR1p2Y2lCcElHbHVJ
-    SEpoYm1kbEtERXdNQ2s2Q2lBZ0lDQWdJQ0FnZUNBOUlIZ2dLeUI0Q2lBZ0lDQjBhVzFsTG5Oc1pX
-    VndLREF1TURVcENnPT0=
-  encoding: b64
-  owner: wizard
-  path: /home/wizard/setup/MEGABYTEZ.py
-  permissions: 0644
-- content: |+
-    for i in in-ur-computer.py can-u-catch-me.py writing-ur-disks.py yes.py MEGABYTEZ.py bytes-bytes-bytes.py
-        do
-        ln -s sleep.py $i
-        done
-
-
-  owner: wizard
-  path: /home/wizard/setup/blah.sh
-  permissions: 0644
-- content: !!binary |
-    YVcxd2IzSjBJSFJwYldVS2VDQTlJRElLZDJocGJHVWdWSEoxWlRvS0lDQWdJR1p2Y2lCcElHbHVJ
-    SEpoYm1kbEtERXdNQ2s2Q2lBZ0lDQWdJQ0FnZUNBOUlIZ2dLeUI0Q2lBZ0lDQjBhVzFsTG5Oc1pX
-    VndLREF1TURVcENnPT0=
-  encoding: b64
-  owner: wizard
-  path: /home/wizard/setup/bytes-bytes-bytes.py
-  permissions: 0644
-- content: !!binary |
-    Wm5KdmJTQjBhVzFsSUdsdGNHOXlkQ0J6YkdWbGNBcHBiWEJ2Y25RZ2IzTUtDbmdnUFNBaWVXOTFa
-    MjkwYldVZ1hHNGlJQ29nTmpBd01BcDNhWFJvSUc5d1pXNG9KeTkwYlhBdllteGhhQzUwZUhRbkxD
-    QW5keWNzSUdKMVptWmxjbWx1WnoweEtTQmhjeUJtT2dvZ0lDQWdkMmhwYkdVZ1ZISjFaVG9LSUNB
-    Z0lDQWdJQ0JtTG5keWFYUmxLSGdwQ2lBZ0lDQWdJQ0FnYjNNdVpuTjVibU1vWmlrS0lDQWdJQ0Fn
-    SUNCemJHVmxjQ2d3TGpBeEtRbz0=
-  encoding: b64
-  owner: wizard
-  path: /home/wizard/setup/can-u-catch-me.py
-  permissions: 0644
-- content: !!binary |
-    YVcxd2IzSjBJSFJwYldVS2VDQTlJRElLZDJocGJHVWdWSEoxWlRvS0lDQWdJR1p2Y2lCcElHbHVJ
-    SEpoYm1kbEtERXdNQ2s2Q2lBZ0lDQWdJQ0FnZUNBOUlIZ2dLeUI0Q2lBZ0lDQjBhVzFsTG5Oc1pX
-    VndLREF1TURVcENnPT0=
-  encoding: b64
-  owner: wizard
-  path: /home/wizard/setup/in-ur-computer.py
-  permissions: 0644
-- content: |
-    import time
-    x = 2
-    while True:
-        for i in range(100):
-            x = x + x
-        time.sleep(0.05)
-  owner: wizard
-  path: /home/wizard/setup/sleep.py
-  permissions: 0644
-- content: |
-    from time import sleep
-    import os
-
-    x = "yougotme \n" * 6000
-    with open('/tmp/blah.txt', 'w', buffering=1) as f:
-        while True:
-            f.write(x)
-            os.fsync(f)
-            sleep(0.01)
-  owner: wizard
-  path: /home/wizard/setup/write-to-disk.py
-  permissions: 0644
-- content: !!binary |
-    YVcxd2IzSjBJSFJwYldVS2VDQTlJRElLZDJocGJHVWdWSEoxWlRvS0lDQWdJR1p2Y2lCcElHbHVJ
-    SEpoYm1kbEtERXdNQ2s2Q2lBZ0lDQWdJQ0FnZUNBOUlIZ2dLeUI0Q2lBZ0lDQjBhVzFsTG5Oc1pX
-    VndLREF1TURVcENnPT0=
-  encoding: b64
-  owner: wizard
-  path: /home/wizard/setup/writing-ur-disks.py
-  permissions: 0644
-- content: !!binary |
-    YVcxd2IzSjBJSFJwYldVS2VDQTlJRElLZDJocGJHVWdWSEoxWlRvS0lDQWdJR1p2Y2lCcElHbHVJ
-    SEpoYm1kbEtERXdNQ2s2Q2lBZ0lDQWdJQ0FnZUNBOUlIZ2dLeUI0Q2lBZ0lDQjBhVzFsTG5Oc1pX
-    VndLREF1TURVcENnPT0=
-  encoding: b64
-  owner: wizard
-  path: /home/wizard/setup/yes.py
   permissions: 0644

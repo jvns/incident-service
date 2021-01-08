@@ -28,5 +28,5 @@ do
     echo "waiting for ssh.. $duration"
     sleep 1
 done
-ssh -p 2222 -o ConnectTimeout=1 -o StrictHostKeyChecking=no -i wizard.key wizard@localhost 'sudo rm -rf setup'
+#ssh -p 2222 -o ConnectTimeout=1 -o StrictHostKeyChecking=no -i wizard.key wizard@localhost 'sudo rm -rf setup'
 ssh -p 2222 -o ConnectTimeout=1 -o StrictHostKeyChecking=no -i wizard.key wizard@localhost
