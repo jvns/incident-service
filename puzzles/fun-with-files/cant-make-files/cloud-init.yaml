@@ -1,6 +1,4 @@
 #cloud-config
-packages:
-- apache2
 runcmd:
 - rm -f /etc/update-motd.d/*
 - rm -f /etc/legal
@@ -38,37 +36,45 @@ write_files:
   path: /etc/legal
   permissions: 0644
 - content: |
-    #!/bin/bash
-    # idempotent
     set -e
-    service apache2 start
-    mkdir -p /var/www/html/a/b/c
-    echo 'you got it! congratulations!' > /var/www/html/a/b/c/index.html
-    chmod 000 /var/www/html/a/
+    i=0
+    sudo mkdir -p /opt/files
+    sudo chmod 777 /opt/files
+    cd /opt/files
+    dd if=/dev/zero of=masterfile bs=10000 count=1000
+    split -b 5 -a 30 ./masterfile
   owner: root
   path: /home/wizard/setup/run.sh
   permissions: 0755
 - content: |
-    Apache by default serves files from /var/www/html.
+    You can't create files, but df says there *is* disk space! What's up with
+    that?  Look at the df man page to see what else df can tell you about disk
+    usage.
   owner: root
-  path: /home/wizard/hints/hint1.txt
-  permissions: 0444
-- content: |
-    403 Forbidden is probably related to the file permissions somehow
-  owner: root
-  path: /home/wizard/hints/hint2.txt
+  path: /home/wizard/hints/hint1
   permissions: 0444
 - content: |2
                        ~~~~~~~~~~
                        greetings!
                        ~~~~~~~~~~
-    Running:
 
-    $ curl localhost/a/b/c/
+    Today you logged into the server and there is a new problem.
+    It seems that you can't create any files.
+    Figure out why.
 
-    gives you a 403 Forbidden error. Why? Fix it.
+         __________
+       /          /|
+     /__________/  |
+     |________ |   |
+     /_____  /||   |
+    |".___."| ||   |
+    |_______|/ |   |
+     || .___."||  /
+     ||_______|| /
+     |_________|/
 
-    You have root access. You can't break anything important, so have fun!
+
+    You have root access. You can't break anything, so just have fun.
     Good luck! Here's a terminal.
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   path: /home/wizard/puzzle.txt

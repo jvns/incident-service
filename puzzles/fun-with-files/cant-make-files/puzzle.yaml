@@ -1,0 +1,13 @@
+#cloud-config
+write_files:
+- content: ""
+  owner: root
+  path: /home/wizard/setup/run.sh
+  permissions: 0755
+- content: |
+    You can't create files, but df says there *is* disk space! What's up with
+    that?  Look at the df man page to see what else df can tell you about disk
+    usage.
+  owner: root
+  path: /home/wizard/hints/hint1
+  permissions: 0444

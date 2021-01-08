@@ -11,7 +11,7 @@ echo "instance-id: $(uuidgen || echo i-abcdefg)" > my-meta-data
 IMG=/tmp/my-seed.img
 FOCAL=/home/bork/work/images/focal-server-cloudimg-amd64.img
 SNAPSHOT=/tmp/snapshot.qcow2
-qemu-img create -b $FOCAL -f qcow2 -F qcow2 $SNAPSHOT
+qemu-img create -b $FOCAL -f qcow2 -F qcow2 $SNAPSHOT 2G
 
 cloud-localds $IMG $CLOUD_INIT_FILE my-meta-data
 

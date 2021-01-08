@@ -1,0 +1,23 @@
+                   ~~~~~~~~~~
+                   greetings!
+                   ~~~~~~~~~~
+
+Today you logged into the server and there is a new problem.
+It seems that you can't create any files.
+Figure out why.
+
+     __________
+   /          /|
+ /__________/  |
+ |________ |   |
+ /_____  /||   |
+|".___."| ||   |
+|_______|/ |   |
+ || .___."||  /
+ ||_______|| /
+ |_________|/
+
+
+You have root access. You can't break anything, so just have fun.
+Good luck! Here's a terminal.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
