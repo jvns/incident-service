@@ -1,0 +1,39 @@
+#cloud-config
+packages:
+- dstat
+write_files:
+- content: |
+    set -e
+    cd /home/wizard/setup/
+    for i in in-ur-computer can-u-catch-me writing-ur-disks yes MEGABYTEZ
+    do
+        ln -f sleep.py $i.py
+        pgrep -f $i || python3 $i.py </dev/null >/dev/null 2>&1 &
+    done
+    ln -f write-to-disk.py bytes-bytes-bytes.py
+    pgrep -f bytes-bytes-bytes || python3 bytes-bytes-bytes.py </dev/null >/dev/null 2>&1 &
+    sleep 2 # if we don't do this then deleting the files right after will Not Work
+  path: /home/wizard/setup/run.sh
+  permissions: 0666
+- content: |
+    import time
+    x = 2
+    while True:
+        for i in range(100):
+            x = x + x
+        time.sleep(0.05)
+  path: /home/wizard/setup/sleep.py
+  permissions: 0644
+- content: |
+    from time import sleep
+    import os
+
+    x = "yougotme \n" * 6000
+    with open('/tmp/blah.txt', 'w', buffering=1) as f:
+        while True:
+            f.write(x)
+            os.fsync(f)
+            sleep(0.01)
+  path: /home/wizard/setup/write-to-disk.py
+  permissions: 0644
+

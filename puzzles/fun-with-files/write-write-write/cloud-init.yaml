@@ -19,19 +19,35 @@ write_files:
     alias ls='ls --color'
   path: /home/wizard/.bash_profile
   permissions: 0644
+- content: |
+    import sys
+    from pathlib import Path
+    p = Path('/var/lib/cloud/data/result.json')
+    if not p.exists():
+        print("result.json doesn't exist yet")
+        sys.exit(1)
+    contents = p.read_text()
+    if '"errors": []' not in contents:
+        print("cloud-init failed")
+        print(contents)
+        sys.exit(1)
+    print("Started!")
+  path: /home/wizard/setup/started_up.py
+  permissions: 0777
 - content: ''
   path: /etc/legal
   permissions: 0644
 - content: |
+    set -e
+    cd /home/wizard/setup/
     for i in in-ur-computer can-u-catch-me writing-ur-disks yes MEGABYTEZ
     do
-        ln /home/wizard/setup/sleep.py $i.py
-        python3 $i.py </dev/null >/dev/null 2>&1 &
+        ln -f sleep.py $i.py
+        pgrep -f $i || python3 $i.py </dev/null >/dev/null 2>&1 &
     done
-    ln /home/wizard/setup/write-to-disk.py bytes-bytes-bytes.py
-    python3 bytes-bytes-bytes.py </dev/null >/dev/null 2>&1 &
+    ln -f write-to-disk.py bytes-bytes-bytes.py
+    pgrep -f bytes-bytes-bytes || python3 bytes-bytes-bytes.py </dev/null >/dev/null 2>&1 &
     sleep 2 # if we don't do this then deleting the files right after will Not Work
-  owner: root
   path: /home/wizard/setup/run.sh
   permissions: 0666
 - content: |
@@ -41,7 +57,6 @@ write_files:
         for i in range(100):
             x = x + x
         time.sleep(0.05)
-  owner: wizard
   path: /home/wizard/setup/sleep.py
   permissions: 0644
 - content: |
@@ -54,7 +69,6 @@ write_files:
             f.write(x)
             os.fsync(f)
             sleep(0.01)
-  owner: wizard
   path: /home/wizard/setup/write-to-disk.py
   permissions: 0644
 - content: |2
@@ -83,6 +97,5 @@ write_files:
 
     Here's a terminal! Good luck!
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  owner: wizard
   path: /home/wizard/puzzle.txt
   permissions: 0644

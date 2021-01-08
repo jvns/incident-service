@@ -62,7 +62,6 @@ def sync_files(cloud_init_files):
     for local_filename in sorted(sync_all_these):
         match = {
             'permissions': 0o644,
-            'owner': 'wizard',
             'path': str(wizard_path.joinpath(local_filename)),
         }
         yield sync_file(match, local_filename)

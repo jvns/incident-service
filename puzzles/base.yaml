@@ -15,6 +15,23 @@ write_files:
     alias ls='ls --color'
   path: /home/wizard/.bash_profile
   permissions: 0644
+- content: |
+    import sys
+    from pathlib import Path
+    p = Path('/var/lib/cloud/data/result.json')
+    if not p.exists():
+        print("result.json doesn't exist yet")
+        sys.exit(1)
+    contents = p.read_text()
+    if '"errors": []' not in contents:
+        print("cloud-init failed")
+        print(contents)
+        sys.exit(1)
+    print("Started!")
+  path: /home/wizard/setup/started_up.py
+  permissions: 0777
 - content: ""
   path: /etc/legal
   permissions: 0644
+
+
