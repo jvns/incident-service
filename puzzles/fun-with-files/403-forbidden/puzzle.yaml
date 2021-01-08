@@ -12,14 +12,14 @@ write_files:
     chmod 000 /var/www/html/a/
   owner: root
   path: /home/wizard/setup/run.sh
-  permissions: 0755
+  permissions: '0755'
 - content: |
     Apache by default serves files from /var/www/html.
   owner: root
   path: /home/wizard/hints/hint1.txt
-  permissions: 0444
+  permissions: '0444'
 - content: |
     403 Forbidden is probably related to the file permissions somehow
   owner: root
   path: /home/wizard/hints/hint2.txt
-  permissions: 0444
+  permissions: '0444'

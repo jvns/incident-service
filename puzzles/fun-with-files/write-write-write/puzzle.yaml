@@ -14,7 +14,7 @@ write_files:
     pgrep -f bytes-bytes-bytes || python3 bytes-bytes-bytes.py </dev/null >/dev/null 2>&1 &
     sleep 2 # if we don't do this then deleting the files right after will Not Work
   path: /home/wizard/setup/run.sh
-  permissions: 0666
+  permissions: '0666'
 - content: |
     import time
     x = 2
@@ -23,7 +23,7 @@ write_files:
             x = x + x
         time.sleep(0.05)
   path: /home/wizard/setup/sleep.py
-  permissions: 0644
+  permissions: '0644'
 - content: |
     from time import sleep
     import os
@@ -35,5 +35,5 @@ write_files:
             os.fsync(f)
             sleep(0.01)
   path: /home/wizard/setup/write-to-disk.py
-  permissions: 0644
+  permissions: '0644'
 

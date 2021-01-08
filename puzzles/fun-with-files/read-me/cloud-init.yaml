@@ -1,4 +1,6 @@
 #cloud-config
+packages:
+- acl
 runcmd:
 - rm -f /etc/update-motd.d/*
 - rm -f /etc/legal
@@ -46,46 +48,38 @@ write_files:
   path: /var/lib/cloud/scripts/per-boot/setup_puzzle
   permissions: '0777'
 - content: |
-    set -e
-    i=0
-    sudo mkdir -p /opt/files
-    sudo chmod 777 /opt/files
-    cd /opt/files
-    dd if=/dev/zero of=masterfile bs=10000 count=1000
-    split -b 5 -a 30 ./masterfile
+    #!/bin/bash
+    cd /home/wizard
+    chown root:root read-me.txt
+    setfacl -m "u:wizard:---" read-me.txt
   owner: root
   path: /home/wizard/setup/run.sh
   permissions: '0755'
-- content: |
-    You can't create files, but df says there *is* disk space! What's up with
-    that?  Look at the df man page to see what else df can tell you about disk
-    usage.
-  owner: root
-  path: /home/wizard/hints/hint1
-  permissions: '0444'
 - content: |2
                        ~~~~~~~~~~
                        greetings!
                        ~~~~~~~~~~
 
-    Today you logged into the server and there is a new problem.
-    It seems that you can't create any files.
-    Figure out why.
+    There's a file called `read-me.txt`. Fix its permissions so it can be read by the user `wizard` (your user). Rules:
 
-         __________
-       /          /|
-     /__________/  |
-     |________ |   |
-     /_____  /||   |
-    |".___."| ||   |
-    |_______|/ |   |
-     || .___."||  /
-     ||_______|| /
-     |_________|/
+    1. You can fix the permissions as root, but you have to read the file as the wizard user.
+    2. You can't change the owner of the file
 
-
-    You have root access. You can't break anything, so just have fun.
+    You have root access. You can't break anything important, so have fun!
     Good luck! Here's a terminal.
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  owner: root
   path: /home/wizard/puzzle.txt
-  permissions: 0644
+  permissions: '0644'
+- content: |
+    you read me! yay!
+  path: /home/wizard/read-me.txt
+  permissions: '0644'
+- content: |
+    When you ls -l read-me.txt, there's a + sign. Why?
+  path: /home/wizard/hints/hint1.txt
+  permissions: '0444'
+- content: |
+    Run `getfacl read-me.txt` and figure out what it means.
+  path: /home/wizard/hints/hint2.txt
+  permissions: '0444'

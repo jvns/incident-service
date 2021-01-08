@@ -5,7 +5,6 @@ runcmd:
 - rm -f /etc/update-motd.d/*
 - rm -f /etc/legal
 - ln -s /home/wizard/puzzle.txt /etc/motd
-- sudo chown -R 1000:1000 /home/wizard
 users:
 - name: wizard
   shell: /bin/bash
@@ -18,8 +17,9 @@ write_files:
     export TERM=xterm-256color
     alias ls='ls --color'
   path: /home/wizard/.bash_profile
-  permissions: 0644
+  permissions: '0644'
 - content: |
+    #!/usr/bin/env python
     import sys
     from pathlib import Path
     p = Path('/var/lib/cloud/data/result.json')
@@ -32,21 +32,24 @@ write_files:
         print(contents)
         sys.exit(1)
     print("Started!")
-  path: /home/wizard/setup/started_up.py
-  permissions: 0777
+  path: /usr/local/bin/started_up
+  permissions: '0777'
 - content: ''
   path: /etc/legal
-  permissions: 0644
+  permissions: '0644'
 - content: |
     #!/bin/bash
+    set -e
+    chown -R 1000:1000 /home/wizard
     cd /home/wizard
-    while ! sudo setfacl -m "u:wizard:---" read-me.txt
-    do
-        sleep 1
-    done
-  owner: root
+    sudo bash -x /home/wizard/setup/run.sh
+    sleep 2
+    rm -rf /home/wizard/setup
+  path: /var/lib/cloud/scripts/per-boot/setup_puzzle
+  permissions: '0777'
+- content: ''
   path: /home/wizard/setup/run.sh
-  permissions: 0755
+  permissions: '0755'
 - content: |2
                        ~~~~~~~~~~
                        greetings!
@@ -54,36 +57,15 @@ write_files:
 
     There's a file in your home directory called `run-me`. Run it.
 
-    Bonus: There's a file called `read-me.txt`. Fix its permissions so it can be read by the user `wizard` (your user). Rules:
-    1. You can fix the permissions as root, but you have to read the file as the wizard user.
-    2. You can't change the owner of the file
-
     You have root access. You can't break anything important, so have fun!
     Good luck! Here's a terminal.
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  owner: root
   path: /home/wizard/puzzle.txt
-  permissions: 0644
-- content: |
-    you read me! yay!
-  owner: root
-  path: /home/wizard/read-me.txt
-  permissions: 0644
+  permissions: '0644'
 - content: |
     You need to set the executable bit for a program to be runnable.
-  owner: root
   path: /home/wizard/hints/hint-run-me.txt
-  permissions: 0444
-- content: |
-    When you ls -l read-me.txt, there's a + sign. Why?
-  owner: root
-  path: /home/wizard/hints/hint-read-me1.txt
-  permissions: 0444
-- content: |
-    Use `getfacl` on read-me.txt
-  owner: root
-  path: /home/wizard/hints/hint-read-me2.txt
-  permissions: 0444
+  permissions: '0444'
 - content: !!binary |
     ZjBWTVJnSUJBUUFBQUFBQUFBQUFBQU1BUGdBQkFBQUFNQVVBQUFBQUFBQkFBQUFBQUFBQUFEQVpB
     QUFBQUFBQUFBQUFBRUFBT0FBSkFFQUFIUUFjQUFZQUFBQUVBQUFBUUFBQUFBQUFBQUJBQUFBQUFB
@@ -282,4 +264,4 @@ write_files:
     QUFBQUFBQUFBQUFBQUE=
   encoding: b64
   path: /home/wizard/run-me
-  permissions: 0644
+  permissions: '0644'

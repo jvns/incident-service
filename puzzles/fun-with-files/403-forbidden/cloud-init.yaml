@@ -5,7 +5,6 @@ runcmd:
 - rm -f /etc/update-motd.d/*
 - rm -f /etc/legal
 - ln -s /home/wizard/puzzle.txt /etc/motd
-- sudo chown -R 1000:1000 /home/wizard
 users:
 - name: wizard
   shell: /bin/bash
@@ -18,8 +17,9 @@ write_files:
     export TERM=xterm-256color
     alias ls='ls --color'
   path: /home/wizard/.bash_profile
-  permissions: 0644
+  permissions: '0644'
 - content: |
+    #!/usr/bin/env python
     import sys
     from pathlib import Path
     p = Path('/var/lib/cloud/data/result.json')
@@ -32,11 +32,21 @@ write_files:
         print(contents)
         sys.exit(1)
     print("Started!")
-  path: /home/wizard/setup/started_up.py
-  permissions: 0777
+  path: /usr/local/bin/started_up
+  permissions: '0777'
 - content: ''
   path: /etc/legal
-  permissions: 0644
+  permissions: '0644'
+- content: |
+    #!/bin/bash
+    set -e
+    chown -R 1000:1000 /home/wizard
+    cd /home/wizard
+    sudo bash -x /home/wizard/setup/run.sh
+    sleep 2
+    rm -rf /home/wizard/setup
+  path: /var/lib/cloud/scripts/per-boot/setup_puzzle
+  permissions: '0777'
 - content: |
     #!/bin/bash
     # idempotent
@@ -47,17 +57,17 @@ write_files:
     chmod 000 /var/www/html/a/
   owner: root
   path: /home/wizard/setup/run.sh
-  permissions: 0755
+  permissions: '0755'
 - content: |
     Apache by default serves files from /var/www/html.
   owner: root
   path: /home/wizard/hints/hint1.txt
-  permissions: 0444
+  permissions: '0444'
 - content: |
     403 Forbidden is probably related to the file permissions somehow
   owner: root
   path: /home/wizard/hints/hint2.txt
-  permissions: 0444
+  permissions: '0444'
 - content: |2
                        ~~~~~~~~~~
                        greetings!
