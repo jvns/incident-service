@@ -71,7 +71,7 @@ application.register("hello", HelloController);
   <script>
   </script>
  </div>
-<% elsif @session.status == 'pending' %>
+<% elsif @session.status == 'waiting_for_ssh' %>
  <div data-controller="hello">
    <div data-hello-target="pending">
      <p class="text-2xl">Waiting for puzzle virtual machine to start... (takes about a minute)</p>

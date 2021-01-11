@@ -19,7 +19,7 @@ write_files:
   path: /home/wizard/.bash_profile
   permissions: '0644'
 - content: |
-    #!/usr/bin/env python
+    #!/usr/bin/python3
     import sys
     from pathlib import Path
     p = Path('/var/lib/cloud/data/result.json')

@@ -1,5 +1,5 @@
 class Session < ApplicationRecord
-  enum status: [:terminated, :running, :pending, :waiting_for_start_script]
+  enum status: [:terminated, :running, :waiting_for_ssh, :waiting_for_cloud_init]
 
   before_create :launch_droplet
   before_destroy :destroy_droplet
@@ -20,7 +20,7 @@ class Session < ApplicationRecord
       digitalocean_id: digitalocean_id,
       gotty_port: port = SecureRandom.rand(2000..5000),
       proxy_id: SecureRandom.base36(30),
-      status: :pending,
+      status: :waiting_for_ssh,
     )
   end
 

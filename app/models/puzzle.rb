@@ -53,6 +53,13 @@ class Puzzle < ActiveHash::Base
       group: "fun-with-files",
       title: "The Case of the Program that Won't Run",
       published: true,
+    },
+    {
+      id: 7,
+      slug: "read-me",
+      group: "fun-with-files",
+      title: "The Case of the File You Can't Read",
+      published: true,
     }
   ]
 end

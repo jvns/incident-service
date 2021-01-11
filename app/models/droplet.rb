@@ -10,21 +10,59 @@ class Droplet
     Droplet.new(session)
   end
 
+
+  # copied from https://stackoverflow.com/questions/3386233/how-to-get-exit-status-with-rubys-netssh-library
+  def ssh_exec!(ssh, command)
+    stdout_data = ""
+    stderr_data = ""
+    exit_code = nil
+    exit_signal = nil
+    ssh.open_channel do |channel|
+      channel.exec(command) do |ch, success|
+        unless success
+          return [nil, nil, -1, nil]
+        end
+        channel.on_data do |ch,data|
+          stdout_data+=data
+        end
+
+        channel.on_extended_data do |ch,type,data|
+          stderr_data+=data
+        end
+
+        channel.on_request("exit-status") do |ch,data|
+          exit_code = data.read_long
+        end
+
+        channel.on_request("exit-signal") do |ch, data|
+          exit_signal = data.read_long
+        end
+      end
+    end
+    ssh.loop
+    [stdout_data, stderr_data, exit_code, exit_signal]
+  end
+  def ssh_connection
+    @sess ||= Net::SSH.start(ip_address, 'wizard', :keys => [ "wizard.key" ], timeout: 0.2)
+  end
+
   def status
     return nil unless session
-    if session.pending?
+    if session.waiting_for_ssh?
       begin
-        sess = Net::SSH.start(ip_address, 'wizard', :keys => [ "wizard.key" ], timeout: 0.2)
-        sess.exec!('ls')
-        session.waiting_for_start_script!
-        sess.exec!('sudo bash setup/run.sh')
-        sess.exec!('sudo rm -r setup')
-        session.running!
+        ssh_connection
+        session.waiting_for_cloud_init!
       rescue Errno::ECONNREFUSED 
-        # probably the session just didn't start yet, let's continue to say it's pending
+        # keep waiting for ssh to come up!
       rescue Net::SSH::ConnectionTimeout
-        # probably the session just didn't start yet, let's continue to say it's pending
+        # keep waiting for ssh to come up!
       end
+    end
+    if session.waiting_for_cloud_init?
+        _, _, exit_code, _ = ssh_exec!(ssh_connection, '/usr/local/bin/started_up')
+        if exit_code == 0
+          session.running!
+        end
     end
     if session.running?
       start_gotty!
