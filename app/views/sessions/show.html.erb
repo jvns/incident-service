@@ -3,6 +3,14 @@
 <script>
 const application = Stimulus.Application.start();
 
+const evtSource = new EventSource("/sessions/<%=@session.id%>/stream", { withCredentials: true })
+evtSource.addEventListener("status", function(event) {
+  console.log("status", event.data, event.id)
+});
+evtSource.addEventListener("finished", function(event) {
+  console.log("finished", event.data)
+});
+console.log(evtSource)
 class HelloController extends Stimulus.Controller {
   static classes = [ "invisible" ];
 
@@ -46,7 +54,7 @@ class HelloController extends Stimulus.Controller {
   }
 
   connect(){
-    this.checkTimer = setInterval(() => { this.check_if_running() }, 1000);
+    console.log('hi')
     if (Notification.permission == 'granted') {
       this.permission_gotten();
     }

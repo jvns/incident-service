@@ -137,9 +137,11 @@ class Droplet
 
   def gotty_running?
     gotty_process = `ps aux`.split("\n").find do |x| 
-      # but why would x ever be nil though?? this was happening but it makes no
-      # sense!!!!!
-      !x.nil? and x.include?('gotty') and x.include?(ip_address)
+      # TODO: this throws exceptions sometimes, we're just ignoring them for now
+      begin
+        x.include?('gotty') and x.include?(ip_address)
+      rescue
+      end
     end
     !gotty_process.nil?
   end

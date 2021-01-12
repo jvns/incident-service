@@ -1,4 +1,6 @@
 class SessionsController < ApplicationController
+  include ActionController::Live
+
   skip_before_action :authenticate_user!, only: :index
 
   def index
@@ -16,6 +18,19 @@ class SessionsController < ApplicationController
       format.html # show.html.erb
       format.json { render json: {status: @session.droplet.status} }
     end
+  end
+
+  def stream
+    response.headers['Content-Type'] = 'text/event-stream'
+    response.headers['X-Accel-Buffering'] = 'no'
+    sse = SSE.new(response.stream, event: "status")
+    sse.write("one")
+    3.times do
+      sse.write("one")
+      sleep 1
+    end
+  ensure
+    sse.close
   end
 
   def new

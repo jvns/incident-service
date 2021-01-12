@@ -4,6 +4,8 @@ Rails.application.routes.draw do
   get '/puzzles/:id/unpublish', to: 'puzzles#unpublish'
 
   get '/instances', to: 'sessions#index'
+  get '/sessions/:id/stream', to: 'sessions#stream'
+
 
   resources :puzzles
   resources :sessions
