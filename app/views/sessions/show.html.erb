@@ -63,7 +63,7 @@ evtSource.addEventListener("finished", function(event) {
     new Notification("Exploding Computer Puzzles: Your puzzle is ready!")
   }
   // reload the iframe
-  app.iframeSource = "/proxy/<%=@session.proxy_id%>";
+  app.iframeSource = "/proxy/<%=@session.proxy_id%>/";
 });
 if (Notification.permission == 'granted') {  
   app.permissionRequested = true;
