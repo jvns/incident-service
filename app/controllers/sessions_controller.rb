@@ -22,7 +22,11 @@ class SessionsController < ApplicationController
 
   def stream
     response.headers['Content-Type'] = 'text/event-stream'
+    # Turn of buffering in nginx
     response.headers['X-Accel-Buffering'] = 'no'
+    # This is a hack to avoid Rack buffering the response by setting the ETag header
+    # See https://github.com/rack/rack/issues/1619 for more
+    headers['Last-Modified'] = Time.now.httpdate
     sse = SSE.new(response.stream, event: "status")
     sse.write("one")
     3.times do
