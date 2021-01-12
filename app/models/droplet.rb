@@ -56,6 +56,8 @@ class Droplet
         # keep waiting for ssh to come up!
       rescue Net::SSH::ConnectionTimeout
         # keep waiting for ssh to come up!
+      rescue Errno::EADDRNOTAVAIL
+        # keep waiting for ssh to come up!
       end
     end
     if session.waiting_for_cloud_init?

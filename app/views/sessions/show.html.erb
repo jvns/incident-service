@@ -14,6 +14,7 @@ class HelloController extends Stimulus.Controller {
     this.requestButtonTarget.classList.add('hidden');
     this.permissionGottenTarget.classList.remove('hidden');
   }
+
   request_permission() {
     Notification.requestPermission().then(permission => { 
       console.log('got permission')
@@ -29,10 +30,11 @@ class HelloController extends Stimulus.Controller {
     });
     evtSource.addEventListener("finished", function(event) {
       console.log("finished", event.data);
+      evtSource.close();
       this.pendingTarget.classList.add("hidden");
+      // reload the iframe
       this.iframeTarget.src = this.iframeTarget.src;
       this.linksTarget.classList.remove("hidden");
-      evtSource.close();
     });
     if (Notification.permission == 'granted') {
       this.permission_gotten();
@@ -58,7 +60,7 @@ application.register("hello", HelloController);
   <script>
   </script>
  </div>
-<% elsif @session.status == 'waiting_for_ssh' %>
+<% else %>
  <div data-controller="hello">
    <div data-hello-target="pending">
      <p class="text-2xl">Waiting for puzzle virtual machine to start... (takes about a minute)</p>
@@ -75,5 +77,4 @@ application.register("hello", HelloController);
     <a class="underline" href="/proxy/<%=@session.proxy_id%>/">Open full screen</a>
    </div>
  </div>
-<% else %>
 <% end %>

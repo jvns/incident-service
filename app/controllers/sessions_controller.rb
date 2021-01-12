@@ -23,6 +23,7 @@ class SessionsController < ApplicationController
 
 
   def stream
+    load_session
     response.headers['Content-Type'] = 'text/event-stream'
     # Turn of buffering in nginx
     response.headers['X-Accel-Buffering'] = 'no'
