@@ -20,6 +20,8 @@ class SessionsController < ApplicationController
     end
   end
 
+
+
   def stream
     response.headers['Content-Type'] = 'text/event-stream'
     # Turn of buffering in nginx
@@ -28,9 +30,14 @@ class SessionsController < ApplicationController
     # See https://github.com/rack/rack/issues/1619 for more
     headers['Last-Modified'] = Time.now.httpdate
     sse = SSE.new(response.stream, event: "status")
-    sse.write("one")
-    3.times do
-      sse.write("one")
+    while true
+      status = @session.droplet.status
+      if status == 'running'
+        sse.write('done', event: 'finished')
+        break
+      else
+        sse.write({status: status, time: @session.updated_at.to_i})
+      end
       sleep 1
     end
   ensure
