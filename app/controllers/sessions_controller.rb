@@ -31,10 +31,14 @@ class SessionsController < ApplicationController
     # See https://github.com/rack/rack/issues/1619 for more
     headers['Last-Modified'] = Time.now.httpdate
     sse = SSE.new(response.stream, event: "status")
+    started_gotty = false
     while true
       status = @session.droplet.status
-      if status == 'running'
+      if status == 'waiting_for_cloud_init'
+        # we're gonna start it like 100 times but it'll for sure be started
         @session.droplet.start_gotty!
+      end
+      if status == 'running'
         sse.write('done', event: 'finished')
         break
       else
