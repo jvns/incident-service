@@ -58,6 +58,7 @@ class Droplet
         # keep waiting for ssh to come up!
       rescue Errno::EADDRNOTAVAIL
         # keep waiting for ssh to come up!
+        # I don't understand why this error happens, need to look into it at some point
       end
     end
     if session.waiting_for_cloud_init?

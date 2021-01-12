@@ -4,9 +4,7 @@
 const application = Stimulus.Application.start();
 
 class HelloController extends Stimulus.Controller {
-  static classes = [ "invisible" ];
-
-  static get targets() {
+  static get_targets() {
     return ["links", "pending", "iframe", "requestButton", "permissionGotten"];
   }
   
@@ -30,11 +28,11 @@ class HelloController extends Stimulus.Controller {
     });
     evtSource.addEventListener("finished", function(event) {
       console.log("finished", event.data);
-      evtSource.close();
       this.pendingTarget.classList.add("hidden");
       // reload the iframe
       this.iframeTarget.src = this.iframeTarget.src;
       this.linksTarget.classList.remove("hidden");
+      evtSource.close();
     });
     if (Notification.permission == 'granted') {
       this.permission_gotten();
