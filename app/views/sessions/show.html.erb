@@ -59,6 +59,9 @@ evtSource.addEventListener("status", function(event) {
 evtSource.addEventListener("finished", function(event) {
   app.finished = true;
   evtSource.close();
+  if (Notification.permission == 'granted') {
+    new Notification("Exploding Computer Puzzles: Your puzzle is ready!")
+  }
   // reload the iframe
   app.iframeSource = "/proxy/<%=@session.proxy_id%>";
 });
