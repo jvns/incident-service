@@ -1,47 +1,5 @@
 <p id="notice"><%= notice %></p>
 
-<script>
-const application = Stimulus.Application.start();
-
-class HelloController extends Stimulus.Controller {
-  static get_targets() {
-    return ["links", "pending", "iframe", "requestButton", "permissionGotten"];
-  }
-  
-  permission_gotten() {
-    this.requestButtonTarget.classList.add('hidden');
-    this.permissionGottenTarget.classList.remove('hidden');
-  }
-
-  request_permission() {
-    Notification.requestPermission().then(permission => { 
-      console.log('got permission')
-      this.permission_gotten();
-    });
-  }
-
-  connect(){
-    console.log('hi')
-    const evtSource = new EventSource("/sessions/<%=@session.id%>/stream", { withCredentials: true })
-    evtSource.addEventListener("status", function(event) {
-      console.log("status", event.data, event.id);
-    });
-    evtSource.addEventListener("finished", function(event) {
-      console.log("finished", event.data);
-      this.pendingTarget.classList.add("hidden");
-      // reload the iframe
-      this.iframeTarget.src = this.iframeTarget.src;
-      this.linksTarget.classList.remove("hidden");
-      evtSource.close();
-    });
-    if (Notification.permission == 'granted') {
-      this.permission_gotten();
-    }
-  }
-};
-
-application.register("hello", HelloController);
-</script>
 <h1 class="text-4xl mb-8"><%=@session.puzzle.title %></h1>
 
 <% if @session.status == 'running' %>
@@ -55,24 +13,60 @@ application.register("hello", HelloController);
 
     <a class="underline" href="/proxy/<%=@session.proxy_id%>/">Open full screen</a>
 
-  <script>
-  </script>
  </div>
 <% else %>
- <div data-controller="hello">
-   <div data-hello-target="pending">
-     <p class="text-2xl">Waiting for puzzle virtual machine to start... (takes about a minute)</p>
+<div id="app">
+   <div v-if="!finished">
+     <p class="text-2xl">
+       Waiting for puzzle virtual machine to start... (takes about a minute)
+     </p>
      <svg width="40px" version="1.1" id="L9" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve"> <path fill="#000" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50"> <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="360 50 50" repeatCount="indefinite" /> </path> </svg>
-
-     <p class="hidden" data-hello-target="permissionGotten"> You'll get a notification when the puzzle is ready to play. </p>
-     <button class="btn" data-hello-target="requestButton" data-action="hello#request_permission">Notify me when it's ready</button>
+     <p v-if="havePermission"> You'll get a notification when the puzzle is ready to play. </p>
+     <button class="btn" v-if="!permissionRequested" v-on:click="requestPermission">Notify me when it's ready</button>
    </div>
-   <div class="hidden" data-hello-target="links">
+   <div v-if="finished">
      <div class="w-full" style="height: 500px">
-       <iframe data-hello-target="iframe" src="/proxy/<%=@session.proxy_id%>/" title="description" height="100%" width="100%"> </iframe>
+       <iframe data-hello-target="iframe" src="" title="description" height="100%" width="100%"> </iframe>
      </div>
 
     <a class="underline" href="/proxy/<%=@session.proxy_id%>/">Open full screen</a>
    </div>
  </div>
+<script src="https://unpkg.com/vue"></script>
+<script>
+Vue.config.ignoredElements = ['iframe'];
+var app = new Vue({
+  el: '#app',
+  data: {
+    finished: false,
+    permissionRequested: false,
+    havePermission: false,
+  },
+  methods: {
+    requestPermission: function() {
+      this.permissionRequested = true;
+      Notification.requestPermission().then(permission => {
+        this.havePermission = true;
+      });
+    }
+  }
+})
+const evtSource = new EventSource("/sessions/<%=@session.id%>/stream", { withCredentials: true })
+evtSource.addEventListener("status", function(event) {
+  console.log("status", event.data, event.id);
+});
+evtSource.addEventListener("finished", function(event) {
+  app.finished = true;
+  evtSource.close();
+  // reload the iframe
+  let iframe = document.querySelector('iframe');
+  iframe.src = "/proxy/<%=@session.proxy_id%>";
+});
+if (Notification.permission == 'granted') {  
+  app.permissionRequested = true;
+  app.havePermission = true;
+}
+</script>
+
+
 <% end %>
