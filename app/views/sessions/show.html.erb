@@ -3,15 +3,6 @@
 <script>
 const application = Stimulus.Application.start();
 
-const evtSource = new EventSource("/sessions/<%=@session.id%>/stream", { withCredentials: true })
-evtSource.addEventListener("status", function(event) {
-  console.log("status", event.data, event.id);
-});
-evtSource.addEventListener("finished", function(event) {
-  console.log("finished", event.data);
-  evtSource.close();
-});
-console.log(evtSource)
 class HelloController extends Stimulus.Controller {
   static classes = [ "invisible" ];
 
@@ -19,30 +10,6 @@ class HelloController extends Stimulus.Controller {
     return ["links", "pending", "iframe", "requestButton", "permissionGotten"];
   }
   
-  // going to try to keep erb-templated-js to a minimum but this seems ok I think?
-  check_if_running() {
-    console.log('checking running...')
-    fetch(`/sessions/<%= @session.id %>/`, {headers: {"Accept": "application/json"}} )
-      .then(response => response.json())
-      .then(data => {
-        console.log("i'm here.. ")
-        let state = data['status'];
-        if (state == 'running') {
-          if (this.checkTimer) {
-            clearInterval(this.checkTimer);
-          }
-          this.pendingTarget.classList.add("hidden");
-          this.iframeTarget.src = this.iframeTarget.src;
-          this.linksTarget.classList.remove("hidden");
-          if (Notification.permission == 'granted') {
-            new Notification("Exploding Computer Puzzles: Your puzzle is ready to play!");
-          }
-          // reload iframe
-          window.addEventListener('beforeunload', function(event) {event.preventDefault()});
-        } 
-      })
-  }
-
   permission_gotten() {
     this.requestButtonTarget.classList.add('hidden');
     this.permissionGottenTarget.classList.remove('hidden');
@@ -56,6 +23,17 @@ class HelloController extends Stimulus.Controller {
 
   connect(){
     console.log('hi')
+    const evtSource = new EventSource("/sessions/<%=@session.id%>/stream", { withCredentials: true })
+    evtSource.addEventListener("status", function(event) {
+      console.log("status", event.data, event.id);
+    });
+    evtSource.addEventListener("finished", function(event) {
+      console.log("finished", event.data);
+      this.pendingTarget.classList.add("hidden");
+      this.iframeTarget.src = this.iframeTarget.src;
+      this.linksTarget.classList.remove("hidden");
+      evtSource.close();
+    });
     if (Notification.permission == 'granted') {
       this.permission_gotten();
     }
