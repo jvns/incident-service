@@ -26,7 +26,7 @@
    </div>
    <div v-if="finished">
      <div class="w-full" style="height: 500px">
-       <iframe data-hello-target="iframe" src="" title="description" height="100%" width="100%"> </iframe>
+       <iframe v-bind:src="iframeSource" title="description" height="100%" width="100%"> </iframe>
      </div>
 
     <a class="underline" href="/proxy/<%=@session.proxy_id%>/">Open full screen</a>
@@ -40,6 +40,7 @@ var app = new Vue({
   data: {
     finished: false,
     permissionRequested: false,
+    iframeSource: "",
     havePermission: false,
   },
   methods: {
@@ -59,8 +60,7 @@ evtSource.addEventListener("finished", function(event) {
   app.finished = true;
   evtSource.close();
   // reload the iframe
-  let iframe = document.querySelector('iframe');
-  iframe.src = "/proxy/<%=@session.proxy_id%>";
+  app.iframeSource = "/proxy/<%=@session.proxy_id%>";
 });
 if (Notification.permission == 'granted') {  
   app.permissionRequested = true;

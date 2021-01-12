@@ -34,6 +34,7 @@ class SessionsController < ApplicationController
     while true
       status = @session.droplet.status
       if status == 'running'
+        @session.droplet.start_gotty!
         sse.write('done', event: 'finished')
         break
       else
