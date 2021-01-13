@@ -5,15 +5,14 @@ class SessionsController < ApplicationController
 
   def index
     raise 'only local allowed' unless request.local? || request.remote_ip.start_with?('172')
-    sessions = Session.where(status: :running)
+    sessions = Session.where.not(status: :waiting_for_ssh)
 
-    result = sessions.map { |session| [session.proxy_id, session.gotty_port] }.to_h
+    result = sessions.map { |session| [session.proxy_id, ["ssh", "-i", "wizard.key", session.droplet.ip_address]] }.to_h
     render :json => result 
   end
 
   def show
     load_session
-    @session.droplet.start_gotty!
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: {status: @session.droplet.status} }
@@ -31,12 +30,10 @@ class SessionsController < ApplicationController
     # See https://github.com/rack/rack/issues/1619 for more
     headers['Last-Modified'] = Time.now.httpdate
     sse = SSE.new(response.stream, event: "status")
-    started_gotty = false
     while true
       status = @session.droplet.status
       if status == 'waiting_for_cloud_init'
         # we're gonna start it like 100 times but it'll for sure be started
-        @session.droplet.start_gotty!
       end
       if status == 'running'
         sse.write('done', event: 'finished')
