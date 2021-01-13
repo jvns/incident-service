@@ -7,7 +7,7 @@ class SessionsController < ApplicationController
     raise 'only local allowed' unless request.local? || request.remote_ip.start_with?('172')
     sessions = Session.where.not(status: :waiting_for_ssh)
 
-    result = sessions.map { |session| [session.proxy_id, ["ssh", "-i", "wizard.key", session.droplet.ip_address]] }.to_h
+    result = sessions.map { |session| [session.proxy_id, ["/usr/bin/ssh", "-o", "StrictHostKeyChecking=no", "-i", "wizard.key", 'wizard@' + session.droplet.ip_address]] }.to_h
     render :json => result 
   end
 
