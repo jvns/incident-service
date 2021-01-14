@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD: password
   goproxy:
     # todo: use a smaller image at some point, we don't really need ubuntu here
-    image: ghcr.io/jvns/exploding-computers-goproxy
+    image: docker.pkg.github.com/jvns/exploding-computers-goproxy
     build:
         dockerfile: $PWD/docker/goproxy/Dockerfile
         context: multi-gotty
@@ -19,7 +19,7 @@ services:
     build: 
         dockerfile: docker/rails/Dockerfile
         context: .
-    image: ghcr.io/jvns/exploding-computers-rails
+    image: docker.pkg.github.com/jvns/exploding-computers-rails
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     env_file: secrets_prod.sh
     volumes:
@@ -28,7 +28,7 @@ services:
     build:
         dockerfile: docker/nginx/Dockerfile
         context: .
-    image: ghcr.io/jvns/exploding-computers-web
+    image: docker.pkg.github.com/jvns/exploding-computers-web
     volumes:
       - ./public:/app/public
     ports:
