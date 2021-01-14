@@ -10,3 +10,7 @@ jobs:
         run: touch /home/runner/work/incident-service/incident-service/secrets_prod.sh
       - name: build docker containers
         run: docker-compose -f docker-compose-prod.yml build
+      - name: Log into registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+      - name: push docker containers
+        run: docker-compose -f docker-compose-prod.yml push rails web goproxy
