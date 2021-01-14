@@ -7,4 +7,4 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: build docker containers
-        run: docker-compose -f docker-compose-prod.yaml build
+        run: docker-compose -f docker-compose-prod.yml build
