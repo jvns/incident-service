@@ -8,8 +8,10 @@ services:
       POSTGRES_PASSWORD: password
   goproxy:
     # todo: use a smaller image at some point, we don't really need ubuntu here
-    build: 'docker/goproxy'
-    command: /app/multi-gotty --port 8080 --address 0.0.0.0 http://rails:3000/sessions
+    build:
+        dockerfile: $PWD/docker/goproxy/Dockerfile
+        context: multi-gotty
+    command: /usr/bin/multi-gotty --port 8080 --address 0.0.0.0 http://rails:3000/sessions
     volumes:
       - .:/app
   rails:
