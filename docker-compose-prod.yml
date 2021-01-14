@@ -11,7 +11,7 @@ services:
     build:
         dockerfile: $PWD/docker/goproxy/Dockerfile
         context: multi-gotty
-    command: /usr/bin/multi-gotty --port 8080 --address 0.0.0.0 http://rails:3000/sessions
+    command: /usr/bin/multi-gotty --ws-origin https://exploding-computers.jvns.ca --index-dir /app/gotty-statics/ --port 8080 --address 0.0.0.0 http://rails:3000/sessions
     volumes:
       - .:/app
   rails:
