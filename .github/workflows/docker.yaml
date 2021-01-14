@@ -9,7 +9,7 @@ jobs:
       - name: make fake secrets file
         run: touch /home/runner/work/incident-service/incident-service/secrets_prod.sh
       - name: pull docker containers
-        run: docker-compose -f docker-compose-prod.yml pull goproxy
+        run: docker-compose -f docker-compose-prod.yml pull goproxy || true
       - name: build docker containers
         run: docker-compose -f docker-compose-prod.yml build goproxy
       - name: Log into registry
