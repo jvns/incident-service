@@ -9,7 +9,9 @@ jobs:
       - name: make fake secrets file
         run: touch /home/runner/work/incident-service/incident-service/secrets_prod.sh
       - name: Log into registry
-        run: echo "${{ secrets.GH_REGISTRY_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        env:
+          GH_REGISTRY_TOKEN: ${{ secrets.GH_REGISTRY_TOKEN }}
+        run: echo "$GH_REGISTRY_TOKEN" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: pull docker containers
         run: docker-compose -f docker-compose-prod.yml pull goproxy || true
       - name: build docker containers
