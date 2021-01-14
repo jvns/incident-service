@@ -7,6 +7,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: make fake secrets file
-        run: touch secrets-prod.sh
+        run: touch /home/runner/work/incident-service/incident-service/secrets_prod.sh
       - name: build docker containers
         run: docker-compose -f docker-compose-prod.yml build
