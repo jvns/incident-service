@@ -16,6 +16,9 @@ jobs:
           password: ${{ secrets.CR_PAT }}
       - name: pull docker containers
         run: docker-compose -f docker-compose-prod.yml pull goproxy web rails || true
+      - uses: satackey/action-docker-layer-caching@v0.0.11
+        # Ignore the failure of a step and avoid terminating the job.
+        continue-on-error: true
       - name: build docker containers
         run: docker-compose -f docker-compose-prod.yml build goproxy web rails
       - name: push docker containers
