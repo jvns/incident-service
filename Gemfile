@@ -8,6 +8,7 @@ gem 'devise'
 gem 'omniauth'
 gem 'omniauth-github'
 gem 'omniauth-oauth2'
+gem 'kramdown'
 gem 'active_hash'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'

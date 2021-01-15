@@ -1,33 +1,68 @@
 <p id="notice"><%= notice %></p>
 
-<h1 class="text-4xl mb-8"><%=@session.puzzle.title %></h1>
-
-<% if @session.status == 'running' %>
-  <div class="py-8">
+<h1 class="text-4xl mb-2"><%=@session.puzzle.title %></h1>
+  <div class="py-4">
   <%= link_to '← Back to puzzles', '/', class: 'btn' %>
   <%= link_to "I'm finished!", "/puzzles/#{@session.puzzle.id}/finished", class: 'btn' %>
   </div>
-    <div class="w-full" style="height: 500px">
-      <iframe src="/proxy/<%=@session.proxy_id%>/" title="description" height="100%" width="100%"> </iframe>
+<style>
+p {
+  margin: .8em 0;
+}
+</style>
+<div class="-mb-4 ml-8 mt-8">
+  <span class="rounded-xl p-2 text-2xl border border-green-800 bg-yellow-100">Your mission</span>
+</div>
+<div class="rounded-2xl mb-4 border border-green-800 text-xl px-4  py-4 pb-2">
+  <%= markdown(@session.puzzle.description) %>
+</div>
+
+
+<% if @session.status == 'running' %>
+    <div class="w-full border-black border-8 rounded-3xl p-4" style="height: 500px; background-color: #fcf4dc">
+      <div class="w-full h-full p-2 rounded border border-yellow-800" style="border-color: #d7c89c">
+        <iframe src="/proxy/<%=@session.proxy_id%>/" title="description" height="100%" width="100%"> </iframe>
+      </div>
     </div>
 
     <a class="underline" href="/proxy/<%=@session.proxy_id%>/">Open full screen</a>
 
  </div>
 <% else %>
+<style>
+#progress {
+  padding-top: 8em;
+  width: 100%;
+  text-align: center;
+}
+.progress {
+    display: inline-block;
+    height: 60px;
+    width: 60px;
+    margin: -30px 20px 0;
+    font: 20px/60px monospace;
+    text-align: center;
+    color: white;
+    background: slategray;
+    border-radius: 50%;
+}
+</style>
 <div id="app">
    <div v-if="!finished">
-     <p class="text-2xl">
-       Waiting for puzzle virtual machine to start... (takes about a minute)
-     </p>
-     <svg width="40px" version="1.1" id="L9" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve"> <path fill="#000" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50"> <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="360 50 50" repeatCount="indefinite" /> </path> </svg>
-     <p v-if="havePermission"> You'll get a notification when the puzzle is ready to play. </p>
-     <button class="btn" v-if="!permissionRequested" v-on:click="requestPermission">Notify me when it's ready</button>
    </div>
-   <div v-if="finished">
-     <div class="w-full" style="height: 500px">
-       <iframe v-bind:src="iframeSource" title="description" height="100%" width="100%"> </iframe>
+   <div class="w-full border-black border-8 rounded-3xl p-4" style="height: 500px; background-color: #fcf4dc">
+     <div class="w-full h-full p-2 rounded border border-yellow-800" style="border-color: #d7c89c">
+       <iframe v-if="finished" v-bind:src="iframeSource" title="description" height="100%" width="100%"> </iframe>
+       <div v-else id="progress">
+         <span class="text-2xl">Loading... (takes about 2 minutes)</span> <br><br><br>
+         <div v-for="i in 5" class="progress"> {{symbol(i, idx)}}</div>
+         <p v-if="havePermission" class="text-xl"> You'll get a notification when the puzzle is ready to play. </p>
+         <p v-if="!permissionRequested">
+         <button class="btn bg-white" v-on:click="requestPermission">Notify me when it's ready</button>
+         </p>
+       </div>
      </div>
+   </div>
 
     <a class="underline" href="/proxy/<%=@session.proxy_id%>/">Open full screen</a>
    </div>
@@ -42,8 +77,21 @@ var app = new Vue({
     permissionRequested: false,
     iframeSource: "",
     havePermission: false,
+    idx: 0,
+    seqs: [
+        ['bq', 'dp', 'qb', 'pd'],
+        ['bo', 'do', 'ob', 'od', 'oq', 'op', 'qo', 'po'],
+        ['o', 'O', '0', 'O'],
+        ['/', '—', '\\'],
+        ['-', '—', '--', '——', '---', '———', '---', '——', '--', '—']
+    ]
   },
   methods: {
+    symbol: function(i, idx) {
+      symbols = this.seqs[i-1];
+      const len = symbols.length;
+      return symbols[idx % len];
+    },
     requestPermission: function() {
       this.permissionRequested = true;
       Notification.requestPermission().then(permission => {
@@ -52,6 +100,7 @@ var app = new Vue({
     }
   }
 })
+setInterval(function() {app.idx = app.idx + 1}, 150)
 const evtSource = new EventSource("/sessions/<%=@session.id%>/stream", { withCredentials: true })
 evtSource.addEventListener("status", function(event) {
   console.log("status", event.data, event.id);

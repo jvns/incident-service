@@ -8,6 +8,7 @@ services:
       POSTGRES_PASSWORD: password
   goproxy:
     # todo: use a smaller image at some point, we don't really need ubuntu here
+    image: ghcr.io/jvns/exploding-computers/goproxy
     build:
         dockerfile: $PWD/docker/goproxy/Dockerfile
         context: multi-gotty
@@ -15,6 +16,7 @@ services:
     volumes:
       - .:/app
   rails:
+    image: ghcr.io/jvns/exploding-computers/rails
     build: 
         dockerfile: docker/rails/Dockerfile
         context: .
@@ -23,6 +25,7 @@ services:
     volumes:
       - .:/app
   web:
+    image: ghcr.io/jvns/exploding-computers/web
     build:
         dockerfile: docker/nginx/Dockerfile
         context: .

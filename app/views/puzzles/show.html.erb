@@ -1,1 +1,19 @@
-<%= button_to 'Start', sessions_url(puzzle_id: @puzzle.id), class: "border border-gray-700 text-gray-700 rounded-md px-4 py-2 m-2 transition duration-500 ease select-none hover:text-white hover:bg-gray-800 focus:outline-none focus:shadow-outline" %> 
+<!-- style for markdown -->
+<style>
+p {
+  margin: .8em 0;
+}
+</style>
+
+<h1 class="text-4xl mb-8"><%=@puzzle.title %></h1>
+
+<div class="-mb-4 ml-8">
+  <span class="rounded-xl p-2 text-2xl border border-green-800 bg-yellow-100">Your mission</span>
+</div>
+<div class="rounded-2xl border border-green-800 text-xl px-4  py-4 pb-8">
+  <%= markdown(@puzzle.description) %>
+</div>
+
+<div class="-mt-8 text-center">
+  <%= button_to 'Start', sessions_url(puzzle_id: @puzzle.id), class: "text-3xl border border-gray-700 text-gray-700 rounded-md px-4 py-2 m-2  select-none hover:text-white hover:bg-gray-800 focus:outline-none focus:shadow-outline" %> 
+</div>

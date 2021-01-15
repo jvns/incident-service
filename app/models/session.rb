@@ -9,7 +9,7 @@ class Session < ApplicationRecord
   end
 
   def puzzle
-    Puzzle.find(self.puzzle_id)
+    @puzzle ||= Puzzle.find(self.puzzle_id)
   end
 
   private

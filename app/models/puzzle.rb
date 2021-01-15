@@ -8,7 +8,13 @@ class Puzzle < ActiveHash::Base
   end
 
   def cloud_init
-    File.read("puzzles/#{group}/#{slug}/cloud-init.yaml")
+    File.read(cloud_init_filename)
+  end
+
+  def puzzle_text
+    yaml = YAML.load_file(cloud_init_filename)
+    puzzle_item = yaml['write_files'].find{|x| x['path'].include?('puzzle.txt')}
+    puzzle_item['content']
   end
 
   self.data = [
@@ -51,6 +57,16 @@ class Puzzle < ActiveHash::Base
       id: 6,
       slug: "run-me",
       group: "fun-with-files",
+      weight: 1,
+      description: <<~EOS,
+      There will be a file in your home directory called `run-me`. Run it (with
+      `./run-me`).
+
+      As always, there's a problem: the program won't run! You get a
+      "permission denied" error. Your mission is to find out why and fix it.
+
+      This one is a basic unix permissions puzzle.
+      EOS
       title: "The Case of the Program that Won't Run",
       published: true,
     },
@@ -62,5 +78,10 @@ class Puzzle < ActiveHash::Base
       published: true,
     }
   ]
+  private
+  
+  def cloud_init_filename
+    "puzzles/#{group}/#{slug}/cloud-init.yaml"
+  end
 end
 
