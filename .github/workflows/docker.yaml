@@ -13,7 +13,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.GH_REGISTRY_TOKEN }}
+          password: ${{ secrets.CR_PAT }}
       - name: pull docker containers
         run: docker-compose -f docker-compose-prod.yml pull goproxy || true
       - name: build docker containers
