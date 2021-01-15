@@ -15,8 +15,8 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.CR_PAT }}
       - name: pull docker containers
-        run: docker-compose -f docker-compose-prod.yml pull goproxy || true
+        run: docker-compose -f docker-compose-prod.yml pull goproxy web rails || true
       - name: build docker containers
-        run: docker-compose -f docker-compose-prod.yml build goproxy
+        run: docker-compose -f docker-compose-prod.yml build goproxy web rails
       - name: push docker containers
-        run: docker-compose -f docker-compose-prod.yml push goproxy
+        run: docker-compose -f docker-compose-prod.yml push goproxy web rails
