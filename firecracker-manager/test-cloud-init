@@ -1,0 +1,5 @@
+{
+    "root_image_path":  "/home/bork/work/incident-service/docker/vm/ubuntu.ext4",
+    "kernel_path":    "/home/bork/work/incident-service/cloud-init-image/vmlinux-5.8",
+    "cloud_init_path": "/home/bork/work/incident-service/puzzles/fun-with-files/run-me/cloud-init.yaml"
+}

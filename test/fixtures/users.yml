@@ -6,7 +6,13 @@
 #
 manuela: 
    email: manuela@example.com
+   provider: test
+   uid: 1
 rishi:
    email: rishi@example.com
+   provider: test
+   uid: 2
 julia:
    email: julia@jvns.ca
+   provider: test
+   uid: 3

@@ -7,7 +7,7 @@ class SessionsController < ApplicationController
     raise 'only local allowed' unless request.local? || request.remote_ip.start_with?('172')
     sessions = Session.where.not(status: :waiting_for_ssh)
 
-    result = sessions.map { |session| [session.proxy_id, ["/usr/bin/ssh", "-o", "StrictHostKeyChecking=no", "-i", "wizard.key", 'wizard@' + session.droplet.ip_address]] }.to_h
+    result = sessions.map { |session| [session.proxy_id, ["/usr/bin/ssh", "-o", "StrictHostKeyChecking=no", "-i", "wizard.key", 'wizard@' + session.vm.ip_address]] }.to_h
     render :json => result 
   end
 
@@ -15,7 +15,7 @@ class SessionsController < ApplicationController
     load_session
     respond_to do |format|
       format.html # show.html.erb
-      format.json { render json: {status: @session.droplet.status} }
+      format.json { render json: {status: @session.vm.status} }
     end
   end
 
@@ -31,7 +31,7 @@ class SessionsController < ApplicationController
     headers['Last-Modified'] = Time.now.httpdate
     sse = SSE.new(response.stream, event: "status")
     while true
-      status = @session.droplet.status
+      status = @session.vm.status
       if status == 'waiting_for_cloud_init'
         # we're gonna start it like 100 times but it'll for sure be started
       end
@@ -86,6 +86,7 @@ class SessionsController < ApplicationController
   def build_session
     @session ||= session_scope.build
     @session.attributes = session_params
+    @session.firecracker!
     @session.user_id = @current_user.id
   end
 

@@ -5,12 +5,6 @@ class Droplet
   end
   attr_accessor :session
 
-  def self.from_puzzle(puzzle, user)
-    session = Session.where(puzzle_id: puzzle.id, user_id: user.id).first
-    Droplet.new(session)
-  end
-
-
   # copied from https://stackoverflow.com/questions/3386233/how-to-get-exit-status-with-rubys-netssh-library
   def ssh_exec!(ssh, command)
     stdout_data = ""

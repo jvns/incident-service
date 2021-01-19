@@ -51,6 +51,7 @@ class Puzzle < ActiveHash::Base
       slug: "403-forbidden",
       group: "fun-with-files",
       title: "The Case of the 403 Forbidden",
+      description: "hi",
       published: true,
     },
     {
@@ -75,6 +76,7 @@ class Puzzle < ActiveHash::Base
       slug: "read-me",
       group: "fun-with-files",
       title: "The Case of the File You Can't Read",
+      description: "hi",
       published: true,
     }
   ]
