@@ -51,7 +51,9 @@ class Puzzle < ActiveHash::Base
       slug: "403-forbidden",
       group: "fun-with-files",
       title: "The Case of the 403 Forbidden",
-      description: "hi",
+      description: <<~EOS,
+      hi
+      EOS
       published: true,
     },
     {
@@ -76,7 +78,14 @@ class Puzzle < ActiveHash::Base
       slug: "read-me",
       group: "fun-with-files",
       title: "The Case of the File You Can't Read",
-      description: "hi",
+      description: <<~EOS,
+      There's a file in your home directory called `read-me`. Your mission is
+      to read it (with `cat read-me`).
+
+      You'll find that there's a problem: a permission denied error! But this
+      one isn't as simple to fix as the previous puzzle. There are hints if you
+      get stuck.
+      EOS
       published: true,
     }
   ]
