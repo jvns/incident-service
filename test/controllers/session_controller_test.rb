@@ -20,10 +20,13 @@ class SessionControllerTest < ActionDispatch::IntegrationTest
     #stub_request(:post, "https://api.digitalocean.com/v2/droplets").
     #  to_return(status: 202, body: do_instance, headers: {})
 
-    instance = '{"id": "abcdefg", "ip_address": "1.2.3.4"}'
-    stub_request(:post, "http://host:8080/create").
-      with(body: "{\"root_image_path\":\"/images/base.ext4\",\"kernel_path\":\"/images/vmlinuz-5.8\"}").
+    instance = '{"id": "abcdefg"}'
+    stub_request(:post, "http://host:9090/create").
+      with(body: "{\"image\":\"jvns/game:base\"}").
       to_return(status: 200, body: instance, headers: {})
+    stub_request(:post, "http://host:9090/ip_address").
+      with(body: "{\"id\":\"abcdefg\"}").
+      to_return(status: 200, body: '{"ip_address": "1.2.3.4"}', headers: {})
 
     #stub_request(:get, "https://api.digitalocean.com/v2/droplets/220816290").
     #  to_return(status: 200, body: do_instance_started)
@@ -63,6 +66,10 @@ class SessionControllerTest < ActionDispatch::IntegrationTest
       get session_url(Session.last), headers: {"Accept": "application/json"}
     end
     assert_response :success
+
+    stub_request(:post, "http://host:9090/ip_address").
+      with(body: "{\"id\":\"abcdefg\"}").
+      to_return(status: 200, body: '', headers: {})
     assert_equal({"status" => "waiting_for_ssh"}, response.parsed_body)
   end
 

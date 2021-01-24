@@ -1,6 +1,6 @@
 class Session < ApplicationRecord
   enum status: [:terminated, :running, :waiting_for_ssh, :waiting_for_cloud_init]
-  enum vm_type: [:digitalocean, :firecracker]
+  enum vm_type: [:digitalocean, :firecracker, :ignite]
 
   before_create :launch_vm
   before_destroy :destroy_vm
@@ -10,6 +10,8 @@ class Session < ApplicationRecord
       Droplet.new(self)
     elsif firecracker?
       Firecracker.new(self)
+    elsif ignite?
+      Ignite.new(self)
     end
   end
 
