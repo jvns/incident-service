@@ -16,9 +16,16 @@ RUN chmod 644 /home/wizard/.ssh/authorized_keys
 RUN chown wizard:wizard /home/wizard/.ssh/authorized_keys
 COPY bash_profile /home/wizard/.bash_profile
 COPY motd /etc/motd
+RUN systemctl set-default -f multi-user.target
+RUN systemctl mask getty@tty1.service
+RUN systemctl mask getty.target
+RUN systemctl mask dbus.socket
+RUN systemctl mask systemd-timesyncd.service
+RUN systemctl mask systemd-random-seed.service
 RUN echo '' > /etc/legal
 RUN rm -f /etc/update-motd.d/*
 RUN rm -f /etc/legal
+RUN echo 4 > /blah
 
 COPY start.sh start.sh
 

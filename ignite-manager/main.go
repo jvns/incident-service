@@ -100,7 +100,7 @@ func ipAddressHandler(w http.ResponseWriter, r *http.Request) error {
 }
 
 func Create(imageName string) (string, error) {
-	cmd := exec.Command("ignite", "create", "--log-level", "error", "--quiet", "--ssh", imageName)
+	cmd := exec.Command("ignite", "create", "--log-level", "error", "--quiet", "--runtime", "docker", "--ssh", imageName)
 	cmd.Stderr = os.Stderr
 	vmIDBytes, err := cmd.Output()
 	if err != nil {
