@@ -1,4 +1,13 @@
 version: "3.3"
+networks:
+  ignitenet:
+    driver: bridge
+    ipam:
+     driver: default
+     config:
+       - subnet: 10.61.0.1/16
+    driver_opts:
+      com.docker.network.bridge.name: ignite0
 services:
   db:
     image: postgres
@@ -13,6 +22,9 @@ services:
         dockerfile: $PWD/docker/goproxy/Dockerfile
         context: multi-gotty
     command: /usr/bin/multi-gotty --ws-origin https://exploding-computers.jvns.ca --index-dir /app/gotty-statics/ --port 8080 --address 0.0.0.0 http://rails:3000/sessions
+    networks:
+        - default
+        - ignitenet
     volumes:
       - .:/app
   rails:
@@ -22,6 +34,9 @@ services:
         context: .
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     env_file: secrets_prod.sh
+    networks:
+        - default
+        - ignitenet
     extra_hosts:
         - host:10.17.0.5
     volumes:
