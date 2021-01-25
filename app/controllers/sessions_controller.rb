@@ -4,11 +4,21 @@ class SessionsController < ApplicationController
   skip_before_action :authenticate_user!, only: :index
 
   def index
-    raise 'only local allowed' unless request.local? || request.remote_ip.start_with?('172')
+    # TODO: put this back later
+    puts request.remote_ip
+    #raise 'only local allowed' unless request.local? || request.remote_ip.start_with?('172')
     sessions = Session.where.not(status: :waiting_for_ssh)
 
-    result = sessions.map { |session| [session.proxy_id, ["/usr/bin/ssh", "-o", "StrictHostKeyChecking=no", "-i", "wizard.key", 'wizard@' + session.vm.ip_address]] }.to_h
-    render :json => result 
+    result = sessions.map do |session| 
+      # this is a bit silly because they're probably all the same
+      if session.fly?
+        port = "23"
+      else
+        port = "22"
+      end
+      [session.proxy_id, ["/usr/bin/ssh", "-p", port, "-o", "StrictHostKeyChecking=no", "-i","wizard.key", 'wizard@' + session.vm.ip_address]]
+    end
+    render :json => result.to_h
   end
 
   def show
@@ -86,7 +96,7 @@ class SessionsController < ApplicationController
   def build_session
     @session ||= session_scope.build
     @session.attributes = session_params
-    @session.firecracker!
+    @session.fly!
     @session.user_id = @current_user.id
   end
 
