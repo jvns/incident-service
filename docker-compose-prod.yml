@@ -22,6 +22,8 @@ services:
         context: .
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     env_file: secrets_prod.sh
+    extra_hosts:
+        - host:10.17.0.5
     volumes:
       - .:/app
   web:

@@ -1,0 +1,9 @@
+[Unit]
+Description=Ignite Manager
+
+[Service]
+ExecStart=/app/ignite-manager/ignite-manager
+
+[Install]
+WantedBy=multi-user.target
+Alias=ignite.service
