@@ -86,7 +86,7 @@ class SessionsController < ApplicationController
   def build_session
     @session ||= session_scope.build
     @session.attributes = session_params
-    @session.ignite!
+    @session.firecracker!
     @session.user_id = @current_user.id
   end
 

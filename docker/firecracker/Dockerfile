@@ -15,6 +15,7 @@ RUN wget https://github.com/firecracker-microvm/firecracker/releases/download/v0
 RUN tar -xf Firecracker-v0.23.2-x86_64.tgz
 RUN cp release-v0.23.2/firecracker-v0.23.2-x86_64 /usr/bin/firecracker
 RUN cp release-v0.23.2/jailer-v0.23.2-x86_64 /usr/bin/jailer
+RUN apt-get install -y dmsetup
 COPY --from=go /go/src/app/firecracker-manager  /usr/bin/firecracker-manager
 WORKDIR /app
 

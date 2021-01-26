@@ -1,13 +1,13 @@
 version: "3.3"
 networks:
-  ignitenet:
+  firecrackernet:
     driver: bridge
     ipam:
      driver: default
      config:
-       - subnet: 10.61.0.1/16
+       - subnet: 172.102.0.0/16
     driver_opts:
-      com.docker.network.bridge.name: ignite0
+      com.docker.network.bridge.name: firecracker0
 services:
   db:
     image: postgres
@@ -26,7 +26,7 @@ services:
       - .:/app
     networks:
         - default
-        - ignitenet
+        - firecrackernet
   rails:
     image: ghcr.io/jvns/exploding-computers/rails
     build: 
@@ -36,7 +36,7 @@ services:
     env_file: secrets.sh
     networks:
         - default
-        - ignitenet
+        - firecrackernet
     volumes:
       - .:/app
     extra_hosts:
@@ -50,3 +50,15 @@ services:
       - ./public:/app/public
     ports:
       - "8777:80"
+  firecracker:
+    image: ghcr.io/jvns/exploding-computers/firecracker-manager
+    command: /usr/bin/firecracker-manager
+    network_mode: host
+    privileged: true
+    build:
+        dockerfile: $PWD/docker/firecracker/Dockerfile
+        context: ./firecracker-manager
+    devices:
+        - /dev/kvm
+    volumes:
+        - /home/bork/work/firecracker-images:/images

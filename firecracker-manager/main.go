@@ -7,7 +7,6 @@ import (
 	"fmt"
 	firecracker "github.com/firecracker-microvm/firecracker-go-sdk"
 	models "github.com/firecracker-microvm/firecracker-go-sdk/client/models"
-	"io"
 	"io/ioutil"
 	"log"
 	"net"
@@ -41,9 +40,12 @@ func main() {
 	defer cleanup()
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
+
+	installSignalHandlers()
 }
 
 func cleanup() {
+	log.Print("Cleaning up VMs...")
 	for _, running := range runningVMs {
 		shutDown(running)
 	}
@@ -52,6 +54,7 @@ func cleanup() {
 func shutDown(running RunningFirecracker) {
 	running.machine.StopVMM()
 	os.Remove(running.image)
+	running.mapperDevice.Cleanup()
 }
 
 func makeIso(cloudInitPath string) (string, error) {
@@ -150,19 +153,20 @@ func getOptions(id byte, req CreateRequest) options {
 }
 
 type RunningFirecracker struct {
-	ctx       context.Context
-	cancelCtx context.CancelFunc
-	image     string
-	machine   *firecracker.Machine
+	ctx          context.Context
+	cancelCtx    context.CancelFunc
+	image        string
+	mapperDevice *device
+	machine      *firecracker.Machine
 }
 
 func (opts *options) createVMM(ctx context.Context) (*RunningFirecracker, error) {
 	vmmCtx, vmmCancel := context.WithCancel(ctx)
-	rootImagePath, err := copyImage(opts.Request.RootDrivePath)
-	opts.Request.RootDrivePath = rootImagePath
+	rootImagePath, mapperDevice, err := copyImage(opts.Request.RootDrivePath)
 	if err != nil {
 		return nil, fmt.Errorf("Failed copying root path: %s", err)
 	}
+	opts.Request.RootDrivePath = rootImagePath
 	fcCfg, err := opts.getConfig()
 	if err != nil {
 		return nil, err
@@ -205,12 +209,12 @@ func (opts *options) createVMM(ctx context.Context) (*RunningFirecracker, error)
 	if err := m.Start(vmmCtx); err != nil {
 		return nil, fmt.Errorf("Failed to start machine: %v", err)
 	}
-	installSignalHandlers(vmmCtx, m)
 	return &RunningFirecracker{
-		ctx:       vmmCtx,
-		image:     rootImagePath,
-		cancelCtx: vmmCancel,
-		machine:   m,
+		ctx:          vmmCtx,
+		mapperDevice: mapperDevice,
+		image:        rootImagePath,
+		cancelCtx:    vmmCancel,
+		machine:      m,
 	}, nil
 }
 
@@ -238,19 +242,6 @@ func (opts *options) getConfig() (*firecracker.Config, error) {
 			IsReadOnly:   firecracker.Bool(false),
 		},
 	}
-	if opts.Request.CloudInitPath != "" {
-		isoPath, err := makeIso(opts.Request.CloudInitPath)
-		if err != nil {
-			return nil, fmt.Errorf("Failed to create iso: %s", err)
-		}
-		drives = append(drives, models.Drive{
-			DriveID:      firecracker.String("2"),
-			PathOnHost:   &isoPath,
-			IsRootDevice: firecracker.Bool(false),
-			IsReadOnly:   firecracker.Bool(true),
-		})
-	}
-
 	return &firecracker.Config{
 		VMID:            opts.Id,
 		SocketPath:      opts.FcSocketPath,
@@ -281,32 +272,15 @@ func (opts *options) getConfig() (*firecracker.Config, error) {
 	}, nil
 }
 
-func copyImage(src string) (string, error) {
-	sourceFileStat, err := os.Stat(src)
+func copyImage(src string) (string, *device, error) {
+	device, err := createDeviceMapper(src, "/images")
 	if err != nil {
-		return "", err
+		return "", nil, err
 	}
-
-	if !sourceFileStat.Mode().IsRegular() {
-		return "", fmt.Errorf("%s is not a regular file", src)
-	}
-
-	source, err := os.Open(src)
-	if err != nil {
-		return "", err
-	}
-	defer source.Close()
-
-	destination, err := ioutil.TempFile("/images", "image")
-	if err != nil {
-		return "", err
-	}
-	defer destination.Close()
-	_, err = io.Copy(destination, source)
-	return destination.Name(), err
+	return fmt.Sprintf("/dev/mapper/%s", device.overlayName), device, nil
 }
 
-func installSignalHandlers(ctx context.Context, m *firecracker.Machine) {
+func installSignalHandlers() {
 	// not sure if this is actually really helping with anything
 	go func() {
 		// Clear some default handlers installed by the firecracker SDK:
@@ -317,11 +291,9 @@ func installSignalHandlers(ctx context.Context, m *firecracker.Machine) {
 		for {
 			switch s := <-c; {
 			case s == syscall.SIGTERM || s == os.Interrupt:
-				log.Printf("Caught SIGINT, requesting clean shutdown")
-				m.Shutdown(ctx)
+				cleanup()
 			case s == syscall.SIGQUIT:
-				log.Printf("Caught SIGTERM, forcing shutdown")
-				m.StopVMM()
+				cleanup()
 			}
 		}
 	}()

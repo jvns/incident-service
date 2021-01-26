@@ -23,6 +23,8 @@ while read oldrev newrev ref; do
   fi
 
   docker-compose -f docker-compose-prod.yml pull && docker-compose -f docker-compose-prod.yml up --no-build -d
+  go build
+  service ignite-manager restart
   echo "Done"
 done
 

@@ -1,4 +1,4 @@
-FROM base
+FROM jvns/game:base
 
 WORKDIR /home/wizard
 COPY files/run-me run-me

@@ -7,6 +7,7 @@ require (
 	github.com/codegangsta/cli v1.19.1
 	github.com/elazarl/go-bindata-assetfs v1.0.1
 	github.com/fatih/structs v1.1.0
+	github.com/freddierice/go-losetup v0.0.0-20170407175016-fc9adea44124
 	github.com/gorilla/websocket v1.4.2
 	github.com/hashicorp/go-multierror v1.1.0 // indirect
 	github.com/kr/pty v1.1.8

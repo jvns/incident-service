@@ -13,8 +13,8 @@ RUN yes | unminimize
 RUN useradd -ms /bin/bash wizard
 COPY wizard_key.pub /home/wizard/.ssh/authorized_keys
 RUN chmod 644 /home/wizard/.ssh/authorized_keys
-RUN chown wizard:wizard /home/wizard/.ssh/authorized_keys
 COPY bash_profile /home/wizard/.bash_profile
+RUN chown -R wizard:wizard /home/wizard/
 COPY motd /etc/motd
 RUN systemctl set-default -f multi-user.target
 RUN systemctl mask getty@tty1.service
