@@ -24,4 +24,4 @@ chown -R 1000:1000 $MOUNTDIR/home/wizard
 
 umount $MOUNTDIR
 rmdir mnt
-docker kil $CONTAINER_ID
+docker kill $CONTAINER_ID
