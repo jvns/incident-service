@@ -50,15 +50,15 @@ services:
       - ./public:/app/public
     ports:
       - "8777:80"
-  firecracker:
-    image: ghcr.io/jvns/exploding-computers/firecracker-manager
-    command: /usr/bin/firecracker-manager
-    network_mode: host
-    privileged: true
-    build:
-        dockerfile: $PWD/docker/firecracker/Dockerfile
-        context: ./firecracker-manager
-    devices:
-        - /dev/kvm
-    volumes:
-        - /home/bork/work/firecracker-images:/images
+        # firecracker:
+        #   image: ghcr.io/jvns/exploding-computers/firecracker-manager
+        #   command: /usr/bin/firecracker-manager
+        #   network_mode: host
+        #   privileged: true
+        #   build:
+        #       dockerfile: $PWD/docker/firecracker/Dockerfile
+        #       context: ./firecracker-manager
+        #   devices:
+        #       - /dev/kvm
+        #   volumes:
+        #       - /home/bork/work/firecracker-images:/images
