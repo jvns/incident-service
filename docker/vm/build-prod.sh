@@ -13,7 +13,6 @@ umount $MOUNTDIR || true
 mkdir -p $MOUNTDIR
 rmdir $MOUNTDIR
 mkdir $MOUNTDIR
-rm $FS
 qemu-img create -f raw $FS 800M
 chmod 644 $FS
 mkfs.ext4 $FS
