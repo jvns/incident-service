@@ -1,4 +1,13 @@
 version: "3.3"
+networks:
+  firecrackernet:
+    driver: bridge
+    ipam:
+     driver: default
+     config:
+       - subnet: 172.102.0.0/16
+    driver_opts:
+      com.docker.network.bridge.name: firecracker0
 services:
   db:
     image: postgres
