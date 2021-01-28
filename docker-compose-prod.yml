@@ -24,6 +24,9 @@ services:
     command: /usr/bin/multi-gotty --ws-origin https://exploding-computers.jvns.ca --index-dir /app/gotty-statics/ --port 8080 --address 0.0.0.0 http://rails:3000/sessions
     volumes:
       - .:/app
+    networks:
+        - default
+        - firecrackernet
   rails:
     image: ghcr.io/jvns/exploding-computers/rails
     build: 
@@ -35,6 +38,9 @@ services:
       - .:/app
     extra_hosts:
       - host:10.61.0.1
+    networks:
+        - default
+        - firecrackernet
   web:
     image: ghcr.io/jvns/exploding-computers/web
     build:
