@@ -37,6 +37,7 @@ func createDeviceMapper(base string, overlayDir string) (*device, error) {
 	}
 	overlayDev, err := losetup.Attach(overlayFilename, 0, false)
 	if err != nil {
+		baseDev.Detach()
 		return nil, fmt.Errorf("failed to setup loop device for %q: %v", overlayFilename, err)
 	}
 

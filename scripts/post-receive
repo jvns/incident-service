@@ -23,8 +23,9 @@ while read oldrev newrev ref; do
   fi
 
   docker-compose -f docker-compose-prod.yml pull && docker-compose -f docker-compose-prod.yml up --no-build -d
+  cd firecracker-manager
   go build
-  service ignite-manager restart
+  service firecracker-manager restart
   echo "Done"
 done
 

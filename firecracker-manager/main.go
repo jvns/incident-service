@@ -14,6 +14,7 @@ import (
 	"os"
 	"os/exec"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 )
 
@@ -284,7 +285,7 @@ func (opts *options) getConfig() (*firecracker.Config, error) {
 }
 
 func copyImage(src string) (string, *device, error) {
-	device, err := createDeviceMapper(src, "/images")
+	device, err := createDeviceMapper(src, filepath.Dir(src))
 	if err != nil {
 		return "", nil, err
 	}

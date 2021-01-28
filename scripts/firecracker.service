@@ -1,0 +1,9 @@
+[Unit]
+Description=Firecracker Manager
+
+[Service]
+ExecStart=/app/firecracker-manager/firecracker-manager
+
+[Install]
+WantedBy=multi-user.target
+Alias=firecracker.service
