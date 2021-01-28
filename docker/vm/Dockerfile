@@ -1,31 +1,18 @@
 FROM ubuntu:20.04
-COPY id_rsa.pub /root/.ssh/authorized_keys
-RUN apt-get update
-RUN apt-get install -y iputils-ping
-RUN apt-get install -y init
-RUN apt-get install -y openssh-server
-COPY systemd-random-seed.service /usr/lib/systemd/system/systemd-random-seed.service
-RUN chmod 644 /root/.ssh/authorized_keys
-COPY cloud.cfg  /etc/cloud/cloud.cfg
-RUN apt-get install -y man
-RUN apt-get install -y acl
 RUN yes | unminimize
-RUN useradd -ms /bin/bash wizard
+RUN apt-get update
+RUN apt-get install -y man acl tini
+RUN apt-get install -y iputils-ping openssh-server
+COPY systemd-random-seed.service /usr/lib/systemd/system/systemd-random-seed.service
+COPY cloud.cfg  /etc/cloud/cloud.cfg
 COPY wizard_key.pub /home/wizard/.ssh/authorized_keys
-RUN chmod 644 /home/wizard/.ssh/authorized_keys
 COPY bash_profile /home/wizard/.bash_profile
-RUN chown -R wizard:wizard /home/wizard/
 COPY motd /etc/motd
-RUN systemctl set-default -f multi-user.target
-RUN systemctl mask getty@tty1.service
-RUN systemctl mask getty.target
-RUN systemctl mask dbus.socket
-RUN systemctl mask systemd-timesyncd.service
-RUN systemctl mask systemd-random-seed.service
-RUN echo '' > /etc/legal
-RUN rm -f /etc/update-motd.d/*
-RUN rm -f /etc/legal
-RUN echo 4 > /blah
+COPY id_rsa.pub /root/.ssh/authorized_keys
+COPY build-container.sh /build-container.sh
+COPY init.sh /sbin/init
+RUN chmod 755 /sbin/init
+RUN bash /build-container.sh; rm /build-container.sh
 
 COPY start.sh start.sh
 

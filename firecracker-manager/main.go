@@ -35,8 +35,8 @@ var runningVMs map[string]RunningFirecracker = make(map[string]RunningFirecracke
 var ipByte byte = 3
 
 func main() {
-	http.HandleFunc("/create", createRequestHandler)
-	http.HandleFunc("/delete", deleteRequestHandler)
+	http.Handle("/create", Handler{createRequestHandler})
+	http.Handle("/delete", Handler{deleteRequestHandler})
 	defer cleanup()
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
@@ -51,10 +51,16 @@ func cleanup() {
 	}
 }
 
-func shutDown(running RunningFirecracker) {
-	running.machine.StopVMM()
-	os.Remove(running.image)
-	running.mapperDevice.Cleanup()
+func shutDown(running RunningFirecracker) error {
+	err := running.machine.StopVMM()
+	if err != nil {
+		return fmt.Errorf("failed to stop VM, %v", err)
+	}
+	err = running.mapperDevice.Cleanup()
+	if err != nil {
+		return fmt.Errorf("failed to cleanup, %v", err)
+	}
+	return nil
 }
 
 func makeIso(cloudInitPath string) (string, error) {
@@ -70,34 +76,38 @@ func makeIso(cloudInitPath string) (string, error) {
 	return image, nil
 }
 
-func deleteRequestHandler(w http.ResponseWriter, r *http.Request) {
+func deleteRequestHandler(w http.ResponseWriter, r *http.Request) error {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		log.Fatalf("failed to read body, %s", err)
+		return fmt.Errorf("failed to read body, %v", err)
 	}
 	var req DeleteRequest
 	json.Unmarshal([]byte(body), &req)
 	if err != nil {
-		log.Fatalf(err.Error())
+		return fmt.Errorf("failed to parse json, %v", err)
 	}
 
 	running := runningVMs[req.ID]
-	shutDown(running)
+	err = shutDown(running)
+	if err != nil {
+		return fmt.Errorf("failed to shutdown vm, %v", err)
+	}
 	delete(runningVMs, req.ID)
+	return nil
 }
 
-func createRequestHandler(w http.ResponseWriter, r *http.Request) {
+func createRequestHandler(w http.ResponseWriter, r *http.Request) error {
 	ipByte += 1
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		log.Fatalf("failed to read body, %s", err)
+		return fmt.Errorf("failed to read body, %s", err)
 	}
 	var req CreateRequest
 	json.Unmarshal([]byte(body), &req)
 	opts := getOptions(ipByte, req)
 	running, err := opts.createVMM(context.Background())
 	if err != nil {
-		log.Fatalf(err.Error())
+		return fmt.Errorf("failed to create VM, %s", err)
 	}
 
 	id := pseudo_uuid()
@@ -107,7 +117,7 @@ func createRequestHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	response, err := json.Marshal(&resp)
 	if err != nil {
-		log.Fatalf("failed to marshal json, %s", err)
+		return fmt.Errorf("failed to marshal json, %s", err)
 	}
 	w.Header().Add("Content-Type", "application/json")
 	w.Write(response)
@@ -120,6 +130,7 @@ func createRequestHandler(w http.ResponseWriter, r *http.Request) {
 		// the VM on /delete and it returns an error when it's terminated
 		running.machine.Wait(running.ctx)
 	}()
+	return nil
 }
 
 func pseudo_uuid() string {
