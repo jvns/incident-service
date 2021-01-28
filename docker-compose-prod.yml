@@ -20,12 +20,12 @@ services:
     build: 
         dockerfile: docker/rails/Dockerfile
         context: .
-    extra_hosts:
-        host:10.61.0.1
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     env_file: secrets_prod.sh
     volumes:
       - .:/app
+    extra_hosts:
+      - host:10.61.0.1
   web:
     image: ghcr.io/jvns/exploding-computers/web
     build:

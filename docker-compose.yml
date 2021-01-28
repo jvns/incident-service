@@ -40,7 +40,7 @@ services:
     volumes:
       - .:/app
     extra_hosts:
-        - host:192.168.1.181
+      - host:192.168.1.181
   web:
     image: ghcr.io/jvns/exploding-computers/web
     build:
