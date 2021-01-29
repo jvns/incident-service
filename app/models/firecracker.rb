@@ -64,8 +64,8 @@ class Firecracker
     uri = URI("http://host:8080/create")
     req = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
     req.body = {
-      root_image_path: '/images/base.ext4',
-      kernel_path: '/images/vmlinux-5.8'
+      root_image_path: 'base.ext4',
+      kernel_path: 'vmlinux-5.8'
     }.to_json
     resp = Net::HTTP.start(uri.hostname, uri.port) do |http|
       http.request(req)

@@ -18,6 +18,8 @@ import (
 	"syscall"
 )
 
+var ImageDir string = "/images"
+
 type CreateRequest struct {
 	RootDrivePath string `json:"root_image_path"`
 	KernelPath    string `json:"kernel_path"`
@@ -36,6 +38,9 @@ var runningVMs map[string]RunningFirecracker = make(map[string]RunningFirecracke
 var ipByte byte = 3
 
 func main() {
+	if len(os.Args) > 0 {
+		ImageDir = os.Args[1]
+	}
 	http.Handle("/create", Handler{createRequestHandler})
 	http.Handle("/delete", Handler{deleteRequestHandler})
 	defer cleanup()
@@ -105,6 +110,9 @@ func createRequestHandler(w http.ResponseWriter, r *http.Request) error {
 	}
 	var req CreateRequest
 	json.Unmarshal([]byte(body), &req)
+	req.RootDrivePath = filepath.Join(ImageDir, req.RootDrivePath)
+	req.KernelPath = filepath.Join(ImageDir, req.KernelPath)
+
 	opts := getOptions(ipByte, req)
 	running, err := opts.createVMM(context.Background())
 	if err != nil {
@@ -149,7 +157,7 @@ func getOptions(id byte, req CreateRequest) options {
 	fc_ip := net.IPv4(172, 102, 0, id).String()
 	gateway_ip := "172.102.0.1"
 	docker_mask_long := "255.255.255.0"
-	bootArgs := "ro console=ttyS0 noapic reboot=k panic=1 pci=off nomodules random.trust_cpu=on "
+	bootArgs := "ro console=ttyS0 noapic reboot=k panic=1 pci=off nomodules random.trust_cpu=on i8042.noaux "
 	bootArgs = bootArgs + fmt.Sprintf("ip=%s::%s:%s::eth0:off", fc_ip, gateway_ip, docker_mask_long)
 	return options{
 		FcBinary:        "/usr/bin/firecracker",
