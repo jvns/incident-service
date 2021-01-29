@@ -38,7 +38,7 @@ var runningVMs map[string]RunningFirecracker = make(map[string]RunningFirecracke
 var ipByte byte = 3
 
 func main() {
-	if len(os.Args) > 0 {
+	if len(os.Args) == 2 {
 		ImageDir = os.Args[1]
 	}
 	http.Handle("/create", Handler{createRequestHandler})
