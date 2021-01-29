@@ -61,11 +61,17 @@ class Firecracker
   end
 
   def launch!
+    if ENV['RAILS_ENV'] == 'production'
+      puzzle_dir="/puzzles"
+    else
+      puzzle_dir="/home/bork/work/incident-service/puzzles/tarballs"
+    end
     uri = URI("http://host:8080/create")
     req = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
     req.body = {
       root_image_path: 'base.ext4',
-      kernel_path: 'vmlinux-5.8'
+      kernel_path: 'vmlinux-5.8',
+      tarball: "#{puzzle_dir}/#{@session.puzzle.slug}.tar",
     }.to_json
     resp = Net::HTTP.start(uri.hostname, uri.port) do |http|
       http.request(req)

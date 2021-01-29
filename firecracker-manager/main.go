@@ -23,6 +23,7 @@ var ImageDir string = "/images"
 type CreateRequest struct {
 	RootDrivePath string `json:"root_image_path"`
 	KernelPath    string `json:"kernel_path"`
+	Tarball       string `json:"tarball"`
 }
 
 type CreateResponse struct {
@@ -180,11 +181,40 @@ type RunningFirecracker struct {
 	machine      *firecracker.Machine
 }
 
+func (opts *options) copyPuzzleFiles(imagePath string) error {
+	if opts.Request.Tarball == "" {
+		return nil
+	}
+	mountDir := filepath.Join(ImageDir, pseudo_uuid())
+	err := os.Mkdir(mountDir, 0755)
+	defer os.Remove(mountDir)
+	if err != nil {
+		return fmt.Errorf("Failed creating dir: %s", mountDir, err)
+	}
+
+	if err := exec.Command("mount", imagePath, mountDir).Run(); err != nil {
+		return fmt.Errorf("Failed mounting path %s: %s", imagePath, err)
+	}
+
+	if err := exec.Command("tar", "--xattrs", "-C", mountDir, "-xf", opts.Request.Tarball).Run(); err != nil {
+		return fmt.Errorf("Failed to extract tarball %s: %s", opts.Request.Tarball, err)
+	}
+
+	if err := exec.Command("umount", mountDir).Run(); err != nil {
+		return fmt.Errorf("Failed umounting path %s: %s", imagePath, err)
+	}
+	return nil
+}
+
 func (opts *options) createVMM(ctx context.Context) (*RunningFirecracker, error) {
 	vmmCtx, vmmCancel := context.WithCancel(ctx)
 	rootImagePath, mapperDevice, err := copyImage(opts.Request.RootDrivePath)
 	if err != nil {
 		return nil, fmt.Errorf("Failed copying root path: %s", err)
+	}
+	err = opts.copyPuzzleFiles(rootImagePath)
+	if err != nil {
+		return nil, fmt.Errorf("Failed copying puzzle files: %s", err)
 	}
 	opts.Request.RootDrivePath = rootImagePath
 	fcCfg, err := opts.getConfig()

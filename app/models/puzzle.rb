@@ -24,6 +24,7 @@ class Puzzle < ActiveHash::Base
       slug: "connection-timeout",
       title: "The Case of the Connection Timeout",
       published: false,
+      description: "",
     },
     {
       id: 2,
@@ -31,6 +32,7 @@ class Puzzle < ActiveHash::Base
       slug: "write-write-write",
       title: "The Case of the Rapidly Filling Hard Drive",
       published: false,
+      description: "",
     },
     {
       id: 3,
@@ -38,6 +40,7 @@ class Puzzle < ActiveHash::Base
       group: "fun-with-files",
       published: false,
       title: 'The Case of "I can\'t create a file!"',
+      description: "",
     },
     {
       id: 4,
@@ -45,6 +48,7 @@ class Puzzle < ActiveHash::Base
       group: "fun-with-files",
       title: "The Case of the Deleted File",
       published: false,
+      description: "",
     },
     {
       id: 5,

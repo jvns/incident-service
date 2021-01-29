@@ -21,12 +21,9 @@ class SessionControllerTest < ActionDispatch::IntegrationTest
     #  to_return(status: 202, body: do_instance, headers: {})
 
     instance = '{"id": "abcdefg"}'
-    stub_request(:post, "http://host:9090/create").
-      with(body: "{\"image\":\"jvns/game:base\"}").
-      to_return(status: 200, body: instance, headers: {})
-    stub_request(:post, "http://host:9090/ip_address").
-      with(body: "{\"id\":\"abcdefg\"}").
-      to_return(status: 200, body: '{"ip_address": "1.2.3.4"}', headers: {})
+    stub_request(:post, "http://host:8080/create").
+      with( body: "{\"root_image_path\":\"base.ext4\",\"kernel_path\":\"vmlinux-5.8\",\"tarball\":\"/home/bork/work/incident-service/puzzles/tarballs/connection-timeout.tar\"}").
+      to_return(status: 200, body: '{"ip_address": "1.2.3.4","id": "abcdefg"}', headers: {})
 
     #stub_request(:get, "https://api.digitalocean.com/v2/droplets/220816290").
     #  to_return(status: 200, body: do_instance_started)

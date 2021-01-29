@@ -21,9 +21,11 @@ mkfs.ext4 $FS
 e2fsck $FS
 mount $FS $MOUNTDIR
 chmod 777 mnt
-docker cp $CONTAINER_ID:/ $MOUNTDIR
+docker cp -a $CONTAINER_ID:/ $MOUNTDIR
 chown -R 1000:1000 $MOUNTDIR/home/wizard # hmm
 chown -R 6:0 $MOUNTDIR/var/cache/man # hmm
 
 umount $MOUNTDIR
+
+docker kill $CONTAINER_ID
 rmdir mnt

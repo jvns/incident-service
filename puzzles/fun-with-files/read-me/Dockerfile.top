@@ -1,6 +1,0 @@
-FROM base
-
-WORKDIR /home/wizard
-COPY files/read-me.txt read-me.txt
-RUN chmod 644 read-me.txt
-RUN setfacl -m "u:wizard:---" read-me.txt
