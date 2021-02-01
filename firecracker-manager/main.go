@@ -42,8 +42,8 @@ func main() {
 	if len(os.Args) == 2 {
 		ImageDir = os.Args[1]
 	}
-	http.Handle("/create", Handler{createRequestHandler})
-	http.Handle("/delete", Handler{deleteRequestHandler})
+	http.Handle("/create", wrapLogger(Handler{createRequestHandler}))
+	http.Handle("/delete", wrapLogger(Handler{deleteRequestHandler}))
 	defer cleanup()
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
@@ -347,4 +347,12 @@ func installSignalHandlers() {
 			}
 		}
 	}()
+}
+
+func wrapLogger(handler http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		rw := &responseWrapper{w, 200}
+		handler.ServeHTTP(rw, r)
+		log.Printf("%s %d %s %s", r.RemoteAddr, rw.status, r.Method, r.URL.Path)
+	})
 }
