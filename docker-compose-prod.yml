@@ -11,6 +11,8 @@ networks:
 services:
   db:
     image: postgres
+    logging:
+      driver: "journald"
     volumes:
       - /postgres_data:/var/lib/postgresql/data
     environment:
@@ -18,6 +20,8 @@ services:
   goproxy:
     # todo: use a smaller image at some point, we don't really need ubuntu here
     image: ghcr.io/jvns/exploding-computers/goproxy
+    logging:
+      driver: "journald"
     build:
         dockerfile: $PWD/docker/goproxy/Dockerfile
         context: multi-gotty
@@ -29,6 +33,8 @@ services:
         - firecrackernet
   rails:
     image: ghcr.io/jvns/exploding-computers/rails
+    logging:
+      driver: "journald"
     build: 
         dockerfile: docker/rails/Dockerfile
         context: .
@@ -43,6 +49,8 @@ services:
         - firecrackernet
   web:
     image: ghcr.io/jvns/exploding-computers/web
+    logging:
+      driver: "journald"
     build:
         dockerfile: docker/nginx/Dockerfile
         context: .
@@ -62,5 +70,3 @@ services:
     #      - /dev/kvm
     #  volumes:
     #      - /images:/images
-logging:
-  driver: "journald"
