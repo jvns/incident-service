@@ -13,6 +13,8 @@ services:
     image: postgres
     logging:
       driver: "journald"
+      options:
+        tag: "postgres"
     volumes:
       - /postgres_data:/var/lib/postgresql/data
     environment:
@@ -22,6 +24,8 @@ services:
     image: ghcr.io/jvns/exploding-computers/goproxy
     logging:
       driver: "journald"
+      options:
+        tag: "goproxy"
     build:
         dockerfile: $PWD/docker/goproxy/Dockerfile
         context: multi-gotty
@@ -35,6 +39,8 @@ services:
     image: ghcr.io/jvns/exploding-computers/rails
     logging:
       driver: "journald"
+      options:
+        tag: "rails"
     build: 
         dockerfile: docker/rails/Dockerfile
         context: .
@@ -51,6 +57,8 @@ services:
     image: ghcr.io/jvns/exploding-computers/web
     logging:
       driver: "journald"
+      options:
+        tag: "nginx"
     build:
         dockerfile: docker/nginx/Dockerfile
         context: .
