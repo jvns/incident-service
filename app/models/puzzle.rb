@@ -91,6 +91,35 @@ class Puzzle < ActiveHash::Base
       get stuck.
       EOS
       published: true,
+    },
+    {
+      id: 8,
+      slug: "write-secret-string",
+      group: "strace",
+      title: "The Case of the Misconfigured Logger",
+      description: <<~EOS,
+      There's a program in your home directory called `run-me`.  For
+      some reason, it's been misconfigured so that it's writing its
+      logs to /dev/null instead of to a file. But you need to know
+      what it's writing!
+
+      Use strace to find out what it's writing.
+      EOS
+      published: true,
+    },
+    {
+      id: 9,
+      slug: "mystery-log-file",
+      group: "strace",
+      title: "The Case of the Mystery Log File",
+      description: <<~EOS,
+      There's a program in your home directory called `run-me`. It's
+      logging its output to a log file, but you can't find the name
+      of the log file ANYWHERE in its documentation!
+
+      Use strace to find out the name of the log file.
+      EOS
+      published: true,
     }
   ]
   private

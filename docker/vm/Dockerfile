@@ -20,9 +20,9 @@ RUN systemctl set-default -f multi-user.target
 RUN echo '' > /etc/legal
 RUN rm -f /etc/update-motd.d/*
 RUN rm -f /etc/legal
+RUN apt install -y strace curl
 COPY systemd-surgery.py /systemd-surgery.py
 RUN python3 /systemd-surgery.py; rm /systemd-surgery.py
-RUN echo 4 > /blah
 
 COPY start.sh start.sh
 
