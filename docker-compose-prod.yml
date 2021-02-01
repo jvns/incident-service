@@ -62,3 +62,5 @@ services:
     #      - /dev/kvm
     #  volumes:
     #      - /images:/images
+logging:
+  driver: "journald"
