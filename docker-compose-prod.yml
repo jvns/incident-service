@@ -37,6 +37,8 @@ services:
         - firecrackernet
   rails:
     image: ghcr.io/jvns/exploding-computers/rails
+    environment:
+      - RAILS_LOG_TO_STDOUT=1 
     logging:
       driver: "journald"
       options:
