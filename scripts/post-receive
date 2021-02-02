@@ -22,7 +22,7 @@ while read oldrev newrev ref; do
     return 0
   fi
 
-  docker-compose -f docker-compose-prod.yml pull && docker-compose -f docker-compose-prod.yml up --no-build -d
+  docker-compose -f docker-compose-prod.yml pull && docker-compose -f docker-compose-prod.yml up --no-build -d && docker-compose -f docker-compose-prod.yml restart
   cd firecracker-manager
   set -x
   go build
