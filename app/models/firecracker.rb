@@ -82,7 +82,7 @@ class Firecracker
   end
 
   def destroy!
-    uri = URI("http://host:8080")
+    uri = URI("http://host:8080/delete")
     req = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
     req.body = {
       id: @session.vm_id

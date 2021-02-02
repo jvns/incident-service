@@ -94,6 +94,10 @@ func deleteRequestHandler(w http.ResponseWriter, r *http.Request) error {
 		return fmt.Errorf("failed to parse json, %v", err)
 	}
 
+	if err := exec.Command("systemctl", "kill", fmt.Sprintf("firecracker-%s.service", req.ID)).Run(); err != nil {
+		return fmt.Errorf("failed to kill firecracker vm: %s", err)
+	}
+
 	running := runningVMs[req.ID]
 	err = shutDown(running)
 	if err != nil {
@@ -114,13 +118,13 @@ func createRequestHandler(w http.ResponseWriter, r *http.Request) error {
 	req.RootDrivePath = filepath.Join(ImageDir, req.RootDrivePath)
 	req.KernelPath = filepath.Join(ImageDir, req.KernelPath)
 
-	opts := getOptions(ipByte, req)
+	id := pseudo_uuid()
+	opts := getOptions(ipByte, req, id)
 	running, err := opts.createVMM(context.Background())
 	if err != nil {
 		return fmt.Errorf("failed to create VM, %s", err)
 	}
 
-	id := pseudo_uuid()
 	resp := CreateResponse{
 		IpAddress: opts.FcIP,
 		ID:        id,
@@ -154,13 +158,14 @@ func pseudo_uuid() string {
 	return fmt.Sprintf("%X-%X-%X-%X-%X", b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
 }
 
-func getOptions(id byte, req CreateRequest) options {
+func getOptions(id byte, req CreateRequest, vmID string) options {
 	fc_ip := net.IPv4(172, 102, 0, id).String()
 	gateway_ip := "172.102.0.1"
 	docker_mask_long := "255.255.255.0"
 	bootArgs := "ro console=ttyS0 noapic reboot=k panic=1 pci=off nomodules random.trust_cpu=on i8042.noaux "
 	bootArgs = bootArgs + fmt.Sprintf("ip=%s::%s:%s::eth0:off", fc_ip, gateway_ip, docker_mask_long)
 	return options{
+		Id:              vmID,
 		FcBinary:        "/usr/bin/firecracker",
 		Request:         req,
 		FcKernelCmdLine: bootArgs,
@@ -229,6 +234,10 @@ func (opts *options) createVMM(ctx context.Context) (*RunningFirecracker, error)
 		WithStdout(os.Stdout).
 		WithStderr(os.Stderr).
 		Build(ctx)
+
+	log.Printf("firecracker path: %s, %#v\n", cmd.Path, cmd.Args)
+	cmd.Path = "/usr/bin/systemd-run"
+	cmd.Args = append([]string{"/usr/bin/systemd-run", "--wait", "-u", fmt.Sprintf("firecracker-%s", opts.Id)}, cmd.Args...)
 
 	machineOpts := []firecracker.Opt{
 		firecracker.WithProcessRunner(cmd),
