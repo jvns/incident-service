@@ -1,26 +1,29 @@
 <p class="py-8">Hello! Here are some puzzles: </p>
 
 
+<% @puzzles.group_by{|x| x.group}.each do |group, puzzles| %>
+<div class="-mb-4 ml-8 mt-8">
+  <span class="rounded-xl p-2 text-2xl border border-green-800 bg-yellow-100">
+      <%= group %> puzzles
+  </span>
+</div>
+
+<div class="pt-8 p-4 border-black border rounded-xl">
 <div class="grid auto-cols-max">
-    <% @puzzles.each do |puzzle| %>
+  <% puzzles.each do |puzzle| %>
       <% session = Session.where(puzzle_id: puzzle.id, user_id: current_user.id).first %>
-      <% status = session&.vm&.status.to_s %>
-      <% if puzzle.published? %>
-        <span class="p-2 mb-4 mr-4 underline col-start-1">
-          <%= link_to puzzle.title, puzzle  %>
+        <span class="p-2 mb-4 mr-4 col-start-1">
+          <%=link_to puzzle.title, puzzle %>
         </span>
         <div class="col-start-2 mb-4">
           <% if puzzle.finished?(current_user) %>
-            <span  class="m-auto rounded-full px-4 mr-2 border-2 border-green-600 text-green-600 p-2 rounded  leading-none flex items-center">Finished </span>
-          <% elsif status == 'running' %>
-            <%= link_to 'Running', session_url(session), class: "m-auto rounded-full px-4 mr-2 border-2 border-blue-800 text-blue-800 p-2 rounded  leading-none flex text-center items-center" %> 
-          <% elsif status == 'waiting_for_ssh' %>
-            <span class="m-auto rounded-full px-4 mr-2 border-2 border-blue-600 text-blue-600 p-2 rounded  leading-none flex items-center">Starting </span>
+            <span class="m-auto rounded-full px-4 mr-2 border-2 border-green-600 text-green-600 p-2 rounded  leading-none flex items-center">Finished </span>
           <% else %> 
-            <%= button_to 'Start', sessions_url(puzzle_id: puzzle.id), class: "m-auto rounded-full px-4 mr-2 border-2 border-black text-black p-2 rounded  leading-none flex text-center items-center" %> 
+            <%= link_to 'Start', puzzle, method: :get, class: "inline-block m-auto rounded-full px-4 mr-2 border-2 border-black text-black p-2 rounded  leading-none text-center" %>
           <% end %>
         </div>
-      <% end %>
     <% end %>
 
 </div>
+  </div>
+<% end %>

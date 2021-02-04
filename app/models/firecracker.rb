@@ -71,7 +71,7 @@ class Firecracker
     req.body = {
       root_image_path: 'base.ext4',
       kernel_path: 'vmlinux-5.8',
-      tarball: "#{puzzle_dir}/#{@session.puzzle.slug}.tar",
+      #tarball: "#{puzzle_dir}/#{@session.puzzle.slug}.tar",
     }.to_json
     resp = Net::HTTP.start(uri.hostname, uri.port) do |http|
       http.request(req)

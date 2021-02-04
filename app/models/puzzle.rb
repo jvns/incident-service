@@ -11,6 +11,10 @@ class Puzzle < ActiveHash::Base
     File.read(cloud_init_filename)
   end
 
+  def self.published_puzzles
+    Puzzle.all.filter{|x| x.published?}
+  end
+
   def puzzle_text
     yaml = YAML.load_file(cloud_init_filename)
     puzzle_item = yaml['write_files'].find{|x| x['path'].include?('puzzle.txt')}
@@ -58,7 +62,7 @@ class Puzzle < ActiveHash::Base
       description: <<~EOS,
       hi
       EOS
-      published: true,
+      published: false,
     },
     {
       id: 6,
@@ -75,7 +79,7 @@ class Puzzle < ActiveHash::Base
       This one is a basic unix permissions puzzle.
       EOS
       title: "The Case of the Program that Won't Run",
-      published: true,
+      published: false,
     },
     {
       id: 7,
@@ -90,12 +94,13 @@ class Puzzle < ActiveHash::Base
       one isn't as simple to fix as the previous puzzle. There are hints if you
       get stuck.
       EOS
-      published: true,
+      published: false,
     },
     {
       id: 8,
       slug: "write-secret-string",
       group: "strace",
+      password: 'squid',
       title: "The Case of the Misconfigured Logger",
       description: <<~EOS,
       There's a program in your home directory called `run-me`.  For
@@ -105,19 +110,39 @@ class Puzzle < ActiveHash::Base
 
       Use strace to find out what it's writing.
       EOS
+      solution: <<~EOS,
+      The 
+      EOS
       published: true,
     },
     {
       id: 9,
       slug: "mystery-log-file",
       group: "strace",
+      password: 'crayfish',
       title: "The Case of the Mystery Log File",
       description: <<~EOS,
-      There's a program in your home directory called `run-me`. It's
+      There's a program in the puzzle directory called `run-me`. It's
       logging its output to a log file, but you can't find the name
       of the log file ANYWHERE in its documentation!
 
-      Use strace to find out the name of the log file.
+      The password is in the name of the log file (it's a crustacean). Use strace to figure it out.
+      EOS
+      solution: <<~EOS,
+      The fastest way to solve this puzzle is
+
+      ```
+      strace -e openat ./run-me
+      ```
+
+      You can also run
+
+      ```
+      strace -e file ./run-me
+      ```
+
+      to trace a bunch of different system calls related to files (including `openat`).
+
       EOS
       published: true,
     }

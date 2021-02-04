@@ -1,19 +1,125 @@
-<!-- style for markdown -->
+<script>
+// prevent Ctrl+W from always closing the window
+window.addEventListener('beforeunload', function(event) {event.preventDefault()});
+</script>
+
 <style>
 p {
-  margin: .8em 0;
+  margin: 0.5em auto;
 }
 </style>
 
-<h1 class="text-4xl mb-8"><%=@puzzle.title %></h1>
+<p id="notice"><%= notice %></p>
 
-<div class="-mb-4 ml-8">
+<h1 class="text-4xl mb-2"><%=@puzzle.title %></h1>
+  <div class="py-4">
+  <%= link_to '← Back to puzzles', '/', class: 'btn' %>
+  <%= link_to "I'm finished!", "/puzzles/#{@puzzle.id}/finished", class: 'btn' %>
+  </div>
+  
+<div class="-mb-4 ml-8 mt-8">
   <span class="rounded-xl p-2 text-2xl border border-green-800 bg-yellow-100">Your mission</span>
 </div>
-<div class="rounded-2xl border border-green-800 text-xl px-4  py-4 pb-8">
+<div class="rounded-2xl mb-4 border border-green-800 text-xl px-4  py-4 pt-8 pb-2">
   <%= markdown(@puzzle.description) %>
+  <div class="w-1/2 mx-auto mb-4 mt-4">
+  <%= form_with local: true, url: "/puzzles/#{@puzzle.id}/success", class: 'justify-center flex flex-row' do |form| %>
+    <!-- <%= form.label :password, "Password", class: 'block text-xl font-bold' %> -->
+    <%= form.text_field :password, placeholder: "What's the password?", 
+      class: 'max-w-16 block px-3 mx-3 shadow appearance-none border rounded w-full leading-tight focus:outline-none focus:shadow-outline' %> <br>
+    <%= form.submit "Guess", 
+      class: "border border-gray-700 text-gray-700 rounded-md px-4 py-2" %>
+  <% end %>
+    </div>
+
+
 </div>
 
-<div class="-mt-8 text-center">
-  <%= button_to 'Start', sessions_url(puzzle_id: @puzzle.id), class: "text-3xl border border-gray-700 text-gray-700 rounded-md px-4 py-2 m-2  select-none hover:text-white hover:bg-gray-800 focus:outline-none focus:shadow-outline" %> 
-</div>
+
+<% if @session.status == 'running' %>
+    <div class="w-full border-black border-8 rounded-3xl p-4" style="height: 500px; background-color: #fcf4dc">
+      <div class="w-full h-full p-2 rounded border border-yellow-800" style="border-color: #d7c89c">
+        <iframe src="<%=gotty_proxy_url%>" title="description" height="100%" width="100%"> </iframe>
+      </div>
+    </div>
+
+    <a class="underline" href="<%=gotty_proxy_url%>">Open full screen</a>
+
+ </div>
+<% else %>
+<style>
+#progress {
+  padding-top: 8em;
+  width: 100%;
+  text-align: center;
+}
+.progress {
+    display: inline-block;
+    height: 60px;
+    width: 60px;
+    margin: -30px 20px 0;
+    font: 20px/60px monospace;
+    text-align: center;
+    color: white;
+    background: slategray;
+    border-radius: 50%;
+}
+</style>
+<div id="app">
+   <div v-if="!finished">
+   </div>
+   <div class="w-full border-black border-8 rounded-3xl p-4" style="height: 500px; background-color: #fcf4dc">
+     <div class="w-full h-full p-2 rounded border border-yellow-800" style="border-color: #d7c89c">
+       <iframe v-if="finished" v-bind:src="iframeSource" title="description" height="100%" width="100%"> </iframe>
+       <div v-else id="progress">
+         <span class="text-2xl">Loading...</span> <br><br><br>
+         <div v-for="i in 5" class="progress"> {{symbol(i, idx)}}</div>
+       </div>
+     </div>
+   </div>
+
+    <a class="underline" href="/proxy/<%=@session.proxy_id%>/">Open full screen</a>
+   </div>
+ </div>
+<script src="https://unpkg.com/vue"></script>
+<script>
+
+Vue.config.ignoredElements = ['iframe'];
+var app = new Vue({
+  el: '#app',
+  data: {
+    finished: false,
+    iframeSource: "",
+    idx: 0,
+    seqs: [
+        ['bq', 'dp', 'qb', 'pd'],
+        ['bo', 'do', 'ob', 'od', 'oq', 'op', 'qo', 'po'],
+        ['o', 'O', '0', 'O'],
+        ['/', '—', '\\'],
+        ['-', '—', '--', '——', '---', '———', '---', '——', '--', '—']
+    ]
+  },
+  methods: {
+    symbol: function(i, idx) {
+      symbols = this.seqs[i-1];
+      const len = symbols.length;
+      return symbols[idx % len];
+    },
+  }
+})
+setInterval(function() {app.idx = app.idx + 1}, 150)
+const evtSource = new EventSource("/sessions/<%=@session.id%>/stream", { withCredentials: true })
+evtSource.addEventListener("status", function(event) {
+  console.log("status", event.data, event.id);
+});
+evtSource.addEventListener("finished", function(event) {
+  app.finished = true;
+  evtSource.close();
+  // reload the iframe
+  app.iframeSource = "<%=gotty_proxy_url%>";
+});
+</script>
+
+
+<% end %>
+

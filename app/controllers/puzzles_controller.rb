@@ -5,13 +5,23 @@ class PuzzlesController < ApplicationController
   # GET /puzzles
   # GET /puzzles.json
   def index
-    @puzzles = Puzzle.all
+    @puzzles = Puzzle.published_puzzles
   end
 
   # GET /puzzles/1
   # GET /puzzles/1.json
   def show
     load_puzzle
+    @session = Session.from_puzzle(@puzzle, current_user)
+  end
+
+  def success
+    load_puzzle
+    guess = params[:password]
+    if @puzzle.password != guess
+      redirect_to @puzzle, notice: "Oops, that's not quite right!"
+    end
+    PuzzleStatus.create(user_id: current_user.id, puzzle_id: @puzzle.id, finished: true)
   end
 
   def finished
@@ -19,6 +29,7 @@ class PuzzlesController < ApplicationController
     PuzzleStatus.create(user_id: current_user.id, puzzle_id: @puzzle.id, finished: true)
     redirect_to '/'
   end
+
 
   private
     # Use callbacks to share common setup or constraints between actions.

@@ -1,6 +1,6 @@
 class HomepageController < ApplicationController
   def index
-    @puzzles = Puzzle.all
+    @puzzles = Puzzle.published_puzzles
   end
 
   def admin

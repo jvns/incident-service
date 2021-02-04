@@ -9,14 +9,26 @@ class SessionsController < ApplicationController
     #raise 'only local allowed' unless request.local? || request.remote_ip.start_with?('172')
     sessions = Session.where.not(status: :waiting_for_ssh)
 
-    result = sessions.map do |session| 
+    result = sessions.flat_map do |session| 
       # this is a bit silly because they're probably all the same
       if session.fly?
         port = "23"
       else
         port = "22"
       end
-      [session.proxy_id, ["/usr/bin/ssh", "-p", port, "-o", "StrictHostKeyChecking=no", "-i","wizard.key", 'wizard@' + session.vm.ip_address]]
+      Puzzle.published_puzzles.map do |puzzle|
+      [
+        "#{session.proxy_id}-#{puzzle.id}", 
+        [
+          "/usr/bin/ssh", "-p", port,
+          "-t",
+          "-o", "StrictHostKeyChecking=no",
+          "-i","wizard.key",
+          'wizard@' + session.vm.ip_address,
+          "cat /etc/motd && cd /puzzles/#{puzzle.group}/#{puzzle.slug}/ && bash -l",
+        ],
+      ]
+      end
     end
     render :json => result.to_h
   end
@@ -28,8 +40,6 @@ class SessionsController < ApplicationController
       format.json { render json: {status: @session.vm.status} }
     end
   end
-
-
 
   def stream
     load_session
@@ -96,7 +106,11 @@ class SessionsController < ApplicationController
   def build_session
     @session ||= session_scope.build
     @session.attributes = session_params
-    @session.fly!
+    if ENV['RAILS_ENV'] == 'production'
+      @session.fly!
+    else
+      @session.firecracker!
+    end
     @session.user_id = @current_user.id
   end
 

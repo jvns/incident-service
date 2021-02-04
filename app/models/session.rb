@@ -18,7 +18,7 @@ class Session < ApplicationRecord
   end
 
   def self.from_puzzle(puzzle, user)
-    Session.where(puzzle_id: puzzle.id, user_id: user.id).first
+    Session.where(user_id: user.id).first
   end
 
   def puzzle

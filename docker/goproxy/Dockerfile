@@ -9,7 +9,7 @@ COPY . .
 RUN go build
 
 FROM ubuntu:20.04
-RUN apt-get update && apt-get install -y openssh-client
+RUN apt-get update && apt-get install -y openssh-client mosh
 COPY --from=go /go/src/app/multi-gotty  /usr/bin/multi-gotty
 WORKDIR /app
 

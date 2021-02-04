@@ -1,7 +1,6 @@
 Rails.application.routes.draw do
   get '/puzzles/:id/finished', to: 'puzzles#finished'
-  get '/puzzles/:id/publish', to: 'puzzles#publish'
-  get '/puzzles/:id/unpublish', to: 'puzzles#unpublish'
+  post '/puzzles/:id/success', to: 'puzzles#success'
 
   get '/instances', to: 'sessions#index'
   get '/sessions/:id/stream', to: 'sessions#stream'
