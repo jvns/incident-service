@@ -88,7 +88,9 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    load_session
+    # TODO: only allow admins to do this after you implement cancan
+    @session = Session.find(params[:id])
+    # load_session
     @session.destroy
     redirect_to '/admin'
   end
