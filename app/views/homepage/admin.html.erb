@@ -7,12 +7,14 @@
   <tr>
   <th>name</th>
   <th>email</th>
+  <th>minutes old</th>
   <th></th>
   </tr>
 <% @sessions.each do |session| %>
   <tr>
     <td><%= session.puzzle.title %> </td>
     <td class="px-4"><%= session.user.email %> </td>
+    <td class="px-4"><%= ((Time.now - session.created_at) / 60).to_i %> </td>
     <td class="px-4"> 
       <%= button_to "delete", session, method: :delete, class: "border border-gray-700 text-gray-700 rounded-md px-4 py-2 m-2 transition duration-500 ease select-none hover:text-white hover:bg-gray-800 focus:outline-none focus:shadow-outline" %>
     </td>
