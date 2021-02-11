@@ -1,0 +1,15 @@
+name: "Delete old puzzles"
+on:
+  schedule:
+  - cron: "0 */5 * * *"
+
+jobs:
+  delete-old-vms:
+    runs-on: ubuntu-latest
+    steps:
+    - name: "Install fly and jq"
+      run: 
+        - mkdir bin
+        - wget -O bin/flyctl https://github.com/superfly/flyctl/releases/download/v0.0.173/flyctl_0.0.173_Linux_x86_64
+        - wget -O bin/jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
+        - chmod 755 bin/*
