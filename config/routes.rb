@@ -4,6 +4,7 @@ Rails.application.routes.draw do
 
   get '/instances', to: 'sessions#index'
   get '/sessions/:id/stream', to: 'sessions#stream'
+  get '/sessions/cleanup', to: 'sessions#cleanup_old'
 
 
   resources :puzzles

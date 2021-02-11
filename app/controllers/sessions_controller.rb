@@ -1,7 +1,7 @@
 class SessionsController < ApplicationController
   include ActionController::Live
 
-  skip_before_action :authenticate_user!, only: :index
+  skip_before_action :authenticate_user!, only: [:index, :cleanup_old]
 
   def index
     # TODO: put this back later
@@ -85,6 +85,19 @@ class SessionsController < ApplicationController
     load_session
     build_session
     save_session or render 'edit'
+  end
+
+
+  def cleanup_old
+    num_deleted = 0
+    Session.all.each do |session|
+      minutes_ago = ((Time.now - session.created_at) / 60).to_i
+      if minutes_ago >= 80
+        num_deleted += 1
+        session.destroy
+      end
+    end
+    render :json => {num_deleted: num_deleted}
   end
 
   def destroy
