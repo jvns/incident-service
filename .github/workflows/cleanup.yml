@@ -8,6 +8,7 @@ jobs:
   delete-old-vms:
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v2
     - name: "Install fly and jq"
       run: |
         mkdir bin
