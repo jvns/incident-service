@@ -103,12 +103,12 @@ class Puzzle < ActiveHash::Base
       password: 'squid',
       title: "The Case of the Misconfigured Logger",
       description: <<~EOS,
-      There's a program in your home directory called `run-me`.  For
+      There's a program in your home directory called `write-secret-string`.  For
       some reason, it's been misconfigured so that it's writing its
       logs to /dev/null instead of to a file. But you need to know
       what it's writing!
 
-      Use strace to find out what it's writing.
+      Use strace to find out what it's writing. The answer is a sea animal.
       EOS
       solution: <<~EOS,
       The 

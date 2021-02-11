@@ -18,7 +18,7 @@ class PuzzlesController < ApplicationController
   def success
     load_puzzle
     guess = params[:password]
-    if @puzzle.password != guess
+    unless guess.include?(@puzzle.password)
       redirect_to @puzzle, notice: "Oops, that's not quite right!"
     end
     PuzzleStatus.create(user_id: current_user.id, puzzle_id: @puzzle.id, finished: true)
