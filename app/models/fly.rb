@@ -83,6 +83,7 @@ class Fly
   end
 
   def destroy!
+    system("flyctl", "destroy", "--yes", session.vm_id)
   end
 
   def ip_address
