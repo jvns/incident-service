@@ -21,6 +21,16 @@ class Session < ApplicationRecord
     Session.where(user_id: user.id).first
   end
 
+  def self.cleanup_old
+    Session.all.count do |session|
+      minutes_ago = ((Time.now - session.created_at) / 60).to_i
+      if minutes_ago >= 80
+        session.destroy
+        true
+      end
+    end
+  end
+
   def puzzle
     @puzzle ||= Puzzle.find(self.puzzle_id)
   end

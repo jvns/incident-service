@@ -89,15 +89,7 @@ class SessionsController < ApplicationController
 
 
   def cleanup_old
-    num_deleted = 0
-    Session.all.each do |session|
-      minutes_ago = ((Time.now - session.created_at) / 60).to_i
-      if minutes_ago >= 80
-        num_deleted += 1
-        session.destroy
-      end
-    end
-    render :json => {num_deleted: num_deleted}
+    render :json => {num_deleted: Session.cleanup_old}
   end
 
   def destroy
