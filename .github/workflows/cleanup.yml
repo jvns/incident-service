@@ -8,7 +8,6 @@ jobs:
   delete-old-vms:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
     - name: "Install fly and jq"
       run: |
         mkdir bin
@@ -17,6 +16,7 @@ jobs:
         chmod 755 bin/*
         echo "$PWD/bin" >> $GITHUB_PATH
     - name: "Delete old puzzles"
+      uses: actions/checkout@v2
       env: 
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
       run: bash scripts/cleanup_old_vms.sh
