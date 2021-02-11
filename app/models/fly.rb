@@ -48,6 +48,9 @@ class Fly
 
   def status
     return nil unless session
+    unless ip_address
+      return :waiting_for_ip
+    end
     if session.waiting_for_ssh?
       begin
         ssh_connection
@@ -74,11 +77,6 @@ class Fly
     end
 
     Process.detach(job1)
-    if ENV['RAILS_ENV'] == 'production'
-      @session.ip_address = "#{name}.internal"
-    else
-      @session.ip_address = "#{name}.fly.dev"
-    end
     name
   end
 
@@ -86,7 +84,20 @@ class Fly
     system("flyctl", "destroy", "--yes", session.vm_id)
   end
 
+  def get_ip
+    ip = `flyctl ips private -a #{session.vm_id} | grep fdaa | awk '{print $3}'`.strip
+    if ip.size > 0
+      ip
+    else
+      nil
+    end
+  end
+
   def ip_address
+    unless @session.ip_address
+      @session.ip_address = get_ip
+      @session.save
+    end
     @session.ip_address
   end
 end

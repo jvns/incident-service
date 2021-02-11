@@ -52,9 +52,6 @@ class SessionsController < ApplicationController
     sse = SSE.new(response.stream, event: "status")
     while true
       status = @session.vm.status
-      if status == 'waiting_for_cloud_init'
-        # we're gonna start it like 100 times but it'll for sure be started
-      end
       if status == 'running'
         sse.write('done', event: 'finished')
         break
