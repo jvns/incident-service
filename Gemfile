@@ -5,6 +5,7 @@ ruby '2.7.2'
 
 gem 'droplet_kit'
 gem 'devise'
+gem 'cancancan'
 gem 'omniauth'
 gem 'omniauth-github'
 gem 'omniauth-oauth2'

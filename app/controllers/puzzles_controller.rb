@@ -2,6 +2,7 @@ require 'droplet_kit'
 require 'open3'
 
 class PuzzlesController < ApplicationController
+  load_and_authorize_resource
   # GET /puzzles
   # GET /puzzles.json
   def index

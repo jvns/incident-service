@@ -3,6 +3,16 @@ class Puzzle < ActiveHash::Base
     "#{id}-#{slug}"
   end
 
+  def self.find(id)
+    # hack to make cancan work with the `to_param` above
+    # because cancan doesn't do to_i
+    if id.is_a? Integer
+      super
+    else
+      super(id.to_i)
+    end
+  end
+
   def finished?(user)
     PuzzleStatus.where(user_id: user.id).where(puzzle_id: self.id).first&.finished || false
   end

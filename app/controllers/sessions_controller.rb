@@ -2,6 +2,7 @@ class SessionsController < ApplicationController
   include ActionController::Live
 
   skip_before_action :authenticate_user!, only: [:index, :cleanup_old]
+  load_and_authorize_resource except: [:index, :cleanup_old]
 
   def index
     # TODO: put this back later
