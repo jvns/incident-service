@@ -5,18 +5,9 @@ on:
   - cron: "*/2 * * * *"
 
 jobs:
-  delete-old-vms:
+  cleanup-old-vms:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: "Install fly and jq"
+    - name: "Cleanup old sessions"
       run: |
-        mkdir bins
-        wget -nv -O bins/flyctl https://github.com/superfly/flyctl/releases/download/v0.0.173/flyctl_0.0.173_Linux_x86_64
-        wget -nv -O bins/jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
-        chmod 755 bins/*
-        echo "$PWD/bins" >> "$GITHUB_PATH"
-    - name: "Cleanup VMs"
-      env: 
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-      run: bash scripts/cleanup_old_vms.sh
+        curl https://exploding-rails.fly.dev/sessions/cleanup
