@@ -1,5 +1,4 @@
-#!/bin/bash
-set -e
-cd /app
-/usr/local/bin/docker-compose -f docker-compose-prod.yml exec rails rails runner cleanup_old_vms.rb
-
+for i in $(flyctl apps list -j | jq -r  'map(select((.Name | startswith("puzzle")) and (.CurrentRelease.CreatedAt | now - fromdate  > 3600)) | .ID) | join("\\n")')
+do
+    flyctl destroy --yes $i
+done
