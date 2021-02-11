@@ -17,6 +17,5 @@ jobs:
         echo "$PWD/bin" >> $GITHUB_PATH
     - name: "Delete old puzzles"
       env: 
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN}}
-      run: |
-        flyctl apps list 
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+      run: bash scripts/cleanup_old_vms.sh
